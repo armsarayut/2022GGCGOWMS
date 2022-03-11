@@ -39,7 +39,7 @@ else
               Filter="new Func<Mas_Item_Go,bool>(FilterFunc)" @bind-SelectedItem="selectedItem"
               SortLabel=@L["SortBy"]>
         <ToolBarContent>
-            <MudToolBarSpacer />
+            <MudSpacer />
             <MudTextField @bind-Value="searchString"
                           Placeholder=@L["Search"] Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Search"
@@ -52,7 +52,8 @@ else
             <MudTh>@L["UNIT"]</MudTh>
             <MudTh>@L["NETWEIGHT"]</MudTh>
             <MudTh>@L["GROSSWEIGHT"]</MudTh>
-            <MudTh>@L["WEIGHTUNIT"]</MudTh>
+           @* <MudTh>@L["WEIGHTUNIT"]</MudTh>*@
+             <MudTh>BATCH</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Itemcode</MudTd>
@@ -60,7 +61,8 @@ else
             <MudTd DataLabel=@L["UNIT"]>@context.Itemunit</MudTd>
             <MudTd DataLabel=@L["NETWEIGHT"]>@context.Weightnet</MudTd>
             <MudTd DataLabel=@L["GROSSWEIGHT"]>@context.Weightgross</MudTd>
-            <MudTd DataLabel=@L["WEIGHTUNIT"]>@context.Weightuint</MudTd>
+            @*<MudTd DataLabel=@L["WEIGHTUNIT"]>@context.Weightuint</MudTd>*@
+             <MudTd DataLabel="BATCH"><MudCheckBox @bind-Checked="@context.IsBatchMgn" /></MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />

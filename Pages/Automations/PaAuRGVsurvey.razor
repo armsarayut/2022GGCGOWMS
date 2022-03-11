@@ -209,7 +209,7 @@
                 bool bRet;
                 Int32 iCmd = 10;
 
-                bRet = ObjWcsService.CreatePotocalMC(Mccode, Gateno_FM, Gateno_TO, 1, "WGC-SURVEY", 0, iCmd);
+                bRet = ObjWcsService.CreatePotocalMC(Mccode, Gateno_FM, Gateno_TO, 1, "GGC-SURVEY", 0, iCmd);
 
                 this.InsertAuditrial("Setting " + Mccode + "- SURVEY Gate " + Gateno_FM.ToString() + ">>" + Gateno_TO.ToString(), pageheader);
 

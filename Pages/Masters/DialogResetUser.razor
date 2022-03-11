@@ -22,12 +22,13 @@
 
         <MudTextField @bind-Value="@MPassword" Label="New Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-4" />
 
-        <MudSelect Label="GROUP" HelperText="Pick the GROUP" @bind-SelectedValues="selectedItems">
+      <MudSelect Label="GROUP" HelperText="Pick the GROUP" @bind-SelectedValues="selectedItems">
             @foreach (var cmd in Elements)
             {
                 <MudSelectItem Value="@cmd">@cmd.Ugdesc</MudSelectItem>
             }
         </MudSelect>
+
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -38,17 +39,23 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string MPassword { get; set; }
-    [Parameter] public string MUsername { get; set; }
-    [Parameter] public string MEmail { get; set; }
+
+        [Parameter] public string MPassword { get; set; }
+
+        [Parameter] public string MUsername { get; set; }
+
+        [Parameter] public string MEmail { get; set; }
+    
 
     /*
             string MPassword { get; set; }
             string MUsername { get; set; }
             string MEmail { get; set; }
     */
-    private HashSet<Usergroups> selectedItems = new HashSet<Usergroups>();
+
+    private IEnumerable<Usergroups> selectedItems = new HashSet<Usergroups>();
     private IEnumerable<Usergroups> Elements = new List<Usergroups>();
+    private int selectedvalue { get; set; } = 0;
 
     private ResultReturn resultReturn = null;
 
@@ -85,7 +92,7 @@
         var encrypted = EncryptProvider.DESDecrypt(MPassword, key);
         MPassword = encrypted;
         await GetUserAthu();
-        Elements = await Task.Run(() => ObjUserService.GetUsergroups());
+        //Elements = await Task.Run(() => ObjUserService.GetUsergroups());
 
     }
 

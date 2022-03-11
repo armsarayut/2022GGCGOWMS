@@ -51,7 +51,7 @@ else
                           @bind-SelectedItems="selectedItems">
                     <ToolBarContent>
 
-                        <MudToolBarSpacer />
+                        <MudSpacer />
                         <MudTextField @bind-Value="searchString"
                                       Placeholder=@L["Search"]
                                       Adornment="Adornment.Start"
@@ -298,7 +298,11 @@ else
                     SelectOrderPick();
                 }
 
-                StateHasChanged();
+                Elements = await Task.Run(() => ObjService.GetStockListInfo());
+                selectedItems.Clear();
+
+                searchString = null;
+                this.StateHasChanged();
             }
         }
 
@@ -334,14 +338,7 @@ else
         var strRES = filteredOrders.OrderBy(x => x.Pallettag).Select(x => new { efidx = x.Efidx, quantity = x.Quantity, packageid = x.Pallettag, materialcode = x.Itemcode, palletno = x.Pallteno, sono = so, customer = cus, lotno = lot, batchno = batch, matematerialdescription = x.Itemname, unit = x.Unit, deliverydate = requestdate }).ToList();
 
 
-
-
         //var strRES = selectedItems.OrderBy(x => x.Pallettag).Select(x => new { efidx = x.Efidx, quantity = x.Quantity, packageid = x.Pallettag, materialcode = x.Itemcode, palletno = x.Pallteno, sono = so, customer = cus, lotno = lot, batchno = batch, matematerialdescription = x.Itemname, unit = x.Unit, deliverydate = requestdate }).ToList();
-
-
-
-
-
 
         //var strLON = selectedItems.OrderBy(x => x.SEQ_NO).Select(x => new { SEQ_NO = x.SEQ_NO, SO_NO = x.SO_NO, DN_SEQ = x.DN_SEQ, ITEM_CODE = x.ITEM_CODE, PALLET_GO = x.PALLET_GO, DN_QTY = x.DN_QTY }).ToList();
 

@@ -9,13 +9,13 @@ namespace GoWMS.Server.Models.Inv
     {
         public DateTime? Modified { get; set; }
         public Int32? Srm_no { get; set; }
-        public Int32? Shelf_no { get; set; }
+        public Int64? Shelf_no { get; set; }
         public string Shelfcode { get; set; }
         public string Shelfname { get; set; }
-        public Int16? Shelfbank { get; set; }
-        public Int16? Shelfframe { get; set; }
+        public Int32? Shelfbank { get; set; }
+        public Int32? Shelfframe { get; set; }
         public Int32? Shelfbay { get; set; }
-        public Int16? Shelflevel { get; set; }
+        public Int32? Shelflevel { get; set; }
         public Int32? Shelfstatus { get; set; }
         public string Lpncode { get; set; }
         public string Refercode { get; set; }

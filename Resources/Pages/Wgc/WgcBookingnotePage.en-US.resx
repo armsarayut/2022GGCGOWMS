@@ -138,6 +138,9 @@
   <data name="PalletGo" xml:space="preserve">
     <value>PalletGo</value>
   </data>
+  <data name="PalletNo" xml:space="preserve">
+    <value>PalletNo</value>
+  </data>
   <data name="Qty" xml:space="preserve">
     <value>Qty</value>
   </data>

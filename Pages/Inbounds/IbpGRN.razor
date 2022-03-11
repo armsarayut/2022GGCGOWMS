@@ -42,7 +42,7 @@ else
         </MudTooltip>
     </MudAppBar>
 
-    <MudTable Items="@Elements"
+ @*   <MudTable Items="@Elements"
               FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
               Height="@(fixed_header || fixed_footer ?"500px":"")"
@@ -53,7 +53,7 @@ else
               Filter="new Func<Inb_Goodreceipt_Go,bool>(FilterFunc)"
               @bind-SelectedItem="selectedItem">
         <ToolBarContent>
-            <MudToolBarSpacer />
+            <MudSpacer />
             <MudTextField @bind-Value="searchString"
                           Placeholder=@L["Search"]
                           Adornment="Adornment.Start"
@@ -89,7 +89,36 @@ else
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
 
         </PagerContent>
-    </MudTable>
+    </MudTable>*@
+
+ <MudDataGrid T="Inb_Goodreceipt_Go" Items="@Elements" Sortable="true" Filterable="true" QuickFilter="@_quickFilter"
+    Hideable="true"  FixedHeader="@fixed_header"
+              FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" >
+    <ToolBarContent>
+    @* <MudText Typo="Typo.h6">@pageheader</MudText>*@
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        @*<SelectColumn T="Inb_Goodreceipt_Go" />*@
+        <Column T="Inb_Goodreceipt_Go" Field="Docdate" Title="@L["DNDate"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Pono" Title="@L["DNDate"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Pallettag" Title="@L["DNSeq"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Itemcode" Title="@L["ItemCode"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Itemname" Title="@L["ItemName"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Quantity" Title="@L["Qty"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Unit" Title="@L["Unit"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Weight" Title="@L["Weight"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Docno" Title="@L["LotNo"]" />
+        <Column T="Inb_Goodreceipt_Go" Field="Docnote" Title="@L["BatchNo"]" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="Inb_Goodreceipt_Go" />
+    </PagerContent>
+</MudDataGrid>
+
+
 
 }
 
@@ -217,6 +246,39 @@ else
             return true;
         return false;
     }
+
+    private string _searchString;
+    private bool _sortNameByLength;
+     // custom sort by name length
+    private Func<Inb_Goodreceipt_Go, object> _sortBy => x =>
+    {
+        if (_sortNameByLength)
+            return x.Itemtag.Length;
+        else
+            return x.Itemtag;
+    };
+
+     // quick filter - filter gobally across multiple columns with the same input
+    private Func<Inb_Goodreceipt_Go, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Itemtag.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Pallettag.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+       if (x.Itemcode.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Itemname} {x.Docno} {x.Pono} {x.Docnote}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+
 
     public async Task DownloadExcelDocument()
     {

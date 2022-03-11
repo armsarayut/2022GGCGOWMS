@@ -64,8 +64,19 @@ namespace GoWMS.Server.Controllers
             return objDAL.GetSumOrderAllOubGoodPickingGo();
         }
 
+        public bool CancelReceivingOrdersBypack(string pallet, string pack)
+        {
+            bool bret = objDAL.CancelReceivingOrdersBypack(pallet, pack);
 
-   
+            return bret;
+        }
+
+        public bool CancelReceivingOrdersByPallet(string pallet)
+        {
+            bool bret = objDAL.CancelReceivingOrdersByPallet(pallet);
+
+            return bret;
+        }
 
     }
 }

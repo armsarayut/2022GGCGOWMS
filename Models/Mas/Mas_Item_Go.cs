@@ -22,6 +22,7 @@ namespace GoWMS.Server.Models.Mas
 		public Decimal? Weightgross { get; set; }
 		public string Weightuint { get; set; }
 		public string Vendor { get; set; }
+		public bool ? IsBatchMgn { get; set; }
 
 	}
 }

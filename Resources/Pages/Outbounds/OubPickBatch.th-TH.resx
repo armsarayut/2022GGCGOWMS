@@ -126,6 +126,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>ชื่อสินค้า</value>
   </data>
+  <data name="ORDERNO" xml:space="preserve">
+    <value>เลขใบเบิก</value>
+  </data>
   <data name="pageHeader" xml:space="preserve">
     <value>การเลือกคำสั่งหยิบ</value>
   </data>

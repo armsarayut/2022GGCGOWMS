@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace GoWMS.Server.Data
     public class InvDAL
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
         public async Task<IEnumerable<InvStockList>> GetStockList()
         {
     
@@ -59,75 +61,78 @@ namespace GoWMS.Server.Data
         {
 
             List<Inv_Stock_GoInfo> lstobj = new List<Inv_Stock_GoInfo>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
-                /*
-                Sql.AppendLine("select row_number() over(order by  itemcode asc) AS rn,");
-                Sql.AppendLine("itemcode, itemname, quantity, pallettag, pallteno, storagearea, storagebin");
-                Sql.AppendLine("from wms.inv_stock_go ");
-                Sql.AppendLine("order by itemcode, ");
-                */
 
-                Sql.AppendLine("SELECT efidx , efstatus, created, modified, innovator, device");
-                Sql.AppendLine(", pono, pallettag, itemtag, itemcode, itemname, itembar, unit");
-                Sql.AppendLine(", weightunit, quantity, weight, lotno, totalquantity, totalweight");
-                Sql.AppendLine(", docno, docby, docdate, docnote, grnrefer, grntime, grtime");
-                Sql.AppendLine(", grtype, pallteno, palltmapkey, storagetime, storageno");
-                Sql.AppendLine(", storagearea, storagebin, gnrefer, allocatequantity, allocateweight");
-                Sql.AppendLine("FROM wms.inv_stock_go");
-                Sql.AppendLine("WHERE allocatequantity < quantity");
-     
-                Sql.AppendLine("order by itemcode ASC, docdate ASC, pallettag ASC");
+                //Sql.AppendLine("SELECT efidx , efstatus, created, modified, innovator, device");
+                //Sql.AppendLine(", pono, pallettag, itemtag, itemcode, itemname, itembar, unit");
+                //Sql.AppendLine(", weightunit, quantity, weight, lotno, totalquantity, totalweight");
+                //Sql.AppendLine(", docno, docby, docdate, docnote, grnrefer, grntime, grtime");
+                //Sql.AppendLine(", grtype, pallteno, palltmapkey, storagetime, storageno");
+                //Sql.AppendLine(", storagearea, storagebin, gnrefer, allocatequantity, allocateweight");
+                //Sql.AppendLine("FROM wms.inv_stock_go");
+                //Sql.AppendLine("WHERE allocatequantity < quantity");
+                //Sql.AppendLine("order by itemcode ASC, docdate ASC, pallettag ASC");
 
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                Sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
+                Sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
+                Sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
+                Sql.AppendLine(", trans_num, lot, exp_date, mfg_date");
+                Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
+                //Sql.AppendLine("WHERE allocatequantity < quantity");
+                Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
+
+
+
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
 
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (await rdr.ReadAsync())
                 {
                     Inv_Stock_GoInfo objrd = new Inv_Stock_GoInfo
                     {
-                        Efidx = rdr["efidx"] == DBNull.Value ? null : (Int64?)rdr["efidx"],
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
-                        Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Innovator = rdr["innovator"] == DBNull.Value ? null : (Int64?)rdr["innovator"],
-                        Device = rdr["device"].ToString(),
-                        Pono = rdr["pono"].ToString(),
-                        Pallettag = rdr["pallettag"].ToString(),
-                        Itemtag = rdr["itemtag"].ToString(),
-                        Itemcode = rdr["itemcode"].ToString(),
-                        Itemname = rdr["itemname"].ToString(),
-                        Itembar = rdr["itembar"].ToString(),
-                        Unit = rdr["unit"].ToString(),
-                        Weightunit = rdr["weightunit"].ToString(),
-                        Quantity = rdr["quantity"] == DBNull.Value ? null : (decimal?)rdr["quantity"],
-                        Weight = rdr["weight"] == DBNull.Value ? null : (decimal?)rdr["weight"],
-                        Lotno = rdr["lotno"].ToString(),
-                        Totalquantity = rdr["totalquantity"] == DBNull.Value ? null : (decimal?)rdr["totalquantity"],
-                        Totalweight = rdr["totalweight"] == DBNull.Value ? null : (decimal?)rdr["totalweight"],
-                        Docno = rdr["docno"].ToString(),
-                        Docby = rdr["docby"].ToString(),
-                        Docdate = rdr["docdate"] == DBNull.Value ? null : (DateTime?)rdr["docdate"],
-                        Docnote = rdr["docnote"].ToString(),
-                        Grnrefer = rdr["grnrefer"] == DBNull.Value ? null : (Int64?)rdr["grnrefer"],
-                        Grntime = rdr["grntime"] == DBNull.Value ? null : (DateTime?)rdr["grntime"],
-                        Grtime = rdr["grtime"] == DBNull.Value ? null : (DateTime?)rdr["grtime"],
-                        Grtype = rdr["grtype"].ToString(),
-                        Pallteno = rdr["pallteno"].ToString(),
-                        Palltmapkey = rdr["palltmapkey"].ToString(),
-                        Storagetime = rdr["storagetime"] == DBNull.Value ? null : (DateTime?)rdr["storagetime"],
-                        Storageno = rdr["storageno"].ToString(),
-                        Storagearea = rdr["storagearea"].ToString(),
-                        Storagebin = rdr["storagebin"].ToString(),
-                        Gnrefer = rdr["gnrefer"] == DBNull.Value ? null : (Int64?)rdr["gnrefer"],
-                        Allocatequantity = rdr["allocatequantity"] == DBNull.Value ? null : (decimal?)rdr["allocatequantity"],
-                        Allocateweight = rdr["allocateweight"] == DBNull.Value ? null : (decimal?)rdr["allocateweight"]
+                        Efidx = null,
+                        Efstatus = null,
+                        Created = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
+                        Modified = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
+                        Innovator = null,
+                        Device = null,
+                        Pono = rdr["doc_num"].ToString(),
+                        Pallettag = rdr["item_bc"].ToString(),
+                        Itemtag = rdr["item_bc"].ToString(),
+                        Itemcode = rdr["item"].ToString(),
+                        Itemname = rdr["itemdesc"].ToString(),
+                        Itembar = null,
+                        Unit = rdr["uom"].ToString(),
+                        Weightunit = null,
+                        Quantity = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Weight = null,
+                        Lotno = rdr["lot"].ToString(),
+                        Totalquantity = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Totalweight = null,
+                        Docno = rdr["doc_num"].ToString(),
+                        Docby = rdr["createdby"].ToString(),
+                        Docdate = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
+                        Docnote = null,
+                        Grnrefer = null,
+                        Grntime = null,
+                        Grtime = null,
+                        Grtype = null,
+                        Pallteno = rdr["pallet_bc"].ToString(),
+                        Palltmapkey = null,
+                        Storagetime = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
+                        Storageno = null,
+                        Storagearea = rdr["whse"].ToString(),
+                        Storagebin = rdr["loc"].ToString(),
+                        Gnrefer = null,
+                        Allocatequantity = null,
+                        Allocateweight = null
                     };
                     lstobj.Add(objrd);
                 }
@@ -139,33 +144,41 @@ namespace GoWMS.Server.Data
         public IEnumerable<InvStockSum> GetStockSum()
         {
             List<InvStockSum> lstobj = new List<InvStockSum>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
 
-                Sql.AppendLine("select row_number() over(order by itemcode asc) AS rn,");
-                Sql.AppendLine("itemcode, itemname, sum(quantity) as totalstock, count(pallteno) as countpallet");
-                Sql.AppendLine("from wms.inv_stock_go ");
-                Sql.AppendLine("WHERE allocatequantity < quantity");
-                Sql.AppendLine("group by itemcode, itemname");
-                Sql.AppendLine("order by itemcode");
+                //Sql.AppendLine("select row_number() over(order by itemcode asc) AS rn,");
+                //Sql.AppendLine("itemcode, itemname, sum(quantity) as totalstock, count(pallteno) as countpallet");
+                //Sql.AppendLine("from wms.inv_stock_go ");
+                //Sql.AppendLine("WHERE allocatequantity < quantity");
+                //Sql.AppendLine("group by itemcode, itemname");
+                //Sql.AppendLine("order by itemcode");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                Sql.AppendLine("select row_number() over(order by item asc) AS rn,");
+                Sql.AppendLine("item, itemdesc, sum(qty) as totalstock, count(pallet_bc) as countpallet");
+                Sql.AppendLine("from dbo.v_wmstran_stock_rpt_lot ");
+                //Sql.AppendLine("WHERE allocatequantity < quantity");
+                Sql.AppendLine("group by item, itemdesc");
+                Sql.AppendLine("order by item");
+
+
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
 
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     InvStockSum objrd = new InvStockSum
                     {
                         Rn = rdr["rn"] == DBNull.Value ? null : (Int64?)rdr["rn"],
-                        Item_code = rdr["itemcode"].ToString(),
-                        Item_name = rdr["itemname"].ToString(),
+                        Item_code = rdr["item"].ToString(),
+                        Item_name = rdr["itemdesc"].ToString(),
                         Totalstock = rdr["totalstock"] == DBNull.Value ? null : (Decimal?)rdr["totalstock"],
-                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int64?)rdr["countpallet"]
+                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int32?)rdr["countpallet"]
                     };
                     lstobj.Add(objrd);
                 }
@@ -180,35 +193,35 @@ namespace GoWMS.Server.Data
         public IEnumerable<Vrpt_shelf_listInfo> GetShelfLocation()
         {
             List<Vrpt_shelf_listInfo> lstobj = new List<Vrpt_shelf_listInfo>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                  StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("SELECT modified, srm_no, shelf_no, shelfcode, shelfname");
                 Sql.AppendLine(", shelfbank, shelfframe, shelfbay, shelflevel, shelfstatus");
-                Sql.AppendLine(", lpncode, refercode, actual_weight, actual_size, desc_size, st_desc");
+                Sql.AppendLine(", lpncode, refercode, actual_weight, actual_size, null as desc_size, st_desc");
                 Sql.AppendLine("from  wcs.vrpt_shelf_list");
                 Sql.AppendLine("order by shelf_no asc");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
 
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Vrpt_shelf_listInfo objrd = new Vrpt_shelf_listInfo
                     {
                        
                         Srm_no = rdr["srm_no"] == DBNull.Value ? null : (Int32?)rdr["srm_no"],
-                        Shelf_no = rdr["shelf_no"] == DBNull.Value ? null : (Int32?)rdr["shelf_no"],
+                        Shelf_no = rdr["shelf_no"] == DBNull.Value ? null : (Int64?)rdr["shelf_no"],
                         Shelfcode = rdr["shelfcode"].ToString(),
                         Shelfname  = rdr["shelfname"].ToString(),
-                        Shelfbank = rdr["shelfbank"] == DBNull.Value ? null : (Int16?)rdr["shelfbank"],
+                        Shelfbank = rdr["shelfbank"] == DBNull.Value ? null : (Int32?)rdr["shelfbank"],
                         Shelfbay = rdr["shelfbay"] == DBNull.Value ? null : (Int32?)rdr["shelfbay"],
-                        Shelfframe = rdr["shelfframe"] == DBNull.Value ? null : (Int16?)rdr["shelfframe"],
-                        Shelflevel = rdr["shelflevel"] == DBNull.Value ? null : (Int16?)rdr["shelflevel"],
+                        Shelfframe = rdr["shelfframe"] == DBNull.Value ? null : (Int32?)rdr["shelfframe"],
+                        Shelflevel = rdr["shelflevel"] == DBNull.Value ? null : (Int32?)rdr["shelflevel"],
                         Shelfstatus = rdr["shelfstatus"] == DBNull.Value ? null : (Int32?)rdr["shelfstatus"],
                         Lpncode= rdr["lpncode"].ToString(),
                         Refercode = rdr["refercode"].ToString(),

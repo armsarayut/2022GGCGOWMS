@@ -80,6 +80,7 @@ else
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Created)">@L["DATETIME"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Po_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Batch_Number)">BATCH</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Result_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
@@ -87,7 +88,8 @@ else
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["DATETIME"]>@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatD)</MudTd>
-            <MudTd DataLabel=@L["ORDERNO"]>@context.Po_No</MudTd>
+            <MudTd DataLabel=@L["ORDERNO"]>@context.Order_No</MudTd>
+             <MudTd DataLabel=BATCH>@context.Batch_Number</MudTd>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Result_Qty)</MudTd>

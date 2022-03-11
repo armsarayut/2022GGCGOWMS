@@ -88,71 +88,39 @@
             </div>
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="6" md="3">
+     <MudItem xs="12" sm="6">
         <MudCard Elevation="25" Style="height:350px;">
             <MudCardHeader>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.h6">@L["Lane"] 01</MudText>
+                    <MudText Typo="Typo.button">@L["Lane"] 01</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
             <MudPaper Class="d-flex py-2 px-1">
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-2" Style="@($"color:{Colors.Shades.White}; background:rgb(41, 121, 255);")"><MudText Typo="Typo.h6">@L["Use"]: @L1Use</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-3" Style="@($"color:{Colors.Shades.White}; background:rgb(83, 199, 144);")"><MudText Typo="Typo.h6">@L["Empty"]: @L1Emp</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-1 pa-2 mx-2 order-1" Style="@($"color:{Colors.Shades.White}; background:rgb(255, 64, 129);")"><MudText Typo="Typo.h6">@L["Total"]: @L1Total</MudText></MudPaper>
+                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-2" Style="@($"color:{Colors.Shades.White}; background:rgb(41, 121, 255);")"><MudText Typo="Typo.button">@L["Use"]: @L1Use</MudText></MudPaper>
+                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-3" Style="@($"color:{Colors.Shades.White}; background:rgb(83, 199, 144);")"><MudText Typo="Typo.button">@L["Empty"]: @L1Emp</MudText></MudPaper>
+                <MudPaper Class="flex-grow-1 flex-shrink-1 pa-2 mx-2 order-1" Style="@($"color:{Colors.Shades.White}; background:rgb(255, 64, 129);")"><MudText Typo="Typo.button">@L["Total"]: @L1Total</MudText></MudPaper>
             </MudPaper>
             <br />
             <MudChart ChartType="ChartType.Pie" InputData="@data1" @bind-SelectedIndex="Index1" InputLabels="@labels1" Width="150px" Height="150px" />
         </MudCard>
     </MudItem>
-    <MudItem xs="12" sm="6" md="3">
+    <MudItem xs="12" sm="6">
         <MudCard Elevation="25" Style="height:350px;">
             <MudCardHeader>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.h6">@L["Lane"] 02</MudText>
+                    <MudText Typo="Typo.button">@L["Lane"] 02</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
             <MudPaper Class="d-flex py-2 px-1">
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-2" Style="@($"color:{Colors.Shades.White}; background:rgb(41, 121, 255);")"><MudText Typo="Typo.h6">@L["Use"]: @L2Use</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-3" Style="@($"color:{Colors.Shades.White}; background:rgb(83, 199, 144);")"><MudText Typo="Typo.h6">@L["Empty"]: @L2Emp</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-1 pa-2 mx-2 order-1" Style="@($"color:{Colors.Shades.White}; background:rgb(255, 64, 129);")"><MudText Typo="Typo.h6">@L["Total"]: @L2Total</MudText></MudPaper>
+                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-2" Style="@($"color:{Colors.Shades.White}; background:rgb(41, 121, 255);")"><MudText Typo="Typo.button">@L["Use"]: @L2Use</MudText></MudPaper>
+                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-3" Style="@($"color:{Colors.Shades.White}; background:rgb(83, 199, 144);")"><MudText Typo="Typo.button">@L["Empty"]: @L2Emp</MudText></MudPaper>
+                <MudPaper Class="flex-grow-1 flex-shrink-1 pa-2 mx-2 order-1" Style="@($"color:{Colors.Shades.White}; background:rgb(255, 64, 129);")"><MudText Typo="Typo.button">@L["Total"]: @L2Total</MudText></MudPaper>
             </MudPaper>
             <br />
             <MudChart ChartType="ChartType.Pie" InputData="@data2" @bind-SelectedIndex="Index2" InputLabels="@labels2" Width="150px" Height="150px" />
         </MudCard>
     </MudItem>
-    <MudItem xs="12" sm="6" md="3">
-        <MudCard Elevation="25" Style="height:350px;">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6">@L["Lane"] 03</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudPaper Class="d-flex py-2 px-1">
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-2" Style="@($"color:{Colors.Shades.White}; background:rgb(41, 121, 255);")"><MudText Typo="Typo.h6">@L["Use"]: @L3Use</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-3" Style="@($"color:{Colors.Shades.White}; background:rgb(83, 199, 144);")"><MudText Typo="Typo.h6">@L["Empty"]: @L3Emp</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-1 pa-2 mx-2 order-1" Style="@($"color:{Colors.Shades.White}; background:rgb(255, 64, 129);")"><MudText Typo="Typo.h6">@L["Total"]: @L3Total</MudText></MudPaper>
-            </MudPaper>
-            <br />
-            <MudChart ChartType="ChartType.Pie" InputData="@data3" @bind-SelectedIndex="Index3" InputLabels="@labels3" Width="150px" Height="150px" />
-        </MudCard>
 
-    </MudItem>
-    <MudItem xs="12" sm="6" md="3">
-        <MudCard Elevation="25" Style="height:350px;">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6">@L["Lane"] 04</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudPaper Class="d-flex py-2 px-1">
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-2" Style="@($"color:{Colors.Shades.White}; background:rgb(41, 121, 255);")"><MudText Typo="Typo.h6">@L["Use"]: @L4Use</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-0 pa-2 mx-2 order-3" Style="@($"color:{Colors.Shades.White}; background:rgb(83, 199, 144);")"><MudText Typo="Typo.h6">@L["Empty"]: @L4Emp</MudText></MudPaper>
-                <MudPaper Class="flex-grow-1 flex-shrink-1 pa-2 mx-2 order-1" Style="@($"color:{Colors.Shades.White}; background:rgb(255, 64, 129);")"><MudText Typo="Typo.h6">@L["Total"]: @L4Total</MudText></MudPaper>
-            </MudPaper>
-            <br />
-            <MudChart ChartType="ChartType.Pie" InputData="@data4" @bind-SelectedIndex="Index4" InputLabels="@labels4" Width="150px" Height="150px" />
-        </MudCard>
-    </MudItem>
 
 
 </MudGrid>
@@ -277,10 +245,11 @@
     protected override async Task OnInitializedAsync()
     {
         //Ticker();
-        ///-- Get from ERP
-        palletGR = await ObjErpService.GetSumPalletAllApiNewDelivery_note();
-        orderGR = await ObjErpService.GetSumOrderAllApiNewDelivery_note();
-        //--------------------
+
+        /////-- Get from ERP
+        //palletGR = await ObjErpService.GetSumPalletAllApiNewDelivery_note();
+        //orderGR = await ObjErpService.GetSumOrderAllApiNewDelivery_note();
+        ////--------------------
 
 
         palletPut = await ObjInbService.GetSumPalletAllInbGoodreceiptGo();

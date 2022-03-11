@@ -126,6 +126,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>ITEMNAME</value>
   </data>
+  <data name="ORDERNO" xml:space="preserve">
+    <value>ORDERNO</value>
+  </data>
   <data name="pageHeader" xml:space="preserve">
     <value>Order Picking</value>
   </data>

@@ -144,4 +144,7 @@
   <data name="Stock" xml:space="preserve">
     <value>Stock</value>
   </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
 </root>

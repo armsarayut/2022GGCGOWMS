@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ namespace GoWMS.Server.Data
             string sClient = "127.0.0.1";
             bool bRet = false;
             StringBuilder sql = new StringBuilder();
-            sql.AppendLine("insert into public.rpt_audittrial(");
+            sql.AppendLine("insert into dbo.rpt_audittrial(");
             sql.AppendLine("client_id, client_ip, id_stuser, menu_name, action_desc");
             sql.AppendLine(")");
             sql.AppendLine("Values(");
@@ -81,20 +82,20 @@ namespace GoWMS.Server.Data
             sql.AppendLine(";");
 
 
-            NpgsqlCommand NpgCmd = new NpgsqlCommand(sql.ToString())
+            SqlCommand cmd = new SqlCommand(sql.ToString())
             {
                 CommandType = CommandType.Text
             };
-            NpgCmd.Parameters.AddWithValue("@client_id", NpgsqlDbType.Bigint, iClient);
-            NpgCmd.Parameters.AddWithValue("@client_ip", NpgsqlDbType.Varchar, sClient);
-            NpgCmd.Parameters.AddWithValue("@id_stuser", NpgsqlDbType.Bigint, iUser);
-            NpgCmd.Parameters.AddWithValue("@menu_name", NpgsqlDbType.Varchar, munname);
-            NpgCmd.Parameters.AddWithValue("@action_desc", NpgsqlDbType.Varchar, actdesc);
+            cmd.Parameters.AddWithValue("@client_id",  iClient);
+            cmd.Parameters.AddWithValue("@client_ip",  sClient);
+            cmd.Parameters.AddWithValue("@id_stuser",  iUser);
+            cmd.Parameters.AddWithValue("@menu_name",  munname);
+            cmd.Parameters.AddWithValue("@action_desc",  actdesc);
 
 
 
-            NpgDAL npgDAL = new NpgDAL();
-            bRet = npgDAL.SyncInsertsqlData(NpgCmd);
+            SqlDAL sqlDAL = new SqlDAL();
+            bRet = sqlDAL.SyncInsertsqlData(cmd);
 
             return bRet;
         }

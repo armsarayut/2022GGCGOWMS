@@ -85,6 +85,7 @@ namespace GoWMS.Server.DataAccess
         RetrieveSqlDataConnClose:
             return retDs;
         }
+       
         //----SyncSql
         public Boolean SyncUpdatesqlData(NpgsqlCommand cmd)
         {
@@ -194,6 +195,7 @@ namespace GoWMS.Server.DataAccess
         DeletesqlDataConnClose:
             return bRet;
         }
+        
         //-----AsyncSql
         public Boolean AsyncUpdatesqlData(NpgsqlCommand cmd)
         {

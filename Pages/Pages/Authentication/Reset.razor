@@ -20,13 +20,13 @@
 <MudTextField @bind-Value="@MUsername" T="string" Label="Username" Variant="Variant.Outlined" Class="my-4"></MudTextField>
 
 <MudTextField @bind-Value="@MPassword" Label="New Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-4" />
-
+@*
 <MudSelect Label="GROUP" HelperText="Pick the GROUP" @bind-SelectedValues="selectedItems">
     @foreach (var cmd in Elements)
     {
         <MudSelectItem Value="@cmd">@cmd.Ugdesc</MudSelectItem>
     }
-</MudSelect>
+</MudSelect>*@
 
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="/pages/authentication/login" Size="Size.Large" FullWidth="true" Class="mt-2">Edit</MudButton>
@@ -40,8 +40,8 @@
             string MUsername { get; set; }
             string MEmail { get; set; }
     */
-    private HashSet<Usergroups> selectedItems = new HashSet<Usergroups>();
-    private IEnumerable<Usergroups> Elements = new List<Usergroups>();
+    //private HashSet<Usergroups> selectedItems = new HashSet<Usergroups>();
+    //private IEnumerable<Usergroups> Elements = new List<Usergroups>();
 
     private ResultReturn resultReturn = null;
 
@@ -67,50 +67,50 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Elements = await Task.Run(() => ObjUserService.GetUsergroups());
+        //Elements = await Task.Run(() => ObjUserService.GetUsergroups());
     }
 
     private async Task RegisterUser()
     {
 
-        if (selectedItems != null)
-        {
+        //if (selectedItems != null)
+        //{
 
-            long iCmd = 0;
-            foreach (var item in selectedItems)
-            {
-                iCmd = item.Idx.Value;
-            }
+        //    long iCmd = 0;
+        //    foreach (var item in selectedItems)
+        //    {
+        //        iCmd = item.Idx.Value;
+        //    }
 
-            var key = Configuration.GetSection("Appkey")["Pass"].ToString();
-            //var encrypted = Security.EncryptString(Password, key);
-            var encrypted = EncryptProvider.DESEncrypt(MPassword, key);
-
-
-            resultReturn = await Task.Run(() => ObjUserService.UpsertRegister(iCmd, MEmail, encrypted, MUsername));
-
-            if (resultReturn.Bret == true)
-            {
-                navigationManager.NavigateTo("pages/authentication/login");
-            }
+        //    var key = Configuration.GetSection("Appkey")["Pass"].ToString();
+        //    //var encrypted = Security.EncryptString(Password, key);
+        //    var encrypted = EncryptProvider.DESEncrypt(MPassword, key);
 
 
+        //    resultReturn = await Task.Run(() => ObjUserService.UpsertRegister(iCmd, MEmail, encrypted, MUsername));
 
-            //pages / authentication / login
+        //    if (resultReturn.Bret == true)
+        //    {
+        //        navigationManager.NavigateTo("pages/authentication/login");
+        //    }
 
-            /*
-            bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
-            if (bRet)
-            {
-                Snackbar.Add("Set Command OK", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add("Set Command Failed", Severity.Error);
-            }
-            */
 
-        }
+
+        //    //pages / authentication / login
+
+        //    /*
+        //    bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
+        //    if (bRet)
+        //    {
+        //        Snackbar.Add("Set Command OK", Severity.Success);
+        //    }
+        //    else
+        //    {
+        //        Snackbar.Add("Set Command Failed", Severity.Error);
+        //    }
+        //    */
+
+        //}
 
 
 

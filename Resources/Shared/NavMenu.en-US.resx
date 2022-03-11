@@ -346,7 +346,7 @@
     <value>3.3.Queue Picking</value>
   </data>
   <data name="ReceivingOrder" xml:space="preserve">
-    <value>1.1.Receiving Order</value>
+    <value>1.1.Receiving Plan</value>
   </data>
   <data name="ReleaseStock" xml:space="preserve">
     <value>Release Stock</value>

@@ -49,6 +49,7 @@ else
         </ToolBarContent>
 
         <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_A, object>(x=>x.Batch_Number)">@L["BATCH"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_A, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_A, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_A, object>(x=>x.Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
@@ -56,6 +57,7 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_A, object>(x=>x.Shelfname)">@L["STORAGEBIN"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
+            <MudTd DataLabel=@L["BATCH"]>@context.Batch_Number</MudTd>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Qty)</MudTd>

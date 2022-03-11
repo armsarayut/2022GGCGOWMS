@@ -16,5 +16,6 @@ namespace GoWMS.Server.Models.Public
         public string Movement_Type { get; set; }
         public string Movemet_Reason { get; set; }
         public Decimal? Result_Qty { get; set; }
+        public string Batch_Number { get; set; }
     }
 }

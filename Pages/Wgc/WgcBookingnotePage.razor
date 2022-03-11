@@ -51,7 +51,7 @@ else
                       Height="@(fixed_header || fixed_footer ?"500px":"")"
                       MultiSelection=@_multiSelect
                       FixedHeader="@fixed_header"
-                      Items="@Elements"
+                      Items="@Elements.OrderBy(o => o.PALETTE_NO)"
                       GroupBy="@_groupDefinition"
                       GroupHeaderStyle="background-color:var(--mud-palette-background-white)"
                       GroupFooterClass="mb-4"
@@ -61,7 +61,7 @@ else
                       Striped="@striped"
                       Filter="new Func<BOOKING_NOTE_ITEMS,bool>(FilterFunc1)" @bind-SelectedItems="selectedItems">
                 <ToolBarContent>
-                    <MudToolBarSpacer />
+                    <MudSpacer />
                     <MudTextField @bind-Value="searchString1"
                                   Placeholder=@L["Search"]
                                   Adornment="Adornment.Start"
@@ -87,17 +87,19 @@ else
                     <col />
                     <col />
                     <col />
+                    <col />
                 </ColGroup>
                 <HeaderContent>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.SO_NO)">@L["SoNo"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PALETTE_NO)">@L["PalletNo"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.ITEM_CODE)">@L["ItemCode"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.CUSTOMER_CODE)">@L["Customer"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_SEQ)">@L["Seq"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.LOT_NO)">@L["LotNo"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.BATCH_NO)">@L["BatchNo"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PACKETING_CODE)">@L["Qty"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_QTY)">@L["Unit"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_UM)">@L["Location"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PACKETING_CODE)">@L["Packeting"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_QTY)">@L["Qty"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_UM)">@L["Unit"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PALLET_GO)">@L["PalletGo"]</MudTableSortLabel></MudTh>
 
                 </HeaderContent>
@@ -106,6 +108,7 @@ else
                 </GroupHeaderTemplate>
                 <RowTemplate>
                     <MudTd DataLabel="@L["SoNo"]">@context.SO_NO</MudTd>
+                    <MudTd DataLabel="@L["PalletNo"]">@context.PALETTE_NO</MudTd>
                     <MudTd DataLabel="@L["ItemCode"]">@context.ITEM_CODE</MudTd>
                     <MudTd DataLabel="@L["Customer"]">@context.CUSTOMER_CODE</MudTd>
                     <MudTd DataLabel="@L["Seq"]">@context.DN_SEQ</MudTd>
@@ -158,11 +161,21 @@ else
 
     private TableGroupDefinition<BOOKING_NOTE_ITEMS> _groupDefinition = new()
     {
-        GroupName = "Order",
+        GroupName = "PalletNo",
         Indentation = true,
         Expandable = true,
         IsInitiallyExpanded = false,
-        Selector = (e) => e.SO_NO
+        Selector = (e) => e.PALETTE_NO
+        /*
+         ,
+         InnerGroup = new TableGroupDefinition<BOOKING_NOTE_ITEMS>()
+         {
+             GroupName = "PalletNo",
+             Expandable = true,
+             Selector = (e) => e.PALETTE_NO
+         }
+        */
+
     };
 
     protected override async Task OnInitializedAsync()
@@ -180,7 +193,6 @@ else
 
         Elements = await Task.Run(() => objCS.GetAllApiNewBookingnoteWgc());
 
-     
     }
 
     async Task GetUserAthu()
@@ -200,21 +212,28 @@ else
         bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
     }
 
-    private bool FilterFunc1(BOOKING_NOTE_ITEMS element) => FilterFunc(element, searchString1);
+    private bool FilterFunc1(BOOKING_NOTE_ITEMS element)
+    {
+        //selectedItems.Clear();
+
+        //bool bForce;
+
+        //bForce= FilterFunc(element, searchString1 + " ");
+
+        return FilterFunc(element, searchString1);
+
+    }
 
     private bool FilterFunc(BOOKING_NOTE_ITEMS element, string searchString)
     {
-
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
         if (element.SO_NO.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        else if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        else if ($"{element.ITEM_NAME} {element.LOT_NO} {element.BATCH_NO}".Contains(searchString))
+        if ($"{element.PALLET_GO} {element.ITEM_CODE} {element.PALETTE_NO}".Contains(searchString))
             return true;
         return false;
     }
-
-
 
     private async void SelectOrder()
     {
@@ -272,6 +291,12 @@ else
             {
                 Snackbar.Add("Please select order picking", Severity.Warning);
             }
+            selectedItems.Clear();
+
+            searchString1 = null;
+            searchString = null;
+
+            this.StateHasChanged();
         }
 
     }

@@ -5,6 +5,8 @@
 @using GoWMS.Server.Models
 @using GoWMS.Server.Models.Mas
 @using Microsoft.Extensions.Configuration
+@using System.Collections.Generic;
+@using Microsoft.AspNetCore.Components;
 
 @inject IConfiguration Configuration
 @inject UserServices ObjUserService
@@ -19,12 +21,12 @@
 
         <MudTextField @bind-Value="@MPassword" Label="New Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-4" />
 
-        <MudSelect Label="GROUP" HelperText="Pick the GROUP" @bind-SelectedValues="selectedItems">
+      @*  <MudSelect Label="GROUP" HelperText="Pick the GROUP" @bind-SelectedValues="selectedItems">
             @foreach (var cmd in Elements)
             {
                 <MudSelectItem Value="@cmd">@cmd.Ugdesc</MudSelectItem>
             }
-        </MudSelect>
+        </MudSelect>*@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -37,17 +39,14 @@
 <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="/pages/authentication/login" Size="Size.Large" FullWidth="true" Class="mt-2">Edit</MudButton>
 
 @code {
+
             [CascadingParameter] MudDialogInstance MudDialog { get; set; }
             [Parameter] public string MPassword { get; set; }
             [Parameter] public string MUsername { get; set; }
             [Parameter] public string MEmail { get; set; }
-            /*
-                    string MPassword { get; set; }
-                    string MUsername { get; set; }
-                    string MEmail { get; set; }
-            */
-            private HashSet<Usergroups> selectedItems = new HashSet<Usergroups>();
-            private IEnumerable<Usergroups> Elements = new List<Usergroups>();
+
+            //private HashSet<Usergroups> selectedItems = new HashSet<Usergroups>();
+            //private IEnumerable<Usergroups> Elements = new List<Usergroups>();
 
             private ResultReturn resultReturn = null;
 
@@ -73,50 +72,50 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Elements = await Task.Run(() => ObjUserService.GetUsergroups());
+        //Elements = await Task.Run(() => ObjUserService.GetUsergroups());
     }
 
     private async Task Submit()
     {
 
-        if (selectedItems != null)
-        {
+        //if (selectedItems != null)
+        //{
 
-            long iCmd = 0;
-            foreach (var item in selectedItems)
-            {
-                iCmd = item.Idx.Value;
-            }
+        //    long iCmd = 0;
+        //    foreach (var item in selectedItems)
+        //    {
+        //        iCmd = item.Idx.Value;
+        //    }
 
-            var key = Configuration.GetSection("Appkey")["Pass"].ToString();
-            //var encrypted = Security.EncryptString(Password, key);
-            var encrypted = EncryptProvider.DESEncrypt(MPassword, key);
-
-
-            resultReturn = await Task.Run(() => ObjUserService.UpsertRegister(iCmd, MEmail, encrypted, MUsername));
-
-            if (resultReturn.Bret == true)
-            {
-                MudDialog.Close(DialogResult.Ok(true));
-            }
+        //    var key = Configuration.GetSection("Appkey")["Pass"].ToString();
+        //    //var encrypted = Security.EncryptString(Password, key);
+        //    var encrypted = EncryptProvider.DESEncrypt(MPassword, key);
 
 
+        //    resultReturn = await Task.Run(() => ObjUserService.UpsertRegister(iCmd, MEmail, encrypted, MUsername));
 
-            //pages / authentication / login
+        //    if (resultReturn.Bret == true)
+        //    {
+        //        MudDialog.Close(DialogResult.Ok(true));
+        //    }
 
-            /*
-            bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
-            if (bRet)
-            {
-                Snackbar.Add("Set Command OK", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add("Set Command Failed", Severity.Error);
-            }
-            */
 
-        }
+
+        //    //pages / authentication / login
+
+        //    /*
+        //    bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
+        //    if (bRet)
+        //    {
+        //        Snackbar.Add("Set Command OK", Severity.Success);
+        //    }
+        //    else
+        //    {
+        //        Snackbar.Add("Set Command Failed", Severity.Error);
+        //    }
+        //    */
+
+        //}
 
 
 

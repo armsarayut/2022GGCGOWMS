@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using GoWMS.Server.Models.Wcs;
 using Npgsql;
 using NpgsqlTypes;
 using System.Text;
-using System.Data;
 using Serilog;
 
 
@@ -15,25 +16,26 @@ namespace GoWMS.Server.Data
     public class WcsDAL
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
 
         public IEnumerable<Vmachine> GetAllMachine()
         {
             List<Vmachine> lstobj = new List<Vmachine>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("select mccode, information, st_no, desc_th, is_alert, backcolor, focecolor, is_cmd");
-                    sql.AppendLine("from wcs.vmachine_status");
+                    sql.AppendLine("select mccode, information, st_no, desc_th, CAST(IIF(is_alert = 1, 1, 0) AS Bit)  as is_alert , backcolor, focecolor, CAST(IIF(is_cmd = 1, 1, 0) AS Bit) as is_cmd");
+                    sql.AppendLine("from wcs.view_machine_status");
                     //sql.AppendLine("order by mccode");
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -43,15 +45,18 @@ namespace GoWMS.Server.Data
                             Information = rdr["information"].ToString(),
                             St_no = rdr["st_no"] == DBNull.Value ? null : (Int32?)rdr["st_no"],
                             Desc_th = rdr["desc_th"].ToString(),
-                            Is_alert = rdr["is_alert"] == DBNull.Value ? true : (bool?)rdr["is_alert"],
+                            //Is_alert = rdr["is_alert"] == DBNull.Value ? true : (bool?)rdr["is_alert"],
+                            Is_alert = !Convert.IsDBNull(rdr["is_alert"]) ? (bool?)rdr["is_alert"] : null,
                             Backcolor = rdr["backcolor"].ToString(),
                             Focecolor = rdr["focecolor"].ToString(),
-                            Is_cmd = rdr["is_cmd"] == DBNull.Value ? false : (bool?)rdr["is_cmd"]
+                            //Is_cmd = rdr["is_cmd"] == DBNull.Value ? false : (bool?)rdr["is_cmd"]
+                            Is_cmd =  !Convert.IsDBNull(rdr["is_cmd"]) ? (bool?)rdr["is_cmd"] : null
+
                         };
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -66,7 +71,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Vmachine_command> GetCommandMachine(string mccode)
         {
             List<Vmachine_command> lstobj = new List<Vmachine_command>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -75,7 +80,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("from wcs.vmachine_command");
                     sql.AppendLine("where  mccode=@mccode");
                     sql.AppendLine("order by st_no");
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
@@ -83,14 +88,14 @@ namespace GoWMS.Server.Data
 
                     cmd.Parameters.AddWithValue("@mccode", mccode);
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
                         Vmachine_command objrd = new Vmachine_command
                         {
                             Mccode = rdr["mccode"].ToString(),
-                            St_no = rdr["st_no"] == DBNull.Value ? null : (Int32?)rdr["st_no"],
+                            St_no = (int)rdr["st_no"] ,
                             St_desc_th = rdr["st_desc_th"].ToString(),
                             Sg_no = rdr["sg_no"].ToString(),
                             Sg_desc_th = rdr["sg_desc_th"].ToString()
@@ -98,7 +103,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -116,27 +121,36 @@ namespace GoWMS.Server.Data
             string sRet = "";
             Int32? iRet = 0;
             string cmdcode = "CMD08";
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sqlQurey = new StringBuilder();
-                    sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
-                    NpgsqlCommand cmd = new NpgsqlCommand(sqlQurey.ToString(), con)
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("wcs.ssp_create_mccommand");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
-                        CommandType = CommandType.Text
+                        CommandType = CommandType.StoredProcedure
                     };
-                    cmd.Parameters.AddWithValue(":mccode", NpgsqlDbType.Varchar, mccode);
-                    cmd.Parameters.AddWithValue(":cmdcode", NpgsqlDbType.Varchar, cmdcode);
-                    cmd.Parameters.AddWithValue(":command", NpgsqlDbType.Integer, command);
 
                     con.Open();
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
-                    {
-                        iRet = rdr["_retchk"] == DBNull.Value ? null : (Int32?)rdr["_retchk"];
-                        sRet = rdr["_retmsg"].ToString();
-                    }
+
+                    cmd.Parameters.AddWithValue("@_mccode", mccode);
+                    cmd.Parameters.AddWithValue("@_cmdcode", cmdcode) ;
+                    cmd.Parameters.AddWithValue("@_command", command);
+  
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar,255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
                 }
                 catch (NpgsqlException ex)
                 {
@@ -161,35 +175,62 @@ namespace GoWMS.Server.Data
             Boolean bRet = false;
             string sRet = "";
             Int32? iRet = 0;
-            string cmdcode = "CMD08";
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sqlQurey = new StringBuilder();
-                    sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mcprotocol(:mccode , :startpos, :stoppos, :unittype, :palletid , :weight, :command);");
-                    NpgsqlCommand cmd = new NpgsqlCommand(sqlQurey.ToString(), con)
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mcprotocol(:mccode , :startpos, :stoppos, :unittype, :palletid , :weight, :command);");
+                    sqlQurey.Append("wcs.ssp_create_mcprotocol");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
-                        CommandType = CommandType.Text
+                        CommandType = CommandType.StoredProcedure
                     };
-                    cmd.Parameters.AddWithValue(":mccode", NpgsqlDbType.Varchar, mccode);
-                    cmd.Parameters.AddWithValue(":startpos", NpgsqlDbType.Integer, startpos);
-                    cmd.Parameters.AddWithValue(":stoppos", NpgsqlDbType.Integer, stoppos);
-                    cmd.Parameters.AddWithValue(":unittype", NpgsqlDbType.Integer, unittyp);
-                    cmd.Parameters.AddWithValue(":palletid", NpgsqlDbType.Varchar, palletid);
-                    cmd.Parameters.AddWithValue(":weight", NpgsqlDbType.Integer, weight);
-                    cmd.Parameters.AddWithValue(":command", NpgsqlDbType.Integer, command);
-
 
                     con.Open();
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
-                    {
-                        iRet = rdr["_retchk"] == DBNull.Value ? null : (Int32?)rdr["_retchk"];
-                        sRet = rdr["_retmsg"].ToString();
-                    }
+
+                    cmd.Parameters.AddWithValue("@_mccode", mccode);
+                    cmd.Parameters.AddWithValue("@_startpos", startpos);
+                    cmd.Parameters.AddWithValue("@_stoppos", stoppos);
+                    cmd.Parameters.AddWithValue("@_unittype", unittyp);
+                    cmd.Parameters.AddWithValue("@_entry", startpos);
+                    cmd.Parameters.AddWithValue("@_exit", stoppos);
+                    cmd.Parameters.AddWithValue("@_palletid", palletid);
+                    cmd.Parameters.AddWithValue("@_weight", weight);
+                    cmd.Parameters.AddWithValue("@_command", command);
+
+                    //cmd.Parameters.AddWithValue(":mccode", NpgsqlDbType.Varchar, mccode);
+                    //cmd.Parameters.AddWithValue(":startpos", NpgsqlDbType.Integer, startpos);
+                    //cmd.Parameters.AddWithValue(":stoppos", NpgsqlDbType.Integer, stoppos);
+                    //cmd.Parameters.AddWithValue(":unittype", NpgsqlDbType.Integer, unittyp);
+                    //cmd.Parameters.AddWithValue(":palletid", NpgsqlDbType.Varchar, palletid);
+                    //cmd.Parameters.AddWithValue(":weight", NpgsqlDbType.Integer, weight);
+                    //cmd.Parameters.AddWithValue(":command", NpgsqlDbType.Integer, command);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+
+
+                    //con.Open();
+                    //NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    //while (rdr.Read())
+                    //{
+                    //    iRet = rdr["_retchk"] == DBNull.Value ? null : (Int32?)rdr["_retchk"];
+                    //    sRet = rdr["_retmsg"].ToString();
+                    //}
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -210,36 +251,36 @@ namespace GoWMS.Server.Data
         public IEnumerable<Vset_gate_rgv> GetGateRgv()
         {
             List<Vset_gate_rgv> lstobj = new List<Vset_gate_rgv>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("select mccode, st_no, type");
-                    sql.AppendLine("from wcs.vset_gate_rgv");
+                    sql.AppendLine("select st_code, st_no, st_type");
+                    sql.AppendLine("from wcs.vset_station_rgv");
                     sql.AppendLine("order by st_no");
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
                         Vset_gate_rgv objrd = new Vset_gate_rgv
                         {
-                            Mccode = rdr["mccode"].ToString(),
+                            Mccode = rdr["st_code"].ToString(),
                             St_no = rdr["st_no"] == DBNull.Value ? null : (Int32?)rdr["st_no"],
-                            Type = rdr["type"].ToString()
+                            Type = rdr["st_type"].ToString()
 
                         };
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -255,7 +296,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Tas_WorksInfo> GetASRSWork()
         {
             List<Tas_WorksInfo> lstobj = new List<Tas_WorksInfo>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -267,14 +308,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("from wcs.tas_works");
                     sql.AppendLine("order by created");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -310,7 +351,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -325,7 +366,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Tas_Mcworks> GetASRSWorks()
         {
             List<Tas_Mcworks> lstobj = new List<Tas_Mcworks>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -340,14 +381,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("FROM wcs.tas_mcworks");
                     sql.AppendLine("order by ctime");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -395,7 +436,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -410,7 +451,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Tas_Rgvworks> GetRGVWorks()
         {
             List<Tas_Rgvworks> lstobj = new List<Tas_Rgvworks>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -424,14 +465,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("FROM wcs.tas_rgvworks");
                     sql.AppendLine("order by ctime");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -473,7 +514,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -489,42 +530,42 @@ namespace GoWMS.Server.Data
         public IEnumerable<AsrsPerformance> GetAsrsPerformance(DateTime Fmtime, DateTime Totime)
         {
             List<AsrsPerformance> lstobj = new List<AsrsPerformance>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT * ");
-                    sql.AppendLine("FROM wcs.fuc_view_rptperformanceTime(@p_stime, @p_etime)");
+                    sql.AppendLine("FROM wcs.pfs_view_rptperformancetime(@p_stime, @p_etime)");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
 
-                    cmd.Parameters.AddWithValue("@p_stime", NpgsqlDbType.Timestamp, Fmtime);
-                    cmd.Parameters.AddWithValue("@p_etime", NpgsqlDbType.Timestamp, Totime);
+                    cmd.Parameters.AddWithValue("@p_stime", Fmtime);
+                    cmd.Parameters.AddWithValue("@p_etime", Totime);
 
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
                         AsrsPerformance objrd = new AsrsPerformance
                         {
-                            Mccode = rdr["_mccode"].ToString(),
-                            Inbound = rdr["_inbound"] == DBNull.Value ? null : (Int32?)rdr["_inbound"],
-                            Outbound = rdr["_outbound"] == DBNull.Value ? null : (Int32?)rdr["_outbound"],
-                            Total = rdr["_total"] == DBNull.Value ? null : (Int32?)rdr["_total"]
+                            Mccode = rdr["r_mccode"].ToString(),
+                            Inbound = rdr["r_inbound"] == DBNull.Value ? null : (Int32?)rdr["r_inbound"],
+                            Outbound = rdr["r_outbound"] == DBNull.Value ? null : (Int32?)rdr["r_outbound"],
+                            Total = rdr["r_total"] == DBNull.Value ? null : (Int32?)rdr["r_total"]
 
                         };
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -540,7 +581,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<SetConstance> GetConstance()
         {
             List<SetConstance> lstobj = new List<SetConstance>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -549,14 +590,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("FROM wcs.set_constant");
                     sql.AppendLine("order by set_code");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -573,7 +614,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -589,13 +630,13 @@ namespace GoWMS.Server.Data
         {
             bool bRet = false;
 
-            using NpgsqlConnection con = new NpgsqlConnection(connectionString);
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
             try
             {
 
                 StringBuilder sql = new StringBuilder();
 
-                using var cmd = new NpgsqlCommand(connection: con, cmdText: null);
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
                 sql.AppendLine("UPDATE wcs.set_constant");
                 sql.AppendLine("SET val_int = @val_int");
                 sql.AppendLine("WHERE set_code = @set_code");
@@ -612,7 +653,7 @@ namespace GoWMS.Server.Data
                 bRet = true;
 
             }
-            catch (NpgsqlException ex)
+            catch (SqlException ex)
             {
                 Log.Error(ex.ToString());
                 bRet = false;
@@ -629,7 +670,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Set_Operate> GetOperate()
         {
             List<Set_Operate> lstobj = new List<Set_Operate>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -638,14 +679,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("FROM wcs.set_operate");
                     sql.AppendLine("order by mc_no");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -665,7 +706,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -682,7 +723,7 @@ namespace GoWMS.Server.Data
             bool bRet = false;
             Int32 setvalue = 1;
 
-            using NpgsqlConnection con = new NpgsqlConnection(connectionString);
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
             try
             {
                 if (setval)
@@ -693,7 +734,7 @@ namespace GoWMS.Server.Data
 
                 StringBuilder sql = new StringBuilder();
 
-                using var cmd = new NpgsqlCommand(connection: con, cmdText: null);
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
                 sql.AppendLine("UPDATE wcs.set_operate");
                 sql.AppendLine("SET entity_lock = @entity_lock");
                 sql.AppendLine("WHERE idx = @idx");
@@ -711,7 +752,7 @@ namespace GoWMS.Server.Data
                 bRet = true;
 
             }
-            catch (NpgsqlException ex)
+            catch (SqlException ex)
             {
                 Log.Error(ex.ToString());
                 bRet = false;
@@ -729,7 +770,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Set_Srm_Operate> GetSRMOperate()
         {
             List<Set_Srm_Operate> lstobj = new List<Set_Srm_Operate>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -738,14 +779,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("FROM wcs.set_srm_operate");
                     sql.AppendLine("order by mc_no");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -765,7 +806,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -782,7 +823,7 @@ namespace GoWMS.Server.Data
             bool bRet = false;
 
 
-            using NpgsqlConnection con = new NpgsqlConnection(connectionString);
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
             try
             {
 
@@ -790,7 +831,7 @@ namespace GoWMS.Server.Data
 
                 StringBuilder sql = new StringBuilder();
 
-                using var cmd = new NpgsqlCommand(connection: con, cmdText: null);
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
                 sql.AppendLine("UPDATE wcs.set_srm_operate");
                 sql.AppendLine("SET inbound = @inbound");
                 sql.AppendLine(", outbound = @outbound");
@@ -811,7 +852,7 @@ namespace GoWMS.Server.Data
                 bRet = true;
 
             }
-            catch (NpgsqlException ex)
+            catch (SqlException ex)
             {
                 Log.Error(ex.ToString());
                 bRet = false;
@@ -829,7 +870,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<AsrsLoadtime> GetAsrsloadtime(DateTime stime, DateTime etime)
         {
             List<AsrsLoadtime> lstobj = new List<AsrsLoadtime>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -845,7 +886,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("ORDER BY a.stime");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
@@ -856,7 +897,7 @@ namespace GoWMS.Server.Data
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -875,7 +916,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -891,20 +932,20 @@ namespace GoWMS.Server.Data
         public IEnumerable<Rpt_Ejectgate> GetReportEject(DateTime stime, DateTime etime)
         {
             List<Rpt_Ejectgate> lstobj = new List<Rpt_Ejectgate>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT idx, created, entity_lock, modified, client_id, client_ip");
                     sql.AppendLine(", su_no, lpncode, work_code, work_gate, actual_weight, actual_size, msg");
-                    sql.AppendLine("FROM wcs.rpt_ejectgate");
+                    sql.AppendLine("FROM wcs.vrpt_eject");
                     sql.AppendLine("WHERE created >= @stimefm");
                     sql.AppendLine("AND created <= @stimeto");
                     sql.AppendLine("ORDER BY created");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
@@ -915,7 +956,7 @@ namespace GoWMS.Server.Data
                     con.Open();
 
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
 
@@ -938,7 +979,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -953,7 +994,7 @@ namespace GoWMS.Server.Data
         public bool SetUrgentAsrsQueueByPallet(string spallet)
         {
             bool bret = false;
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -962,7 +1003,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("Set work_priority = (SELECT max(work_priority) + 1 FROM wcs.tas_mcworks WHERE work_code = @work_code)");
                     sql.AppendLine("where lpncode = @Pallet");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
@@ -975,7 +1016,7 @@ namespace GoWMS.Server.Data
 
                     bret = true;
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     bret = false;
                     Log.Error(ex.ToString());

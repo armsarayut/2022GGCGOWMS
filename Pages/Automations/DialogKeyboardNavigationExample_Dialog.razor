@@ -7,16 +7,28 @@
 @inject WcsService ObjWcsService;
 @inject ISnackbar Snackbar
 
-<MudDialog>
+
+    <MudDialog>
     <DialogContent>
 
 
-        <MudSelect Label="Command " HelperText="Pick the Command" @bind-SelectedValues="selectedItems">
+      <MudSelect Label="Command " HelperText="Pick the Command" @bind-SelectedValues="selectedItems">
             @foreach (var cmd in Elements)
             {
                 <MudSelectItem Value="@cmd">@cmd.St_no - @cmd.St_desc_th</MudSelectItem>
             }
         </MudSelect>
+
+        @*<MudSelect T="int" Label="Command " HelperText="Pick the Command" @bind-Value="selectedvalue" >
+
+                        @foreach (var cmd in Elements)
+                        {
+                            <MudSelectItem T="int" Value=@cmd.St_no>@cmd.St_no - @cmd.St_desc_th</MudSelectItem>
+    }
+                    </MudSelect>*@
+
+
+
 
         <MudTextField T="string" Label="Reason"></MudTextField>
     </DialogContent>
@@ -27,13 +39,19 @@
 </MudDialog>
 
 
+
+
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     [Parameter] public string Mccode { get; set; }
 
-    private HashSet<Vmachine_command> selectedItems = new HashSet<Vmachine_command>();
+
+    private IEnumerable<Vmachine_command> selectedItems = new HashSet<Vmachine_command>();
     private IEnumerable<Vmachine_command> Elements = new List<Vmachine_command>();
+
+    private int selectedvalue { get; set; } = 0;
+
     private string pageheader = "4.1.ASRS-Status";
 
     string sUsername { get; set; } = "";
@@ -49,14 +67,24 @@
 
     void Submit()
     {
+
+
         if (selectedItems != null)
         {
-            bool bRet;
-            Int32 iCmd = 0;
+            bool bRet = false;
+            int iCmd = 0;
+
+            //foreach (int item in selectedItems.Select(x => x.St_no))
+            //{
+            //    iCmd = item;
+            //}
+
             foreach (var item in selectedItems)
             {
-                iCmd = item.St_no.Value;
+                iCmd = item.St_no;
+
             }
+
             bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
             if (bRet)
             {
@@ -71,7 +99,6 @@
             }
             MudDialog.Close(DialogResult.Ok(true));
         }
-
     }
 
     void Cancel() => MudDialog.Cancel();
@@ -79,17 +106,17 @@
 
     void SetCommand()
     {
-        if (selectedItems != null)
-        {
-            bool bRet;
-            Int32 iCmd = 0;
-            foreach (var item in selectedItems)
-            {
-                iCmd = item.St_no.Value;
+        //if (selectedItems != null)
+        //{
+        //    bool bRet;
+        //    Int32 iCmd = 0;
+        //    foreach (var item in selectedItems)
+        //    {
+        //        iCmd = item.St_no.Value;
 
-            }
-            bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
-        }
+        //    }
+        //    bRet = ObjWcsService.CreateCommandMC(Mccode, iCmd);
+        //}
     }
 
     async Task GetUserAthu()

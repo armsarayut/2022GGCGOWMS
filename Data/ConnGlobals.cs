@@ -12,19 +12,39 @@ namespace GoWMS.Server.Data
             return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQL;Trusted_Connection=True;";
         }
 
-        #region Local Database
-        //private static readonly string NpgServer = "localhost"; // Develop
-        private static readonly string NpgServer = "192.168.1.14"; // Production
+        #region SQL Database
+        private static readonly string SqlServer = "203.159.93.86"; // Develop
+         private static readonly string SqlDB = "GOSQL"; // Develop
+        private static readonly string SqlPort = "1433";
+        private static readonly string SqlUser = "sa";
+        private static readonly string SqlPass = "@ei0u2020";
+        //private static readonly string NpgPass = "@ei0u";
+        private static readonly string SqlContime = "120";
 
-        //private static readonly string NpgDB = "GowesQA"; // Develop
-        private static readonly string NpgDB = "Gowes"; // Production
+        /// <summary>
+        /// GetConnLocalDBSQL
+        /// </summary>
+        /// <remarks>Get Database Connection string for GoWMS</remarks>
+        /// <returns></returns>
+        public static string GetConnDBSQL()
+        {
+            return "Server=" + SqlServer + " ," + SqlPort + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
+        }
+        #endregion
+
+        #region Local Database
+        private static readonly string NpgServer = "localhost"; // Develop
+        //private static readonly string NpgServer = "192.168.1.14"; // Production
+
+        private static readonly string NpgDB = "WGCQAS"; // Develop
+        //private static readonly string NpgDB = "Gowes"; // Production
 
         private static readonly string NpgPort = "5432";
         
         private static readonly string NpgUser = "postgres";
         private static readonly string NpgPass = "@ei0u2020";
         //private static readonly string NpgPass = "@ei0u";
-        private static readonly string NpgContime = "60";
+        private static readonly string NpgContime = "120";
 
         /// <summary>
         /// GetConnLocalDBPG

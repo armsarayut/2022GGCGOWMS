@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,34 +19,36 @@ namespace GoWMS.Server.Data
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
 
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
+
         public IEnumerable<Mas_Pallet_Go> GetAllMasterpalletGo()
         {
             List<Mas_Pallet_Go> lstobj = new List<Mas_Pallet_Go>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("select *");
-                Sql.AppendLine("from wms.mas_pallet_go");
-                Sql.AppendLine("order by efidx");
-                
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                Sql.AppendLine("from wcs.tas_pallet");
+                Sql.AppendLine("order by idx");
+
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Mas_Pallet_Go objrd = new Mas_Pallet_Go
                     {
-                        Efidx = rdr["efidx"] == DBNull.Value ? null : (Int64?)rdr["efidx"],
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
+                        Efidx = rdr["idx"] == DBNull.Value ? null : (Int64?)rdr["idx"],
+                        Efstatus = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
                         Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
                         Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Innovator = rdr["innovator"] == DBNull.Value ? null : (Int64?)rdr["innovator"],
-                        Device = rdr["device"].ToString(),
-                        Palletno = rdr["palletno"].ToString(),
-                        Pallettype = rdr["pallettype"] == DBNull.Value ? null : (Int32?)rdr["pallettype"]  
+                        Innovator = rdr["client_id"] == DBNull.Value ? null : (Int64?)rdr["client_id"],
+                        Device = rdr["client_ip"].ToString(),
+                        Palletno = rdr["lpncode_no"].ToString(),
+                        Pallettype = 1
                     };
                     lstobj.Add(objrd);
                 }
@@ -95,36 +98,39 @@ namespace GoWMS.Server.Data
         public IEnumerable<Mas_Item_Go> GetAllMasteritemGo()
         {
             List<Mas_Item_Go> lstobj = new List<Mas_Item_Go>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("select *");
-                Sql.AppendLine("from wms.mas_item_go");
-                Sql.AppendLine("order by efidx");
+                Sql.AppendLine("from dbo.set_itemmaster");
+                Sql.AppendLine("order by idx");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Mas_Item_Go objrd = new Mas_Item_Go
                     {
-                        Efidx = rdr["efidx"] == DBNull.Value ? null : (Int64?)rdr["efidx"],
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
+                        Efidx = rdr["idx"] == DBNull.Value ? null : (Int64?)rdr["idx"],
+                        Efstatus = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
                         Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
                         Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Innovator = rdr["innovator"] == DBNull.Value ? null : (Int64?)rdr["innovator"],
-                        Device = rdr["device"].ToString(),
-                        Itemcode = rdr["itemcode"].ToString(),
-                        Itemname = rdr["itemname"].ToString(),
-                        Itembrand = rdr["itembrand"].ToString(),
-                        Weightnet = rdr["weightnet"] == DBNull.Value ? null : (decimal?)rdr["weightnet"],
-                        Weightgross = rdr["weightgross"] == DBNull.Value ? null : (decimal?)rdr["weightgross"],
-                        Weightuint = rdr["weightuint"].ToString(),
-                        Vendor = rdr["vendor"].ToString()
+                        Innovator = rdr["client_id"] == DBNull.Value ? null : (Int64?)rdr["client_id"],
+                        Device = rdr["client_ip"].ToString(),
+                        Itemcode = rdr["item_code"].ToString(),
+                        Itemname = rdr["item_name"].ToString(),
+                        Itembrand = rdr["brand"].ToString(),
+                        Itemunit = rdr["uom"].ToString(),
+                        Weightnet = rdr["net_weight"] == DBNull.Value ? null : (decimal?)rdr["net_weight"],
+                        Weightgross = rdr["gross_weight"] == DBNull.Value ? null : (decimal?)rdr["gross_weight"],
+                        Weightuint = rdr["weight_unit"].ToString(),
+                        Vendor = rdr["vendor"].ToString(),
+                        IsBatchMgn = rdr["batch_management"] == DBNull.Value ? null : (bool?)rdr["batch_management"]
+
                     };
                     lstobj.Add(objrd);
                 }
@@ -136,32 +142,32 @@ namespace GoWMS.Server.Data
         public IEnumerable<Mas_Storage_Go> GetAllMasterstorageGo()
         {
             List<Mas_Storage_Go> lstobj = new List<Mas_Storage_Go>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("select *");
-                Sql.AppendLine("from wms.mas_storage_go");
-                Sql.AppendLine("order by efidx");
+                Sql.AppendLine("from dbo.tspk_store");
+                Sql.AppendLine("order by store_code");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Mas_Storage_Go objrd = new Mas_Storage_Go
                     {
-                        Efidx = rdr["efidx"] == DBNull.Value ? null : (Int64?)rdr["efidx"],
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
-                        Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Innovator = rdr["innovator"] == DBNull.Value ? null : (Int64?)rdr["innovator"],
-                        Device = rdr["device"].ToString(),
-                        Stocode = rdr["stocode"].ToString(),
-                        Stoname = rdr["stoname"].ToString(),
-                        Stoaddress = rdr["stoaddress"].ToString()
+                        Efidx = null,
+                        Efstatus =null,
+                        Created = null,
+                        Modified = null,
+                        Innovator = 0,
+                        Device = "127.0.0.1",
+                        Stocode = rdr["store_code"].ToString(),
+                        Stoname = rdr["description"].ToString(),
+                        Stoaddress = "GGC"
                     };
                     lstobj.Add(objrd);
                 }
@@ -177,8 +183,8 @@ namespace GoWMS.Server.Data
             {
                 StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("select *");
-                Sql.AppendLine("from wms.mas_worktype_go");
-                Sql.AppendLine("order by efidx");
+                Sql.AppendLine("from wcs.set_worktype");
+                Sql.AppendLine("order by work_code");
 
                 NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
                 {
@@ -190,14 +196,14 @@ namespace GoWMS.Server.Data
                 {
                     Mas_Worktype_Go objrd = new Mas_Worktype_Go
                     {
-                        Efidx = rdr["efidx"] == DBNull.Value ? null : (Int64?)rdr["efidx"],
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
+                        Efidx = rdr["idx"] == DBNull.Value ? null : (Int64?)rdr["idx"],
+                        Efstatus = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
                         Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
                         Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Innovator = rdr["innovator"] == DBNull.Value ? null : (Int64?)rdr["innovator"],
-                        Device = rdr["device"].ToString(),
-                        Workcode = rdr["workcode"].ToString(),
-                        Description = rdr["description"].ToString()
+                        Innovator = rdr["client_id"] == DBNull.Value ? null : (Int64?)rdr["client_id"],
+                        Device = rdr["client_ip"].ToString(),
+                        Workcode = rdr["work_code"].ToString(),
+                        Description = rdr["work_text_en"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -209,31 +215,31 @@ namespace GoWMS.Server.Data
         public IEnumerable<Mas_Status_Go> GetAllMasterstatusGo()
         {
             List<Mas_Status_Go> lstobj = new List<Mas_Status_Go>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("select *");
-                Sql.AppendLine("from wms.mas_status_go");
-                Sql.AppendLine("order by efidx");
+                Sql.AppendLine("from dbo.set_status");
+                Sql.AppendLine("order by idx");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Mas_Status_Go objrd = new Mas_Status_Go
                     {
-                        Efidx = rdr["efidx"] == DBNull.Value ? null : (Int64?)rdr["efidx"],
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
+                        Efidx = rdr["idx"] == DBNull.Value ? null : (Int64?)rdr["idx"],
+                        Efstatus = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
                         Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
                         Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Innovator = rdr["innovator"] == DBNull.Value ? null : (Int64?)rdr["innovator"],
-                        Device = rdr["device"].ToString(),
-                        Statcode = rdr["statcode"] == DBNull.Value ? null : (Int32?)rdr["statcode"],
-                        Description = rdr["description"].ToString()
+                        Innovator = rdr["client_id"] == DBNull.Value ? null : (Int64?)rdr["client_id"],
+                        Device = rdr["client_ip"].ToString(),
+                        Statcode = rdr["st_no"] == DBNull.Value ? null : (Int32?)rdr["st_no"],
+                        Description = rdr["st_desc"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

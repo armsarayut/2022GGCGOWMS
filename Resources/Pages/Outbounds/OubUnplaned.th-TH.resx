@@ -144,4 +144,7 @@
   <data name="Stock" xml:space="preserve">
     <value>คงคลัง</value>
   </data>
+  <data name="Total" xml:space="preserve">
+    <value>รวม</value>
+  </data>
 </root>

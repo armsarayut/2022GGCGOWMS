@@ -19,6 +19,17 @@
 @inject IStringLocalizer<OubUnplaned> L
 @attribute [Authorize]
 
+    <style>
+        .mud-table-cell-custom-group {
+            font-weight: 500;
+        }
+
+        .mud-table-cell-custom-group-footer {
+            padding-bottom: 50px;
+            text-align: right;
+        }
+    </style>
+
 
 @if (Elements == null)
 {
@@ -39,483 +50,531 @@ else
                     <MudSpacer />
                 </MudAppBar>
 
-                <MudTable Items="@Elements"
-                          FixedHeader="@fixed_header"
-                          FixedFooter="@fixed_footer"
-                          Height="@(fixed_header || fixed_footer ?"500px":"")"
-                          MultiSelection="true"
-                          Dense="@dense"
-                          Hover="@hover"
-                          Bordered="@bordered"
-                          Striped="@striped"
-                          Filter="new Func<Inv_Stock_GoInfo,bool>(FilterFunc)"
-                          @bind-SelectedItems="selectedItems">
-                    <ToolBarContent>
-                        <MudToolBarSpacer />
-                        <MudTextField @bind-Value="searchString"
-                                      Placeholder=@L["Search"]
-                                      Adornment="Adornment.Start"
-                                      AdornmentIcon="@Icons.Material.Filled.Search"
-                                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </ToolBarContent>
+ 
+            <MudTable Hover="@hover"
+                      Breakpoint="Breakpoint.Sm"
+                      Height="@(fixed_header || fixed_footer ?"500px":"")"
+                      MultiSelection=@_multiSelect
+                      FixedHeader="@fixed_header"
+                      Items="@Elements.OrderBy(o => o.Itembar)"
+                      GroupBy="@_groupDefinition"
+                      GroupHeaderStyle="background-color:var(--mud-palette-background-white)"
+                      GroupFooterClass="mb-4"
+                      Dense="@dense"
+                      FixedFooter="@fixed_footer"
+                      Bordered="@bordered"
+                      Striped="@striped"
+                      Filter="new Func<Inv_Stock_GoInfo,bool>(FilterFunc)" @bind-SelectedItems="selectedItems">
 
-                    <HeaderContent>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"]</MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"]</MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PALLET"]</MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PALLETERP"]</MudTableSortLabel></MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
-                        <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
-                        <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN0, context.Quantity)</MudTd>
-                        <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
-                        <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
-                        <MudTd DataLabel=@L["PALLETERP"]>@context.Itembar</MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
-                    </PagerContent>
-                </MudTable>
+                <ToolBarContent>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString"
+                                  Placeholder=@L["Search"]
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <ColGroup>
+                    @if (_multiSelect)
+                            {
+                        <col style="width: 60px;" />
+                            }
+                    @if (_groupDefinition.Expandable)
+                            {
+                        <col style="width: 60px;" />
+                            }
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PALLET"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PALLETERP"]</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <GroupHeaderTemplate>
+                    <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName} : {context.Key}") @L["Total"]: @string.Format(VarGlobals.FormatN0, @context.Items.Sum((e) => e.Quantity))</MudTh>
+                </GroupHeaderTemplate>
+                <RowTemplate>
+                    <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
+                    <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
+                    <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN0, context.Quantity)</MudTd>
+                    <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
+                    <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
+                    <MudTd DataLabel=@L["PALLETERP"]>@context.Itembar</MudTd>
+                </RowTemplate>
+                <GroupFooterTemplate>
+                    <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="6">@L["Total"]: @string.Format(VarGlobals.FormatN0, @context.Items.Sum((e) => e.Quantity))</MudTh>
+                </GroupFooterTemplate>
+
+            </MudTable>
             }
             else
             {
 
             }
 
-    <MudMessageBox @ref="mbox" Title="@mboxheader" CancelText="Cancel">
-        <MessageContent>
-            @foreach (var item in References)
-            {
-                <br />
-                @item
+            <MudMessageBox @ref="mbox" Title="@mboxheader" CancelText="Cancel">
+                <MessageContent>
+                    @foreach (var item in References)
+                            {
+                        <br />
+                        @item
+                            }
+                </MessageContent>
+                <YesButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.DataSaverOn">Confirm!</MudButton>
+                </YesButton>
+            </MudMessageBox>
             }
-        </MessageContent>
-        <YesButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.DataSaverOn">Confirm!</MudButton>
-        </YesButton>
-    </MudMessageBox>
-}
 
-@code {
+            @code {
 
-    MudMessageBox mbox { get; set; }
+                MudMessageBox mbox { get; set; }
 
     private bool _dense = false;
-    private bool _multiSelect = true;
-    public string mPagedesc { get; set; } = "3.4.Unplanned";
-    private string mPagename { get; set; } = "/3/3_4";
+        private bool _multiSelect = true;
+        public string mPagedesc { get; set; } = "3.4.Unplanned";
+        private string mPagename { get; set; } = "/3/3_4";
 
-    private string pageheader = "3.4.Unplanned";
-    private string msgAction = "Enter Palletcode";
-    private string mPalletcode { get; set; } = "";
-    private string mPackid { get; set; } = "";
-    private string palletcode { get; set; }
-    private bool dense = true;
-    private bool hover = true;
-    private bool striped = true;
-    private bool bordered = false;
-    private bool fixed_header = true;
-    private bool fixed_footer = true;
-    private string searchString = "";
-    private Inv_Stock_GoInfo selectedItem = null;
-    private HashSet<Inv_Stock_GoInfo> selectedItems = new HashSet<Inv_Stock_GoInfo>();
-    private IEnumerable<Inv_Stock_GoInfo> Elements = new List<Inv_Stock_GoInfo>();
+        private string pageheader = "3.4.Unplanned";
+        private string msgAction = "Enter Palletcode";
+        private string mPalletcode { get; set; } = "";
+        private string mPackid { get; set; } = "";
+        private string palletcode { get; set; }
+        private bool dense = true;
+        private bool hover = true;
+        private bool striped = true;
+        private bool bordered = false;
+        private bool fixed_header = true;
+        private bool fixed_footer = true;
+        private string searchString = "";
+        private Inv_Stock_GoInfo selectedItem = null;
+        private HashSet<Inv_Stock_GoInfo> selectedItems = new HashSet<Inv_Stock_GoInfo>();
+        private IEnumerable<Inv_Stock_GoInfo> Elements = new List<Inv_Stock_GoInfo>();
 
-    string state = "Message box hasn't been opened yet";
+        string state = "Message box hasn't been opened yet";
 
-    string mboxheader { get; set; } = "รายการที่ขอเบิก";
-    string mboxcontent { get; set; } = "";
-    string mboxmessage { get; set; } = "";
+        string mboxheader { get; set; } = "รายการที่ขอเบิก";
+        string mboxcontent { get; set; } = "";
+        string mboxmessage { get; set; } = "";
 
-    public int elevation = 0;
-    private ResultReturn resultReturn = null;
+        public int elevation = 0;
+        private ResultReturn resultReturn = null;
 
-    public bool StkGroup { get; set; }
+        public bool StkGroup { get; set; }
 
-    protected List<string> References { get; set; } = new List<string>();
+        protected List<string> References { get; set; } = new List<string>();
 
-    string sUsername { get; set; } = "";
-    string sRole { get; set; } = "";
-    string sGroupID { get; set; } = "";
-    string sUserID { get; set; } = "";
-    List<Userroleinfo> Roles = new List<Userroleinfo>();
-    [Inject] private IDialogService DialogService { get; set; }
+        string sUsername { get; set; } = "";
+        string sRole { get; set; } = "";
+        string sGroupID { get; set; } = "";
+        string sUserID { get; set; } = "";
+        List<Userroleinfo> Roles = new List<Userroleinfo>();
+        [Inject] private IDialogService DialogService { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        InvService objCS = new InvService();
-
-        //////// Intial Menu and Privilege//////
-        resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
-        resultReturn = await Task.Run(() => OpjUserService.InsertPrivilege(mPagename));
-        ////////////////////////////////////////
-        ///
-        await GetUserAthu();
-        this.InsertAuditrial("View", pageheader);
-        Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
-
-        Elements = await Task.Run(() => objCS.GetStockListInfo());
-
-        this.OnSelectChange();
-    }
-
-    async Task GetUserAthu()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        sGroupID = user.Claims.FirstOrDefault(
-        c => c.Type == ClaimTypes.Role)?.Value;
-
-        sUserID = user.Claims.FirstOrDefault(
-            c => c.Type == ClaimTypes.Actor)?.Value;
-    }
-
-    private void InsertAuditrial(String actdesc, String munname)
-    {
-        bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
-    }
-
-    protected void OnSelectChange()
-    {
-        StkGroup = !StkGroup;
-
-    }
-
-
-
-    private bool FilterFunc(Inv_Stock_GoInfo element)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.Itemcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.Pallteno.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.Pallettag.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{element.Itemname} {element.Storagebin}".Contains(searchString))
-            return true;
-        return false;
-    }
-
-    private bool FilterFunc_(InvStockSum element)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.Item_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if ($"{element.Item_name} ".Contains(searchString))
-            return true;
-        return false;
-    }
-
-    async Task SelectOrder()
-    {
-        var result = selectedItems.GroupBy(t => t.Itemcode)
-                   .Select(t => new
-                   {
-                       Itemcode = t.Key,
-                       Qty = t.Sum(ta => ta.Quantity),
-                   }).ToList();
-
-        System.Text.StringBuilder strPopup = new System.Text.StringBuilder();
-        Int16 i = 0;
-
-        foreach (var rec in result)
+        protected override async Task OnInitializedAsync()
         {
-            i++;
-            strPopup.Append(i.ToString() + ". รายการ : ");
-            strPopup.Append(rec.Itemcode.ToString());
-            strPopup.Append(" จำนวน : ");
-            strPopup.AppendLine(rec.Qty.ToString());
+            InvService objCS = new InvService();
+
+            //////// Intial Menu and Privilege//////
+            resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
+            resultReturn = await Task.Run(() => OpjUserService.InsertPrivilege(mPagename));
+            ////////////////////////////////////////
+            ///
+            await GetUserAthu();
+            this.InsertAuditrial("View", pageheader);
+            Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
+
+            Elements = await Task.Run(() => objCS.GetStockListInfo());
+
+            this.OnSelectChange();
         }
 
-        System.Text.StringBuilder popup = new System.Text.StringBuilder();
-        popup.AppendLine("รายการที่ขอเบิก");
-        popup.Append(strPopup.ToString());
 
-        string sContentText = popup.ToString();
-
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", sContentText);
-        parameters.Add("ButtonText", "Yes");
-        parameters.Add("Color", Color.Success);
-
-        var formModal = DialogService.Show<DialogTemplateExample_Dialog>("Confirm", parameters);
-
-        var resultModal = await Task.Run(() => formModal.Result);
-
-        var formModal1 = await Task.Run(() => DialogService.ShowMessageBox("AA", "XX"));
-
-    }
-
-    private async void OnButtonOrderSelected()
-    {
-        bool? result = await CheckRoleAdd();
-        if (result == true)
+        async Task GetUserAthu()
         {
-            var resultlist = selectedItems.GroupBy(t => t.Itemcode)
-                     .Select(t => new
-                     {
-                         Itemcode = t.Key,
-                         Qty = t.Sum(ta => ta.Quantity),
-                     }).ToList();
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            sGroupID = user.Claims.FirstOrDefault(
+            c => c.Type == ClaimTypes.Role)?.Value;
+
+            sUserID = user.Claims.FirstOrDefault(
+                c => c.Type == ClaimTypes.Actor)?.Value;
+        }
+
+        private void InsertAuditrial(String actdesc, String munname)
+        {
+            bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
+        }
+
+        protected void OnSelectChange()
+        {
+            StkGroup = !StkGroup;
+
+        }
+
+        private TableGroupDefinition<Inv_Stock_GoInfo> _groupDefinition = new TableGroupDefinition<Inv_Stock_GoInfo>()
+        {
+            GroupName = "PalletNo",
+            Indentation = false,
+            Expandable = true,
+            IsInitiallyExpanded = false,
+            Selector = (e) => e.Itembar
+        };
+
+        private bool FilterFunc(Inv_Stock_GoInfo element)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.Itemcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Pallteno.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Pallettag.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if ($"{element.Itemname} {element.Storagebin}".Contains(searchString))
+                return true;
+            return false;
+        }
+
+        private bool FilterFunc_(InvStockSum element)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.Item_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if ($"{element.Item_name} ".Contains(searchString))
+                return true;
+            return false;
+        }
+
+        async Task SelectOrder()
+        {
+            var result = selectedItems.GroupBy(t => t.Itemcode)
+                       .Select(t => new
+                       {
+                           Itemcode = t.Key,
+                           Qty = t.Sum(ta => ta.Quantity),
+                       }).ToList();
 
             System.Text.StringBuilder strPopup = new System.Text.StringBuilder();
             Int16 i = 0;
-            mboxcontent = "";
 
-            References.Clear();
-
-            if (resultlist.Count > 0)
+            foreach (var rec in result)
             {
-                foreach (var rec in resultlist)
+                i++;
+                strPopup.Append(i.ToString() + ". รายการ : ");
+                strPopup.Append(rec.Itemcode.ToString());
+                strPopup.Append(" จำนวน : ");
+                strPopup.AppendLine(rec.Qty.ToString());
+            }
+
+            System.Text.StringBuilder popup = new System.Text.StringBuilder();
+            popup.AppendLine("รายการที่ขอเบิก");
+            popup.Append(strPopup.ToString());
+
+            string sContentText = popup.ToString();
+
+            var parameters = new DialogParameters();
+            parameters.Add("ContentText", sContentText);
+            parameters.Add("ButtonText", "Yes");
+            parameters.Add("Color", Color.Success);
+
+            var formModal = DialogService.Show<DialogTemplateExample_Dialog>("Confirm", parameters);
+
+            var resultModal = await Task.Run(() => formModal.Result);
+
+            var formModal1 = await Task.Run(() => DialogService.ShowMessageBox("AA", "XX"));
+
+        }
+
+        private async void OnButtonOrderSelected()
+        {
+            bool? result = await CheckRoleAdd();
+            if (result == true)
+            {
+                var resultlist = selectedItems.GroupBy(t => t.Itemcode)
+                         .Select(t => new
+                         {
+                             Itemcode = t.Key,
+                             Qty = t.Sum(ta => ta.Quantity),
+                         }).ToList();
+
+                System.Text.StringBuilder strPopup = new System.Text.StringBuilder();
+                Int16 i = 0;
+                mboxcontent = "";
+
+                References.Clear();
+
+                if (resultlist.Count > 0)
                 {
-                    i++;
-                    strPopup.Clear();
-                    strPopup.Append(i.ToString() + ". รายการ : ");
-                    strPopup.Append(rec.Itemcode.ToString());
-                    strPopup.Append(" จำนวน : ");
-                    strPopup.AppendLine(rec.Qty.ToString());
+                    foreach (var rec in resultlist)
+                    {
+                        i++;
+                        strPopup.Clear();
+                        strPopup.Append(i.ToString() + ". รายการ : ");
+                        strPopup.Append(rec.Itemcode.ToString());
+                        strPopup.Append(" จำนวน : ");
+                        strPopup.AppendLine(rec.Qty.ToString());
 
-                    References.Add(strPopup.ToString());
+                        References.Add(strPopup.ToString());
+                    }
+                    result = await mbox.Show();
+                    state = result == null ? "Cancelled" : "Confirmed";
+
+                    if (state == "Confirmed")
+                    {
+                        this.InsertAuditrial("Set Unplaned List : " + strPopup.ToString(), pageheader);
+                        //await SelectOrderPick();
+                        await Task.Run(() => SelectOrderPick());
+
+                    }
+
+                    Elements = await Task.Run(() => ObjService.GetStockListInfo());
+                    //selectedItems.Clear();
+                    searchString = null;
+
+                    this.StateHasChanged();
                 }
-                result = await mbox.Show();
-                state = result == null ? "Cancelled" : "Confirmed";
+            }
 
-                if (state == "Confirmed")
+
+        }
+
+        private async void SelectOrderPick()
+        {
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+
+            string cus = "MANUAL";
+            //string so = "MO-" + DateTime.Now.ToString("yyMMddHHmmssffff");
+
+
+            string lot = "-";
+            string batch = "-";
+            DateTime requestdate = DateTime.Today.Date;
+
+            if (selectedItems.Count > 0)
+            {
+                var pallets = selectedItems.GroupBy(g => g.Pallteno).OrderBy(o => o.Key).Select(s => s.Key);
+
+                foreach (var valpal in pallets)
                 {
-                    this.InsertAuditrial("Set Unplaned List : " + strPopup.ToString(), pageheader);
-                    SelectOrderPick();
 
+                    string so = "MO-" + ObjFunService.GetRunning("sq002", 4);
+
+                    var strRES = selectedItems.Where(w => w.Pallteno == valpal).OrderBy(x => x.Pallettag).Select(x => new { efidx = x.Efidx, quantity = x.Quantity, packageid = x.Pallettag, materialcode = x.Itemcode, palletno = x.Pallteno, sono = so, customer = cus, lotno = x.Docno, batchno = x.Docnote, matematerialdescription = x.Itemname, unit = x.Unit, deliverydate = requestdate }).ToList();
+
+
+                    var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
+
+                    var iReturn = 0;
+                    var sReturn = "Call";
+
+                    ObjApiService.SetPickWgcmanual(jsonRES, ref iReturn, ref sReturn);
+
+                    if (iReturn == 0)
+                    {
+                        Snackbar.Add(sReturn, Severity.Error);
+                    }
+                    else
+                    {
+                        this.InsertAuditrial("Start Unplaned : " + so.ToString(), pageheader);
+
+                        Snackbar.Add("Order picking created", Severity.Success);
+
+                    }
                 }
 
-                this.StateHasChanged();
-            }
-        }
-
-
-    }
-
-    private void SelectOrderPick()
-    {
-        var serializeOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-
-        string cus = "MANUAL";
-        //string so = "MO-" + DateTime.Now.ToString("yyMMddHHmmssffff");
-        string so = "MO-" + ObjFunService.GetRunning("sq002", 4);
-
-        string lot = "-";
-        string batch = "-";
-        DateTime requestdate = DateTime.Today.Date;
-
-        var strRES = selectedItems.OrderBy(x => x.Pallettag).Select(x => new { efidx = x.Efidx, quantity = x.Quantity, packageid = x.Pallettag, materialcode = x.Itemcode, palletno = x.Pallteno, sono = so, customer = cus, lotno = lot, batchno = batch, matematerialdescription = x.Itemname, unit = x.Unit, deliverydate = requestdate }).ToList();
-
-        var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
-
-        var iReturn = 0;
-        var sReturn = "Call";
-
-        ObjApiService.SetPickWgcmanual(jsonRES, ref iReturn, ref sReturn);
-
-        if (selectedItems.Count > 0)
-        {
-            if (iReturn == 0)
-            {
-                Snackbar.Add(sReturn, Severity.Error);
+                await RefreshData();
             }
             else
             {
-                this.InsertAuditrial("Start Unplaned : " + so.ToString(), pageheader);
-                RefreshData();
-                Snackbar.Add("Order picking created", Severity.Success);
-
+                Snackbar.Add("Please select order picking", Severity.Warning);
             }
         }
-        else
+
+        private async Task RefreshData()
         {
-            Snackbar.Add("Please select order picking", Severity.Warning);
+            Elements = await ObjService.GetStockListInfo();
+            selectedItems = null;
         }
-    }
 
-    private async Task RefreshData()
-    {
-        Elements = await ObjService.GetStockListInfo();
-        selectedItems = null;
-    }
-
-    #region "Role"
-    private async Task<bool> CheckRoleAdd()
-    {
-        bool bRet = false;
-
-        if (Roles.ToList().Count > 0)
+        #region "Role"
+        private async Task<bool> CheckRoleAdd()
         {
-            var iCorrect = Roles.ToList().FindIndex(a => a.Role_add == true);
+            bool bRet = false;
 
-            if (iCorrect >= 0)
+            if (Roles.ToList().Count > 0)
             {
-                bRet = true;
+                var iCorrect = Roles.ToList().FindIndex(a => a.Role_add == true);
+
+                if (iCorrect >= 0)
+                {
+                    bRet = true;
+                }
+                else
+                {
+                    bRet = false;
+                }
+
+                if (bRet == false)
+                {
+                    bool? result = await DialogService.ShowMessageBox(
+                            "Warning", VarGlobals.MessageRoleAddPermit, yesText: "OK");
+                }
+
             }
             else
-            {
-                bRet = false;
-            }
-
-            if (bRet == false)
             {
                 bool? result = await DialogService.ShowMessageBox(
-                        "Warning", VarGlobals.MessageRoleAddPermit, yesText: "OK");
+                                    "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
             }
 
-        }
-        else
-        {
-            bool? result = await DialogService.ShowMessageBox(
-                                "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
+            return bRet;
         }
 
-        return bRet;
-    }
-
-    private async Task<bool> CheckRoleEdit()
-    {
-        bool bRet = false;
-
-        if (Roles.ToList().Count > 0)
+        private async Task<bool> CheckRoleEdit()
         {
-            var iCorrect = Roles.ToList().FindIndex(a => a.Role_edit == true);
+            bool bRet = false;
 
-            if (iCorrect >= 0)
+            if (Roles.ToList().Count > 0)
             {
-                bRet = true;
+                var iCorrect = Roles.ToList().FindIndex(a => a.Role_edit == true);
+
+                if (iCorrect >= 0)
+                {
+                    bRet = true;
+                }
+                else
+                {
+                    bRet = false;
+                }
+
+                if (bRet == false)
+                {
+                    bool? result = await DialogService.ShowMessageBox(
+                            "Warning", VarGlobals.MessageRoleEditPermit, yesText: "OK");
+                }
             }
             else
             {
-                bRet = false;
-            }
-
-            if (bRet == false)
-            {
                 bool? result = await DialogService.ShowMessageBox(
-                        "Warning", VarGlobals.MessageRoleEditPermit, yesText: "OK");
+                                    "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
             }
-        }
-        else
-        {
-            bool? result = await DialogService.ShowMessageBox(
-                                "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
+
+            return bRet;
         }
 
-        return bRet;
-    }
-
-    private async Task<bool> CheckRoleDelete()
-    {
-        bool bRet = false;
-
-        if (Roles.ToList().Count > 0)
+        private async Task<bool> CheckRoleDelete()
         {
-            var iCorrect = Roles.ToList().FindIndex(a => a.Role_del == true);
+            bool bRet = false;
 
-            if (iCorrect >= 0)
+            if (Roles.ToList().Count > 0)
             {
-                bRet = true;
+                var iCorrect = Roles.ToList().FindIndex(a => a.Role_del == true);
+
+                if (iCorrect >= 0)
+                {
+                    bRet = true;
+                }
+                else
+                {
+                    bRet = false;
+                }
+
+                if (bRet == false)
+                {
+                    bool? result = await DialogService.ShowMessageBox(
+                            "Warning", VarGlobals.MessageRoleDelPermit, yesText: "OK");
+                }
             }
             else
             {
-                bRet = false;
-            }
-
-            if (bRet == false)
-            {
                 bool? result = await DialogService.ShowMessageBox(
-                        "Warning", VarGlobals.MessageRoleDelPermit, yesText: "OK");
+                                    "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
             }
-        }
-        else
-        {
-            bool? result = await DialogService.ShowMessageBox(
-                                "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
+
+
+            return bRet;
         }
 
-
-        return bRet;
-    }
-
-    private async Task<bool> CheckRoleApprove()
-    {
-        bool bRet = false;
-
-        if (Roles.ToList().Count > 0)
+        private async Task<bool> CheckRoleApprove()
         {
-            var iCorrect = Roles.ToList().FindIndex(a => a.Role_apv == true);
+            bool bRet = false;
 
-            if (iCorrect >= 0)
+            if (Roles.ToList().Count > 0)
             {
-                bRet = true;
+                var iCorrect = Roles.ToList().FindIndex(a => a.Role_apv == true);
+
+                if (iCorrect >= 0)
+                {
+                    bRet = true;
+                }
+                else
+                {
+                    bRet = false;
+                }
+
+                if (bRet == false)
+                {
+                    bool? result = await DialogService.ShowMessageBox(
+                            "Warning", VarGlobals.MessageRoleApprovePermit, yesText: "OK");
+                }
             }
             else
             {
-                bRet = false;
-            }
-
-            if (bRet == false)
-            {
                 bool? result = await DialogService.ShowMessageBox(
-                        "Warning", VarGlobals.MessageRoleApprovePermit, yesText: "OK");
+                                    "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
             }
+            return bRet;
         }
-        else
+
+        private async Task<bool> CheckRoleReport()
         {
-            bool? result = await DialogService.ShowMessageBox(
-                                "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
-        }
-        return bRet;
-    }
+            bool bRet = false;
 
-    private async Task<bool> CheckRoleReport()
-    {
-        bool bRet = false;
-
-        if (Roles.ToList().Count > 0)
-        {
-            var iCorrect = Roles.ToList().FindIndex(a => a.Role_rpt == true);
-
-            if (iCorrect >= 0)
+            if (Roles.ToList().Count > 0)
             {
-                bRet = true;
+                var iCorrect = Roles.ToList().FindIndex(a => a.Role_rpt == true);
+
+                if (iCorrect >= 0)
+                {
+                    bRet = true;
+                }
+                else
+                {
+                    bRet = false;
+                }
+
+                if (bRet == false)
+                {
+                    bool? result = await DialogService.ShowMessageBox(
+                            "Warning", VarGlobals.MessageRoleReportPermit, yesText: "OK");
+                }
             }
             else
             {
-                bRet = false;
-            }
-
-            if (bRet == false)
-            {
                 bool? result = await DialogService.ShowMessageBox(
-                        "Warning", VarGlobals.MessageRoleReportPermit, yesText: "OK");
+                                    "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
             }
+
+            return bRet;
         }
-        else
-        {
-            bool? result = await DialogService.ShowMessageBox(
-                                "Warning", VarGlobals.MessageRoleAuthrizedPermit, yesText: "OK");
-        }
-
-        return bRet;
-    }
-    #endregion
+        #endregion
 
 
 
 
-}
+            }

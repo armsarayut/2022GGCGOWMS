@@ -45,7 +45,7 @@ else
               Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
               Filter="new Func<WhStorageCapacity,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" SortLabel="Sort By">
         <ToolBarContent>
-            <MudToolBarSpacer />
+            <MudSpacer />
             <MudTextField @bind-Value="searchString"
                           Placeholder=@L["Search"]
                           Adornment="Adornment.Start"

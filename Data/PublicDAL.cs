@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,31 +19,32 @@ namespace GoWMS.Server.Data
     public class PublicDAL
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
 
         #region "MENU6.1"
         public IEnumerable<Class6_1> GetAllMenu6_1()
         {
             List<Class6_1> lstobj = new List<Class6_1>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("select r.idx, r.created, r.entity_lock, r.modified, r.client_id, r.menu_name , r.action_desc , u.usid , r.client_ip ");
-                    sql.AppendLine("from public.rpt_audittrial r");
-                    sql.AppendLine("left join public.set_users u");
+                    sql.AppendLine("from dbo.rpt_audittrial r");
+                    sql.AppendLine("left join dbo.set_users u");
                     sql.AppendLine("on r.id_stuser=u.idx");
                     sql.AppendLine("where 1=1");
                     sql.AppendLine("order by r.idx asc");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_1 objrd = new Class6_1
@@ -75,14 +77,14 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_1> GetMenu6_1byDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_1> lstobj = new List<Class6_1>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("select r.idx, r.created, r.entity_lock, r.modified, r.client_id, r.menu_name , r.action_desc , u.usid , r.client_ip ");
-                    sql.AppendLine("from public.rpt_audittrial r");
-                    sql.AppendLine("left join public.set_users u");
+                    sql.AppendLine("from dbo.rpt_audittrial r");
+                    sql.AppendLine("left join dbo.set_users u");
                     sql.AppendLine("on r.id_stuser=u.idx");
                     sql.AppendLine("where 1=1");
                     sql.AppendLine("and (r.created >= @startdate and r.created < @stopdate)");
@@ -90,17 +92,17 @@ namespace GoWMS.Server.Data
                     //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
 
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate", dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
 
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_1 objrd = new Class6_1
@@ -133,14 +135,14 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_1> GetMenu6_1byDatelimit(DateTime dtStart, DateTime dtStop, long limitrec, long currentPage)
         {
             List<Class6_1> lstobj = new List<Class6_1>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT r.idx, r.created, r.entity_lock, r.modified, r.client_id, r.menu_name , r.action_desc , u.usid , r.client_ip ");
-                    sql.AppendLine("FROM public.rpt_audittrial r");
-                    sql.AppendLine("LRFT JOIN public.set_users u");
+                    sql.AppendLine("FROM dbo.rpt_audittrial r");
+                    sql.AppendLine("LRFT JOIN dbo.set_users u");
                     sql.AppendLine("ON r.id_stuser=u.idx");
                     sql.AppendLine("WHERE 1=1");
                     sql.AppendLine("AND (r.created >= @startdate and r.created < @stopdate)");
@@ -148,18 +150,18 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("LIMIT @limitrec  OFFSET @offsetrec");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
 
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
-                    cmd.Parameters.AddWithValue("@limitrec", NpgsqlDbType.Bigint, limitrec);
-                    cmd.Parameters.AddWithValue("@offsetrec", NpgsqlDbType.Bigint, (limitrec * currentPage) - limitrec);
+                    cmd.Parameters.AddWithValue("@startdate",  dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
+                    cmd.Parameters.AddWithValue("@limitrec",  limitrec);
+                    cmd.Parameters.AddWithValue("@offsetrec",  (limitrec * currentPage) - limitrec);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_1 objrd = new Class6_1
@@ -275,71 +277,88 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_2_A> GetMenu6_2AbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_2_A> lstobj = new List<Class6_2_A>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
 
-                    sql.AppendLine("SELECT");
-                    sql.AppendLine("created, work_type, create_by, batch_number, item_code,");
-                    sql.AppendLine("item_name, su_no, movement_type, movemet_reason, order_no, seq_no,");
-                    sql.AppendLine("result_qty, doc_ref , pallet_no, crane_no, location_no,");
-                    sql.AppendLine("dest_su_no, to_no, to_line, status, shortge_qty, po_no, invoice_no,");
-                    sql.AppendLine("recviving_date, delivery_date, order_line,");
-                    sql.AppendLine("queue_no, ship_to_code, ship_name, delivery_priority ");
-                    sql.AppendLine("FROM public.sap_operateresult");
+                    //sql.AppendLine("SELECT");
+                    //sql.AppendLine("created, work_type, create_by, batch_number, item_code,");
+                    //sql.AppendLine("item_name, su_no, movement_type, movemet_reason, order_no, seq_no,");
+                    //sql.AppendLine("result_qty, doc_ref , pallet_no, crane_no, location_no,");
+                    //sql.AppendLine("dest_su_no, to_no, to_line, status, shortge_qty, po_no, invoice_no,");
+                    //sql.AppendLine("recviving_date, delivery_date, order_line,");
+                    //sql.AppendLine("queue_no, ship_to_code, ship_name, delivery_priority ");
+                    //sql.AppendLine("FROM public.sap_operateresult");
+                    //sql.AppendLine("WHERE (1=1)");
+                    //sql.AppendLine("AND (work_type in ('01'))");
+                    //sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
+                    //sql.AppendLine("ORDER BY created ASC");
+                    //sql.AppendLine(";");
+
+
+                    sql.Append("SELECT row_number() ");
+                    sql.AppendLine("OVER(ORDER BY R.[rptStockDate] ASC, R.prodcode ASC, R.item ASC) AS rn");
+                    sql.AppendLine(",R.prodcode, R.item, R.itemdesc, T.lot, R.qty");
+                    sql.AppendLine(",R.uom, R.item_bc, R.pallet_bc, R.loc, R.whse");
+                    sql.AppendLine(",R.is_req, R.is_hold, R.is_lock, R.update2sl, R.doc_num");
+                    sql.AppendLine(",R.createdby, R.modifie_date, R.trans_date, R.rptStockDate");
+                    sql.AppendLine("FROM dbo.v_wmstran_receipt_rpt R");
+                    sql.AppendLine("LEFT JOIN dbo.wms_trans T");
+                    sql.AppendLine("ON R.item_bc = T.item_bc");
+                    sql.AppendLine("AND T.unit_key = '01'");
+                    sql.AppendLine("AND R.trans_date = T.trans_date");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("AND (work_type in ('01'))");
-                    sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
-                    sql.AppendLine("ORDER BY created ASC");
-                    // sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    sql.AppendLine("AND (R.rptStockDate >= @startdate AND R.rptStockDate <= @stopdate)");
+                    sql.AppendLine("ORDER BY R.rptStockDate ASC, R.prodcode ASC, R.item ASC");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate",  dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
 
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_2_A objrd = new Class6_2_A
                         {
-                            Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                            Work_Type = rdr["work_type"].ToString(),
-                            Create_By = rdr["create_by"].ToString(),
-                            Batch_Number = rdr["batch_number"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
-                            Su_No = rdr["su_no"].ToString(),
-                            Movement_Type = rdr["movement_type"].ToString(),
-                            Movemet_Reason = rdr["movemet_reason"].ToString(),
-                            Order_No = rdr["order_no"].ToString(),
-                            Seq_No = rdr["seq_no"].ToString(),
-                            Result_Qty = rdr["result_qty"] == DBNull.Value ? null : (decimal?)rdr["result_qty"],
-                            Doc_Ref = rdr["doc_ref"].ToString(),
-                            Pallet_No = rdr["pallet_no"].ToString(),
-                            Crane_No = rdr["crane_no"].ToString(),
-                            Location_No = rdr["location_no"].ToString(),
-                            Dest_Su_No = rdr["dest_su_no"].ToString(),
-                            To_No = rdr["to_no"].ToString(),
-                            To_Line = rdr["to_line"].ToString(),
-                            Status = rdr["status"] == DBNull.Value ? null : (int?)rdr["status"],
-                            Shortge_Qty = rdr["shortge_qty"] == DBNull.Value ? null : (decimal?)rdr["shortge_qty"],
-                            Po_No = rdr["po_no"].ToString(),
-                            Invoice_No = rdr["invoice_no"].ToString(),
-                            Recviving_Date = rdr["recviving_date"] == DBNull.Value ? null : (DateTime?)rdr["recviving_date"],
-                            Delivery_Date = rdr["delivery_date"] == DBNull.Value ? null : (DateTime?)rdr["delivery_date"],
-                            Order_Line = rdr["order_line"].ToString(),
-                            Queue_No = rdr["queue_no"].ToString(),
-                            Ship_To_Code = rdr["ship_to_code"].ToString(),
-                            Ship_Name = rdr["ship_name"].ToString(),
-                            Delivery_Priority = rdr["delivery_priority"] == DBNull.Value ? null : (int?)rdr["delivery_priority"]
+                            Created = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
+                            Work_Type = "01",
+                            Create_By = rdr["createdby"].ToString(),
+                            Batch_Number = rdr["lot"].ToString(),
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
+                            Su_No = rdr["item_bc"].ToString(),
+                            Movement_Type = null,
+                            Movemet_Reason = null,
+                            Order_No = rdr["doc_num"].ToString(),
+                            Seq_No = null,
+                            Result_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                            Doc_Ref = null,
+                            Pallet_No = rdr["pallet_bc"].ToString(),
+                            Crane_No = null,
+                            Location_No = rdr["loc"].ToString(),
+                            Dest_Su_No = null,
+                            To_No = null,
+                            To_Line = null,
+                            Status = 3,
+                            Shortge_Qty = 0,
+                            Po_No = null,
+                            Invoice_No = null,
+                            Recviving_Date = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
+                            Delivery_Date = null,
+                            Order_Line = null,
+                            Queue_No = null,
+                            Ship_To_Code = null,
+                            Ship_Name = null,
+                            Delivery_Priority = null
                         };
                         lstobj.Add(objrd);
                     }
@@ -494,46 +513,67 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_2_B> GetAllMenu6_2BbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_2_B> lstobj = new List<Class6_2_B>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT ");
-                    sql.AppendLine("created::date as created , po_no, batch_number, item_code,");
-                    sql.AppendLine("item_name, movement_type, movemet_reason, ");
-                    sql.AppendLine("SUM(result_qty) as result_qty");
-                    sql.AppendLine("FROM public.sap_operateresult");
+                    //sql.AppendLine("SELECT ");
+                    //sql.AppendLine("created::date as created , po_no, batch_number, item_code,");
+                    //sql.AppendLine("item_name, movement_type, movemet_reason, ");
+                    //sql.AppendLine("SUM(result_qty) as result_qty");
+                    //sql.AppendLine("FROM public.sap_operateresult");
+                    //sql.AppendLine("WHERE (1=1)");
+                    //sql.AppendLine("AND (work_type in ('01'))");
+                    //sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
+                    //sql.AppendLine("GROUP BY created::date, po_no, batch_number, item_code,");
+                    //sql.AppendLine("item_name, movement_type, movemet_reason");
+                    //sql.AppendLine("ORDER BY created::date , item_code asc");
+                    ////sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine(";");
+
+
+
+                    sql.Append("select row_number() ");
+                    sql.AppendLine("over(order by R.rptStockDate asc, R.item asc) AS rn,");
+                    sql.AppendLine("R.item,R.itemdesc,T.lot,R.[uom],");
+                    sql.AppendLine("sum(R.qty) as qty,R.whse , R.doc_num");
+                    sql.AppendLine(",R.rptStockDate");
+                    sql.AppendLine("FROM dbo.v_wmstran_receipt_rpt R");
+                    sql.AppendLine("LEFT JOIN dbo.wms_trans T");
+                    sql.AppendLine("ON R.item_bc=T.item_bc");
+                    sql.AppendLine("AND T.unit_key='01'");
+                    sql.AppendLine("AND R.trans_date=T.trans_date");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("AND (work_type in ('01'))");
-                    sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
-                    sql.AppendLine("GROUP BY created::date, po_no, batch_number, item_code,");
-                    sql.AppendLine("item_name, movement_type, movemet_reason");
-                    sql.AppendLine("ORDER BY created::date , item_code asc");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    sql.AppendLine("and (R.rptStockDate >= @startdate and R.rptStockDate <= @stopdate)");
+                    sql.AppendLine("group by R.item,R.itemdesc,T.lot,R.uom,R.whse,R.rptStockDate , R.doc_num");
+                    sql.AppendLine("order by R.rptStockDate asc,  R.item asc");
+
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate",  dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate", dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_2_B objrd = new Class6_2_B
                         {
-                            Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                            Batch_Number = rdr["batch_number"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
-                            Movement_Type = rdr["movement_type"].ToString(),
-                            Movemet_Reason = rdr["movemet_reason"].ToString(),
-                            Result_Qty = rdr["result_qty"] == DBNull.Value ? null : (decimal?)rdr["result_qty"],
-                            Po_no = rdr["po_no"].ToString()
+                            Created = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
+                            Batch_Number = rdr["lot"].ToString(),
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
+                            Movement_Type = null,
+                            Movemet_Reason = null,
+                            Result_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                            Po_no = rdr["doc_num"].ToString()
                         };
                         lstobj.Add(objrd);
                     }
@@ -607,59 +647,57 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_3_A> GetAllMenu6_3A()
         {
             List<Class6_3_A> lstobj = new List<Class6_3_A>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
 
-                    sql.AppendLine("select row_number() over(order by t2.brand asc, t1.batch_number asc, t1.item_code asc) AS rn,");
-                    sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, t1.qty, t1.su_no, t1.palletcode, t3.shelfname");
-                    sql.AppendLine(" , t3.srm_no ");
-                    sql.AppendLine("from public.sap_stock t1");
-                    sql.AppendLine("left join public.sap_itemmaster_v t2");
-                    sql.AppendLine("on t1.item_code=t2.article");
-                    sql.AppendLine("left join wcs.set_shelf t3");
-                    sql.AppendLine("on t1.palletcode=t3.lpncode");
-                    sql.AppendLine("where (1=1)");
-                    sql.AppendLine("order by brand,batch_number,item_code");
-                    sql.AppendLine(";");
-                    /*
-                    sql.AppendLine("SELECT ");
-                    sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, sum(t1.qty) AS totalstock, count(t1.palletcode) as countpallet ");
-                    sql.AppendLine(", t3.srm_no ");
-                    sql.AppendLine("FROM public.sap_stock t1");
-                    sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
-                    sql.AppendLine("ON t1.item_code=t2.article");
-                    sql.AppendLine("LEFT JOIN wcs.set_shelf t3");
-                    sql.AppendLine("ON t1.palletcode=t3.lpncode");
-                    sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("GROUP BY t2.brand, t1.batch_number, t1.item_code, t1.item_name, t3.srm_no");
-                    sql.AppendLine("ORDER BY brand,batch_number,item_code");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
-                    sql.AppendLine(";");
-                    */
+                    //sql.AppendLine("select row_number() over(order by t2.brand asc, t1.batch_number asc, t1.item_code asc) AS rn,");
+                    //sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, t1.qty, t1.su_no, t1.palletcode, t3.shelfname");
+                    //sql.AppendLine(" , t3.srm_no ");
+                    //sql.AppendLine("from public.sap_stock t1");
+                    //sql.AppendLine("left join public.sap_itemmaster_v t2");
+                    //sql.AppendLine("on t1.item_code=t2.article");
+                    //sql.AppendLine("left join wcs.set_shelf t3");
+                    //sql.AppendLine("on t1.palletcode=t3.lpncode");
+                    //sql.AppendLine("where (1=1)");
+                    //sql.AppendLine("order by brand,batch_number,item_code");
+                    //sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    sql.Append("select row_number() ");
+                    sql.AppendLine("over(order by R.rptStockDate asc, R.prodcode asc, R.item asc) AS rn,");
+                    sql.AppendLine("R.prodcode,R.item,R.itemdesc,R.lot,R.uom,");
+                    sql.AppendLine("R.qty,R.item_bc,R.whse,R.loc,R.pallet_bc");
+                    sql.AppendLine(",R.is_req,R.is_hold,R.is_lock,R.update2sl,R.doc_num");
+                    sql.AppendLine(",R.createdby,R.trans_date,R.modifie_date,R.rptStockDate");
+                    sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot R");
+                    sql.AppendLine("WHERE (1=1)");
+                    sql.AppendLine("AND R.is_req=0");
+                    sql.AppendLine("order by R.rptStockDate asc, R.prodcode asc, R.item asc");
+                    sql.AppendLine(";");
+
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_3_A objrd = new Class6_3_A
                         {
-                            Brand = rdr["brand"].ToString(),
-                            Batch_Number = rdr["batch_number"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
+                            Brand = null,
+                            Batch_Number = rdr["lot"].ToString(),
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
                             Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
-                            Su_No = rdr["su_no"].ToString(),
-                            Palletcode = rdr["palletcode"].ToString(),
-                            Shelfname = rdr["shelfname"].ToString(),
-                            Srm_No = rdr["srm_no"] == DBNull.Value ? null : (int?)rdr["srm_no"]
+                            Su_No = rdr["item_bc"].ToString(),
+                            Palletcode = rdr["pallet_bc"].ToString(),
+                            Shelfname = rdr["loc"].ToString(),
+                            Srm_No = null
                         };
                         lstobj.Add(objrd);
                     }
@@ -746,40 +784,51 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_3_B> GetAllMenu6_3B()
         {
             List<Class6_3_B> lstobj = new List<Class6_3_B>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT ");
-                    sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, sum(t1.qty) AS totalstock, count(t1.palletcode) as countpallet ");
-                    sql.AppendLine("FROM public.sap_stock t1");
-                    sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
-                    sql.AppendLine("ON t1.item_code=t2.article");
+                    //sql.AppendLine("SELECT ");
+                    //sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, sum(t1.qty) AS totalstock, count(t1.palletcode) as countpallet ");
+                    //sql.AppendLine("FROM public.sap_stock t1");
+                    //sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
+                    //sql.AppendLine("ON t1.item_code=t2.article");
+                    //sql.AppendLine("WHERE (1=1)");
+                    //sql.AppendLine("GROUP BY t2.brand, t1.batch_number, t1.item_code, t1.item_name");
+                    //sql.AppendLine("ORDER BY brand,batch_number,item_code");
+                    ////sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine(";");
+
+
+                    sql.Append("select row_number() ");
+                    sql.AppendLine("over(order by  R.item asc) AS rn,");
+                    sql.AppendLine("R.item,R.itemdesc,R.lot,R.uom,");
+                    sql.AppendLine("sum(R.qty) as qty,R.whse");
+                    sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot R");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("GROUP BY t2.brand, t1.batch_number, t1.item_code, t1.item_name");
-                    sql.AppendLine("ORDER BY brand,batch_number,item_code");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    sql.AppendLine("group by R.item,R.itemdesc,R.lot,R.uom,R.whse");
+                    sql.AppendLine("order by R.item asc");
                     sql.AppendLine(";");
 
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_3_B objrd = new Class6_3_B
                         {
-                            Brand = rdr["brand"].ToString(),
-                            Batch_Number = rdr["batch_number"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
-                            Totalstock = rdr["totalstock"] == DBNull.Value ? null : (decimal?)rdr["totalstock"],
-                            Countpallet = rdr["countpallet"] == DBNull.Value ? null : (long?)rdr["countpallet"]
+                            Brand = null,
+                            Batch_Number = rdr["lot"].ToString(),
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
+                            Totalstock = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                            Countpallet = null
 
                         };
                         lstobj.Add(objrd);
@@ -876,6 +925,9 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("ORDER BY brand,batch_number,item_code");
                     //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
                     sql.AppendLine(";");
+
+
+                   
 
 
                     NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
@@ -1292,75 +1344,89 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_4_A> GetAllMenu6_4AbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_4_A> lstobj = new List<Class6_4_A>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT ");
-                    sql.AppendLine("idx, created, entity_lock, modified, client_id, client_ip, seq_no, ");
-                    sql.AppendLine("work_type, order_no, order_line, ship_to_code, ship_name, ");
-                    sql.AppendLine("movement_type, movemet_reason, item_code, item_name, ");
-                    sql.AppendLine("batch_number, su_no, result_qty, to_no, to_line, ");
-                    sql.AppendLine("doc_ref, po_no, delivery_date, delivery_priority, ");
-                    sql.AppendLine("ref_no, ref_line,create_by, created_date, ");
-                    sql.AppendLine("pallet_no, crane_no, location_no,status ");
-                    sql.AppendLine("FROM public.sap_operateresult");
+                    //sql.AppendLine("SELECT ");
+                    //sql.AppendLine("idx, created, entity_lock, modified, client_id, client_ip, seq_no, ");
+                    //sql.AppendLine("work_type, order_no, order_line, ship_to_code, ship_name, ");
+                    //sql.AppendLine("movement_type, movemet_reason, item_code, item_name, ");
+                    //sql.AppendLine("batch_number, su_no, result_qty, to_no, to_line, ");
+                    //sql.AppendLine("doc_ref, po_no, delivery_date, delivery_priority, ");
+                    //sql.AppendLine("ref_no, ref_line,create_by, created_date, ");
+                    //sql.AppendLine("pallet_no, crane_no, location_no,status ");
+                    //sql.AppendLine("FROM public.sap_operateresult");
+                    //sql.AppendLine("WHERE (1=1)");
+                    //sql.AppendLine("AND (work_type in ('05'))");
+                    //sql.AppendLine("AND (created >= @startdate and created < @stopdate)");
+                    //sql.AppendLine("ORDER BY idx asc");
+                    ////sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine(";");
+
+                    sql.Append("select row_number() ");
+                    sql.AppendLine("over(order by R.rptStockDate asc, R.prodcode asc, R.item asc) AS rn,");
+                    sql.AppendLine("R.prodcode,R.item,R.itemdesc,R.supcode,R.uom,");
+                    sql.AppendLine("R.qty,R.item_bc,R.whse,R.loc,R.pallet_bc");
+                    sql.AppendLine(",R.is_req,R.is_hold,R.is_lock,R.update2sl,R.doc_num");
+                    sql.AppendLine(",R.createdby,R.trans_date,R.modifie_date,R.rptStockDate, T.lot");
+                    sql.AppendLine("FROM dbo.v_wmstran_issue_rpt R");
+                    sql.AppendLine("LEFT JOIN dbo.wms_trans T");
+                    sql.AppendLine("ON R.item_bc=T.item_bc");
+                    sql.AppendLine("AND R.trans_date=T.trans_date");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("AND (work_type in ('05'))");
-                    sql.AppendLine("AND (created >= @startdate and created < @stopdate)");
-                    sql.AppendLine("ORDER BY idx asc");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    sql.AppendLine("AND (R.rptStockDate>= @startdate AND R.rptStockDate<=@stopdate)");
+                    sql.AppendLine("order by R.rptStockDate asc, R.prodcode asc, R.item asc");
                     sql.AppendLine(";");
 
 
-
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate",  dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_4_A objrd = new Class6_4_A
                         {
-                            Idx = rdr["idx"] == DBNull.Value ? null : (long?)rdr["idx"],
-                            Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                            Entity_Lock = rdr["entity_lock"] == DBNull.Value ? null : (int?)rdr["entity_lock"],
-                            Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                            Client_Id = rdr["client_id"] == DBNull.Value ? null : (long?)rdr["client_id"],
-                            Client_Ip = rdr["client_ip"].ToString(),
-                            Seq_No = rdr["seq_no"].ToString(),
-                            Work_Type = rdr["work_type"].ToString(),
-                            Order_No = rdr["order_no"].ToString(),
-                            Order_Line = rdr["order_line"].ToString(),
-                            Ship_To_Code = rdr["ship_to_code"].ToString(),
-                            Ship_Name = rdr["ship_name"].ToString(),
-                            Movement_Type = rdr["movement_type"].ToString(),
-                            Movemet_Reason = rdr["movemet_reason"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
-                            Batch_Number = rdr["batch_number"].ToString(),
-                            Su_No = rdr["su_no"].ToString(),
-                            Result_Qty = rdr["result_qty"] == DBNull.Value ? null : (decimal?)rdr["result_qty"],
-                            To_No = rdr["to_no"].ToString(),
-                            To_Line = rdr["to_line"].ToString(),
-                            Doc_Ref = rdr["doc_ref"].ToString(),
-                            Po_No = rdr["po_no"].ToString(),
-                            Delivery_Date = rdr["delivery_date"] == DBNull.Value ? null : (DateTime?)rdr["delivery_date"],
-                            Delivery_Priority = rdr["delivery_priority"] == DBNull.Value ? null : (int?)rdr["delivery_priority"],
-                            Ref_No = rdr["ref_no"].ToString(),
-                            Ref_Line = rdr["ref_line"].ToString(),
-                            Create_By = rdr["create_by"].ToString(),
-                            Created_Date = rdr["created_date"] == DBNull.Value ? null : (DateTime?)rdr["created_date"],
-                            Pallet_No = rdr["pallet_no"].ToString(),
-                            Crane_No = rdr["crane_no"].ToString(),
-                            Location_No = rdr["location_no"].ToString(),
-                            Status = rdr["status"] == DBNull.Value ? null : (int?)rdr["status"]
+                            Idx = null,
+                            Created = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
+                            Entity_Lock = null,
+                            Modified = null,
+                            Client_Id = null,
+                            Client_Ip = null,
+                            Seq_No = null,
+                            Work_Type = null,
+                            Order_No = rdr["doc_num"].ToString(),
+                            Order_Line = null,
+                            Ship_To_Code = null,
+                            Ship_Name = null,
+                            Movement_Type = null,
+                            Movemet_Reason = null,
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
+                            Batch_Number = rdr["lot"].ToString(),
+                            Su_No = rdr["item_bc"].ToString(),
+                            Result_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                            To_No = null,
+                            To_Line = null,
+                            Doc_Ref = null,
+                            Po_No = null,
+                            Delivery_Date = null,
+                            Delivery_Priority = null,
+                            Ref_No = null,
+                            Ref_Line = null,
+                            Create_By = null,
+                            Created_Date = null,
+                            Pallet_No = rdr["pallet_bc"].ToString(),
+                            Crane_No = null,
+                            Location_No = null,
+                            Status = null
                         };
                         lstobj.Add(objrd);
                     }
@@ -1527,47 +1593,66 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_4_B> GetAllMenu6_4BbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_4_B> lstobj = new List<Class6_4_B>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT ");
-                    sql.AppendLine("created::date as created, order_no, ship_to_code, ship_name, ");
-                    sql.AppendLine("item_code, item_name, movement_type, movemet_reason, ");
-                    sql.AppendLine("sum(result_qty) as result_qty");
-                    sql.AppendLine("from public.sap_operateresult");
+                    //sql.AppendLine("SELECT ");
+                    //sql.AppendLine("created::date as created, order_no, ship_to_code, ship_name, ");
+                    //sql.AppendLine("item_code, item_name, movement_type, movemet_reason, ");
+                    //sql.AppendLine("sum(result_qty) as result_qty");
+                    //sql.AppendLine("from public.sap_operateresult");
+                    //sql.AppendLine("where (1=1)");
+                    //sql.AppendLine("and  (work_type in ('05'))");
+                    //sql.AppendLine("AND (created >= @startdate and created < @stopdate)");
+                    //sql.Append("group  by created::date , order_no, ship_to_code, ship_name,");
+                    //sql.AppendLine("item_code, item_name, movement_type, movemet_reason ");
+                    //sql.AppendLine("order by created::date , order_no asc, item_code asc");
+                    ////sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine(";");
+
+
+                    sql.Append("select row_number() ");
+                    sql.AppendLine("over(order by R.rptStockDate asc, R.item asc) AS rn,");
+                    sql.AppendLine("R.item,R.itemdesc,R.supcode,R.uom,");
+                    sql.AppendLine("sum(R.qty) as qty,R.whse, R.doc_num");
+                    sql.AppendLine(",R.rptStockDate,T.lot");
+                    sql.AppendLine("FROM dbo.v_wmstran_issue_rpt R");
+                    sql.AppendLine("LEFT JOIN dbo.wms_trans T");
+                    sql.AppendLine("ON R.item_bc=T.item_bc");
+                    sql.AppendLine("AND R.trans_date=T.trans_date");
                     sql.AppendLine("where (1=1)");
-                    sql.AppendLine("and  (work_type in ('05'))");
-                    sql.AppendLine("AND (created >= @startdate and created < @stopdate)");
-                    sql.Append("group  by created::date , order_no, ship_to_code, ship_name,");
-                    sql.AppendLine("item_code, item_name, movement_type, movemet_reason ");
-                    sql.AppendLine("order by created::date , order_no asc, item_code asc");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    sql.AppendLine("and (R.rptStockDate>=@startdate and R.rptStockDate<=@stopdate)");
+                    sql.AppendLine("group by R.item,R.itemdesc,R.supcode,R.uom,R.whse,R.rptStockDate,T.lot, R.doc_num");
+                    sql.AppendLine("order by R.rptStockDate asc, R.item asc , T.lot asc ");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate", dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate", dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_4_B objrd = new Class6_4_B
                         {
-                            Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                            Order_No = rdr["order_no"].ToString(),
-                            Ship_To_Code = rdr["ship_to_code"].ToString(),
-                            Ship_Name = rdr["ship_name"].ToString(),
-                            Movement_Type = rdr["movement_type"].ToString(),
-                            Movemet_Reason = rdr["movemet_reason"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
-                            Result_Qty = rdr["result_qty"] == DBNull.Value ? null : (decimal?)rdr["result_qty"]
+                            Created = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
+                            Order_No = rdr["doc_num"].ToString(),
+                            Batch_Number = rdr["lot"].ToString(),
+                            Ship_To_Code = null,
+                            Ship_Name = null,
+                            Movement_Type = null,
+                            Movemet_Reason = null,
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
+                            Result_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -2147,33 +2232,35 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_5_A> GetAllMenu6_5AbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_5_A> lstobj = new List<Class6_5_A>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT  idx, created, entity_lock, modified, client_id, client_ip,");
                     sql.AppendLine("mccode, st_no, desc_th, desc_en, remark,");
-                    sql.AppendLine("CASE");
-                    sql.AppendLine("WHEN is_alert=true THEN 4");
-                    sql.AppendLine("ELSE 0 ");
-                    sql.AppendLine("END AS status");
+                    sql.AppendLine("IIF(is_alert=1, 4, 0) AS status");
+
+                    //sql.AppendLine("CASE");
+                    //sql.AppendLine("WHEN is_alert=true THEN 4");
+                    //sql.AppendLine("ELSE 0 ");
+                    //sql.AppendLine("END AS status");
                     sql.AppendLine("FROM wcs.vrpt_mcaudittrail ");
                     sql.AppendLine("WHERE (created >= @startdate AND created < @stopdate)");
                     sql.AppendLine("ORDER BY idx asc");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                   
                     sql.AppendLine(";");
 
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate",  dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_5_A objrd = new Class6_5_A
@@ -2194,7 +2281,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -2332,7 +2419,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_5_B> GetAllMenu6_5BbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_5_B> lstobj = new List<Class6_5_B>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -2341,25 +2428,25 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("mccode, st_no, ");
                     sql.AppendLine("desc_th, desc_en,");
                     sql.AppendLine("is_alert, count(idx) AS cunt,");
-                    sql.AppendLine("created::date AS created ");
+                    sql.AppendLine("TRY_CONVERT(DATE,created) AS created ");
                     sql.AppendLine("FROM wcs.vrpt_mcaudittrail ");
                     sql.AppendLine("WHERE is_alert=true");
                     sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
-                    sql.AppendLine("GROUP BY mccode, st_no, desc_th, desc_en, remark, is_alert, created::date ");
+                    sql.AppendLine("GROUP BY mccode, st_no, desc_th, desc_en, remark, is_alert, TRY_CONVERT(DATE,created) ");
                     sql.AppendLine("ORDER BY mccode asc , created asc");
                     //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
                     sql.AppendLine(";");
 
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate", dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_5_B objrd = new Class6_5_B
@@ -2375,7 +2462,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -2620,29 +2707,29 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_7_A> GetAllMenu6_7AbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_7_A> lstobj = new List<Class6_7_A>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT");
-                    sql.Append("date_trunc('hour', stime) AS w_hour,");
+                    sql.Append("dateadd(hour, datediff(hour, 0, stime), 0) as w_hour,");
                     sql.Append("count(su_no) AS w_count ");
                     sql.AppendLine("FROM wcs.vrptqueueloadtime ");
                     sql.AppendLine("WHERE 1=1");
                     sql.AppendLine("AND (stime >= @startdate AND stime < @stopdate)");
-                    sql.AppendLine("GROUP BY date_trunc('hour', stime) ");
+                    sql.AppendLine("GROUP BY ateadd(hour, datediff(hour, 0, stime), 0) ");
                     sql.AppendLine("ORDER BY w_hour asc ");
                     sql.AppendLine(";");
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate", dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate",  dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_7_A objrd = new Class6_7_A
@@ -2653,7 +2740,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -2780,7 +2867,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_7_B> GetAllMenu6_7BbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_7_B> lstobj = new List<Class6_7_B>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -2795,15 +2882,15 @@ namespace GoWMS.Server.Data
                     //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate",  dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate", dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_7_B objrd = new Class6_7_B
@@ -2825,7 +2912,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -2953,32 +3040,32 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_7_C> GetAllMenu6_7CbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_7_C> lstobj = new List<Class6_7_C>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
 
                     sql.AppendLine("SELECT");
-                    sql.Append("date_trunc('hour', modified) AS w_hour,");
+                    sql.Append("dateadd(hour, datediff(hour, 0, modified), 0) AS w_hour,");
                     sql.Append("count(su_no) AS w_count ");
                     sql.AppendLine("FROM public.vrpt_loadtime_oubrgv ");
                     sql.AppendLine("WHERE 1=1");
                     sql.AppendLine("AND (modified >= @startdate AND modified < @stopdate)");
-                    sql.AppendLine("GROUP BY date_trunc('hour', modified) ");
+                    sql.AppendLine("GROUP BY dateadd(hour, datediff(hour, 0, modified), 0) ");
                     sql.AppendLine("ORDER BY w_hour ASC ");
                     //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate", dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate", dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_7_C objrd = new Class6_7_C
@@ -2989,7 +3076,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -3520,7 +3607,7 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_7_F> GetAllMenu6_7FbyDate(DateTime dtStart, DateTime dtStop)
         {
             List<Class6_7_F> lstobj = new List<Class6_7_F>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -3546,15 +3633,15 @@ namespace GoWMS.Server.Data
                     sql.AppendLine(";");
 
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
-                    cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
-                    cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
+                    cmd.Parameters.AddWithValue("@startdate", dtStart);
+                    cmd.Parameters.AddWithValue("@stopdate", dtStop);
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_7_F objrd = new Class6_7_F
@@ -3573,7 +3660,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }

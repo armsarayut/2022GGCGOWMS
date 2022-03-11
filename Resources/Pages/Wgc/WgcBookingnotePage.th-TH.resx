@@ -138,6 +138,9 @@
   <data name="PalletGo" xml:space="preserve">
     <value>พาเลทหลัก</value>
   </data>
+  <data name="PalletNo" xml:space="preserve">
+    <value>เลขพาเลท</value>
+  </data>
   <data name="Qty" xml:space="preserve">
     <value>จำนวน</value>
   </data>

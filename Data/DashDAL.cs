@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace GoWMS.Server.Data
     public class DashDAL
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
-
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
 
         public IEnumerable<Vrpt_operationresult_sum> GetAllOrderofDay()
         {
@@ -69,28 +70,28 @@ namespace GoWMS.Server.Data
         public IEnumerable<Vrpt_shelfsummary> GetAllLocationSummary()
         {
             List<Vrpt_shelfsummary> lstobj = new List<Vrpt_shelfsummary>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("select srm_name, srm_no, locavl, locemp, plemp, plerr, prohloc, total, percen " +
+                SqlCommand cmd = new SqlCommand("select srm_name, srm_no, locavl, locemp, plemp, plerr, prohloc, total, percen " +
                     "FROM wcs.vrpt_shelfsummary " +
                     "ORDER BY srm_no", con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Vrpt_shelfsummary objrd = new Vrpt_shelfsummary
                     {
                         Srm_Name = rdr["srm_name"].ToString(),
                         Srm_No = rdr["srm_no"] == DBNull.Value ? null : (Int32?)rdr["srm_no"],
-                        Locavl = rdr["locavl"] == DBNull.Value ? null : (Int64?)rdr["locavl"],
-                        Locemp = rdr["locemp"] == DBNull.Value ? null : (Int64?)rdr["locemp"],
-                        Plemp = rdr["plemp"] == DBNull.Value ? null : (Int64?)rdr["plemp"],
-                        Plerr = rdr["plerr"] == DBNull.Value ? null : (Int64?)rdr["plerr"],
-                        Prohloc = rdr["prohloc"] == DBNull.Value ? null : (Int64?)rdr["prohloc"],
-                        Total = rdr["total"] == DBNull.Value ? null : (Int64?)rdr["total"],
+                        Locavl = rdr["locavl"] == DBNull.Value ? null : (Int32?)rdr["locavl"],
+                        Locemp = rdr["locemp"] == DBNull.Value ? null : (Int32?)rdr["locemp"],
+                        Plemp = rdr["plemp"] == DBNull.Value ? null : (Int32?)rdr["plemp"],
+                        Plerr = rdr["plerr"] == DBNull.Value ? null : (Int32?)rdr["plerr"],
+                        Prohloc = rdr["prohloc"] == DBNull.Value ? null : (Int32?)rdr["prohloc"],
+                        Total = rdr["total"] == DBNull.Value ? null : (Int32?)rdr["total"],
                         Percen = rdr["percen"] == DBNull.Value ? null : (decimal?)rdr["percen"]
                     };
                     lstobj.Add(objrd);
@@ -104,18 +105,18 @@ namespace GoWMS.Server.Data
         public IEnumerable<VLocationDash> GetAllTasworkofday()
         {
             List<VLocationDash> lstobj = new List<VLocationDash>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("SELECT  work_code ,count(lpncode)as clpncode " +
+                SqlCommand cmd = new SqlCommand("SELECT  work_code ,count(lpncode)as clpncode " +
                     "FROM wcs.rpt_works " +
-                    "WHERE etime::DATE = now()::DATE " +
+                    "WHERE Convert(date, etime) = Convert(date, getdate())" +
                     "AND work_status='COM' " +
                     "GROUP BY work_code", con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     VLocationDash objrd = new VLocationDash

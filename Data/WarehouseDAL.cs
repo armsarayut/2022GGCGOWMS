@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,11 +18,12 @@ namespace GoWMS.Server.Data
     public class WarehouseDAL
     {
         readonly private string connString = ConnGlobals.GetConnLocalDBPG();
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
 
         public IEnumerable<WhStorageCapacity> GetStorageCapacities()
         {
             List<WhStorageCapacity> lstModels = new List<WhStorageCapacity>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder sqlQurey = new StringBuilder();
                 sqlQurey.AppendLine("select row_number() over(order by srm_no asc) AS rn");
@@ -30,12 +32,12 @@ namespace GoWMS.Server.Data
                 sqlQurey.AppendLine("order by srm_no asc");
                 sqlQurey.AppendLine(";");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(sqlQurey.ToString(), con)
+                SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     WhStorageCapacity listRead = new WhStorageCapacity
@@ -43,13 +45,13 @@ namespace GoWMS.Server.Data
                         Rn =  rdr["rn"] == DBNull.Value ? null : (Int64?)rdr["rn"],
                         Srmname = rdr["srm_name"].ToString(),
                         Srmno = rdr["srm_no"] == DBNull.Value ? null : (Int32?)rdr["srm_no"],
-                        Locavlt1 = rdr["locavl"] == DBNull.Value ? null : (Int64?)rdr["locavl"],
-                        Locavlt2 = rdr["locavl"] == DBNull.Value ? null : (Int64?)rdr["locavl"],
-                        Locemp = rdr["locemp"] == DBNull.Value ? null : (Int64?)rdr["locemp"],
-                        Plemp = rdr["plemp"] == DBNull.Value ? null : (Int64?)rdr["plemp"],
-                        Perr = rdr["plerr"] == DBNull.Value ? null : (Int64?)rdr["plerr"],
-                        Prohloc = rdr["prohloc"] == DBNull.Value ? null : (Int64?)rdr["prohloc"],
-                        Total = rdr["total"] == DBNull.Value ? null : (Int64?)rdr["total"],
+                        Locavlt1 = rdr["locavl"] == DBNull.Value ? null : (Int32?)rdr["locavl"],
+                        Locavlt2 = rdr["locavl"] == DBNull.Value ? null : (Int32?)rdr["locavl"],
+                        Locemp = rdr["locemp"] == DBNull.Value ? null : (Int32?)rdr["locemp"],
+                        Plemp = rdr["plemp"] == DBNull.Value ? null : (Int32?)rdr["plemp"],
+                        Perr = rdr["plerr"] == DBNull.Value ? null : (Int32?)rdr["plerr"],
+                        Prohloc = rdr["prohloc"] == DBNull.Value ? null : (Int32?)rdr["prohloc"],
+                        Total = rdr["total"] == DBNull.Value ? null : (Int32?)rdr["total"],
                         OccRate = rdr["percen"] == DBNull.Value ? null : (decimal?)rdr["percen"],
                     };
                     lstModels.Add(listRead);

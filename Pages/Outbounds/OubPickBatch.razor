@@ -66,8 +66,11 @@ else
                     <col />
                     <col />
                     <col />
+                    <col />
+                    <col />
                 </ColGroup>
                 <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Order_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Delivery_Date)">@L["REQUESTDATE"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Su_No)">@L["DNSEQ"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
@@ -80,6 +83,7 @@ else
                     <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName} : {context.Key}") @L["Total"]: @context.Items.Sum((e) => e.Request_Qty)</MudTh>
                 </GroupHeaderTemplate>
                 <RowTemplate>
+                    <MudTd DataLabel=@L["ORDERNO"]>@context.Order_No</MudTd>
                     <MudTd DataLabel=>@L["REQUESTDATE"]>@Convert.ToDateTime(context.Delivery_Date).ToString(VarGlobals.FormatD)</MudTd>
                     <MudTd DataLabel=@L["DNSEQ"]>@context.Su_No</MudTd>
                     <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
@@ -176,13 +180,12 @@ else
 
     private TableGroupDefinition<Sap_Storeout> _groupDefinition = new TableGroupDefinition<Sap_Storeout>()
     {
-        GroupName = "Order",
+        GroupName = "PalletGo",
         Indentation = false,
         Expandable = true,
-        Selector = (e) => e.Order_No
+        IsInitiallyExpanded = false,
+        Selector = (e) => e.Pallet_No
     };
-
-
 
     private string stxtInput { get; set; }
 
@@ -286,8 +289,10 @@ else
             }
 
             Elements = ObjService.GetSapStoreoutSetBatch();
+            selectedItems.Clear();
+            searchString = null;
         }
-
+        this.StateHasChanged();
 
     }
 

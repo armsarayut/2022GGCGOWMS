@@ -50,17 +50,16 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-
+            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_B, object>(x=>x.Batch_Number)">@L["BATCH"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_B, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_B, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_B, object>(x=>x.Totalstock)">@L["STOCK"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_B, object>(x=>x.Countpallet)">@L["PACK"] </MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
+            <MudTd DataLabel=@L["BATCH"]>@context.Batch_Number</MudTd>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["STOCK"]>@string.Format(VarGlobals.FormatN2, context.Totalstock)</MudTd>
-            <MudTd DataLabel=@L["PACK"]>@context.Countpallet</MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />

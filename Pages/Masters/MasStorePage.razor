@@ -43,7 +43,7 @@ else
               Filter="new Func<Mas_Storage_Go,bool>(FilterFunc)" @bind-SelectedItem="selectedItem"
               SortLabel=@L["SortBy"]>
         <ToolBarContent>
-            <MudToolBarSpacer />
+            <MudSpacer />
             <MudTextField @bind-Value="searchString"
                           Placeholder=@L["Search"]
                           Adornment="Adornment.Start"
@@ -54,12 +54,12 @@ else
         <HeaderContent>
             <MudTh>@L["Storeno"]</MudTh>
             <MudTh>@L["Name"]</MudTh>
-            <MudTh>@L["Address"]</MudTh>
+         @*   <MudTh>@L["Address"]</MudTh>*@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["Storeno"]>@context.Stocode</MudTd>
             <MudTd DataLabel=@L["Name"]>@context.Stoname</MudTd>
-            <MudTd DataLabel=@L["Address"]>@context.Stoaddress</MudTd>
+            @*<MudTd DataLabel=@L["Address"]>@context.Stoaddress</MudTd>*@
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />

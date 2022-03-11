@@ -37,6 +37,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine("FROM WGRB.BOOKING_NOTE_ITEMS t1");
                 sql.AppendLine("LEFT JOIN WGRB.ITEMS t2 ON t1.ITEM_CODE = t2.ITEM_CODE");
                 sql.AppendLine("WHERE t1.PALLET_GO is not null");
+                sql.AppendLine("AND t1.PALLET_GO like 'WGC-%'");
                 //sql.AppendLine("AND STATUS_GO is not null");
                 sql.AppendLine("ORDER BY t1.SEQ_NO");
                 
@@ -126,6 +127,110 @@ namespace GoWMS.Server.Data
         }
 
         public async Task<IEnumerable<BOOKING_NOTE_ITEMS>> GetAllApiNewBooking_note()
+        {
+            Environment.SetEnvironmentVariable("NLS_LANG",
+                    "AMERICAN_AMERICA.WE8MSWIN1252",
+                    EnvironmentVariableTarget.Process);
+
+            List<BOOKING_NOTE_ITEMS> lstobj = new List<BOOKING_NOTE_ITEMS>();
+            StringBuilder sql = new StringBuilder();
+
+            using (OleDbConnection con = new OleDbConnection(connectionString))
+            {
+                //StringBuilder sql = new StringBuilder();
+                sql.Clear();
+                sql.AppendLine("SELECT t1.*, t2.ITEM_NAME ");
+                sql.AppendLine("FROM WGRB.BOOKING_NOTE_ITEMS t1");
+                sql.AppendLine("LEFT JOIN WGRB.ITEMS t2 ON t1.ITEM_CODE = t2.ITEM_CODE");
+                sql.AppendLine("WHERE t1.PALLET_GO is not null");
+                sql.AppendLine("AND t1.STATUS_GO is null");
+                sql.AppendLine("AND t1.REMARKS is null");
+                sql.AppendLine("AND t1.PALLET_GO like 'WGC-%'");
+                sql.AppendLine("ORDER BY t1.SEQ_NO");
+                try
+                {
+                    OleDbCommand cmd = new OleDbCommand(sql.ToString(), con)
+                    {
+                        CommandType = CommandType.Text
+                    };
+                    //await con.OpenAsync();
+                    con.Open();
+
+                    OleDbDataReader rdr = cmd.ExecuteReader();
+                    while (await rdr.ReadAsync())
+                    {
+
+                        BOOKING_NOTE_ITEMS objrd = new BOOKING_NOTE_ITEMS
+                        {
+                            BK_NO = rdr["BK_NO"].ToString(),
+                            SEQ_NO = rdr["SEQ_NO"] == DBNull.Value ? null : (Decimal?)rdr["SEQ_NO"],
+                            DN_NO = rdr["DN_NO"].ToString(),
+                            DN_SEQ = rdr["DN_SEQ"] == DBNull.Value ? null : (Decimal?)rdr["DN_SEQ"],
+                            SO_NO = rdr["SO_NO"].ToString(),
+                            SO_SEQ = rdr["SO_SEQ"] == DBNull.Value ? null : (Decimal?)rdr["SO_SEQ"],
+                            JOB_NO = rdr["JOB_NO"].ToString(),
+                            ITEM_CODE = rdr["ITEM_CODE"].ToString(),
+                            DN_QTY = rdr["DN_QTY"] == DBNull.Value ? null : (Decimal?)rdr["DN_QTY"],
+                            DN_UM = rdr["DN_UM"].ToString(),
+                            DN_DATE = rdr["DN_DATE"] == DBNull.Value ? null : (DateTime?)rdr["DN_DATE"],
+                            STATUS = rdr["STATUS"].ToString(),
+                            CUSTOMER_CODE = rdr["CUSTOMER_CODE"].ToString(),
+                            BATCH_NO = rdr["BATCH_NO"].ToString(),
+                            FACTORY_ROOM = rdr["FACTORY_ROOM"].ToString(),
+                            PALETTE_NO = rdr["PALETTE_NO"].ToString(),
+                            PCK_NO = rdr["PCK_NO"] == DBNull.Value ? null : (Decimal?)rdr["PCK_NO"],
+                            BOX_NO = rdr["BOX_NO"] == DBNull.Value ? null : (Decimal?)rdr["BOX_NO"],
+                            CLOSE_FLAG = rdr["CLOSE_FLAG"].ToString(),
+                            PACKETING_CODE = rdr["PACKETING_CODE"].ToString(),
+                            DN_WEIGHT = rdr["DN_WEIGHT"] == DBNull.Value ? null : (Decimal?)rdr["DN_WEIGHT"],
+                            DN_WEIGHT_UM = rdr["DN_WEIGHT_UM"].ToString(),
+                            LOT_NO = rdr["LOT_NO"].ToString(),
+                            STORE_ID = rdr["STORE_ID"].ToString(),
+                            SCREEN_NAME = rdr["SCREEN_NAME"].ToString(),
+                            CUST_ITEM_CODE = rdr["CUST_ITEM_CODE"].ToString(),
+                            VEHICLE_CODE = rdr["VEHICLE_CODE"].ToString(),
+                            VEHICLE_LINK_CODE = rdr["VEHICLE_LINK_CODE"].ToString(),
+                            PACKAGE_WEIGHT = rdr["PACKAGE_WEIGHT"] == DBNull.Value ? null : (Decimal?)rdr["PACKAGE_WEIGHT"],
+                            PK_NO = rdr["PK_NO"].ToString(),
+                            PK_SEQ = rdr["PK_SEQ"] == DBNull.Value ? null : (Decimal?)rdr["PK_SEQ"],
+                            STICKER_CODE = rdr["STICKER_CODE"].ToString(),
+                            SUB_CUSTOMER_CODE = rdr["SUB_CUSTOMER_CODE"].ToString(),
+                            TO_PCK_NO = rdr["TO_PCK_NO"].ToString(),
+                            EFFECT_TYPE = rdr["EFFECT_TYPE"].ToString(),
+                            REMARKS = rdr["REMARKS"].ToString(),
+                            BOOKING_MODEL_NO = rdr["BOOKING_MODEL_NO"].ToString(),
+                            REQUEST_DATE = rdr["REQUEST_DATE"] == DBNull.Value ? null : (DateTime?)rdr["REQUEST_DATE"],
+                            SEQ_TR = rdr["SEQ_TR"] == DBNull.Value ? null : (Decimal?)rdr["SEQ_TR"],
+                            TANK_SIZE = rdr["TANK_SIZE"].ToString(),
+                            HUMAN_DRIVE_CODE = rdr["HUMAN_DRIVE_CODE"].ToString(),
+                            TIME_LOAD_PRODUCT = rdr["TIME_LOAD_PRODUCT"].ToString(),
+                            QTY_REMARKS = rdr["QTY_REMARKS"].ToString(),
+                            PACKING_DATE = rdr["PACKING_DATE"] == DBNull.Value ? null : (DateTime?)rdr["PACKING_DATE"],
+                            SHELF_LIFE_DATE = rdr["SHELF_LIFE_DATE"] == DBNull.Value ? null : (DateTime?)rdr["SHELF_LIFE_DATE"],
+                            SHELF_LIFE_DAY = rdr["SHELF_LIFE_DAY"] == DBNull.Value ? null : (Decimal?)rdr["SHELF_LIFE_DAY"],
+                            SHELF_LIFE_KEEP_IN = rdr["SHELF_LIFE_KEEP_IN"] == DBNull.Value ? null : (Decimal?)rdr["SHELF_LIFE_KEEP_IN"],
+                            SHELF_LIFE_KEEP_IN_DATE = rdr["SHELF_LIFE_KEEP_IN_DATE"] == DBNull.Value ? null : (DateTime?)rdr["SHELF_LIFE_KEEP_IN_DATE"],
+                            LOT_CORN = rdr["LOT_CORN"].ToString(),
+                            HIT_LET = rdr["HIT_LET"].ToString(),
+                            PALLET_GO = rdr["PALLET_GO"].ToString(),
+                            STATUS_GO = rdr["STATUS_GO"].ToString(),
+                            UPDATE_DATE_GO = rdr["UPDATE_DATE_GO"] == DBNull.Value ? null : (DateTime?)rdr["UPDATE_DATE_GO"],
+                            CREATED_DATE = rdr["CREATED_DATE"] == DBNull.Value ? null : (DateTime?)rdr["CREATED_DATE"],
+                            ITEM_NAME = rdr["ITEM_NAME"].ToString()
+                        };
+                        lstobj.Add(objrd);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
+
+        public async Task<IEnumerable<BOOKING_NOTE_ITEMS>> GetAllApiNewBooking_noteFilter()
         {
             Environment.SetEnvironmentVariable("NLS_LANG",
                     "AMERICAN_AMERICA.WE8MSWIN1252",
@@ -454,7 +559,6 @@ namespace GoWMS.Server.Data
 
         }
 
-
         public async Task<IEnumerable<DELIVERY_NOTE_ITEMS>> GetAllApiDelivery_note()
         {
             Environment.SetEnvironmentVariable("NLS_LANG",
@@ -471,6 +575,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine("FROM WGRB.DELIVERY_NOTE_ITEMS t1");
                 sql.AppendLine("LEFT JOIN WGRB.ITEMS t2 ON t1.ITEM_CODE = t2.ITEM_CODE");
                 sql.AppendLine("WHERE t1.PALLET_GO is not null");
+                sql.AppendLine("AND t1.PALLET_GO like 'WGC-%'");
                 //sql.AppendLine("AND STATUS_GO is not null");
                 sql.AppendLine("ORDER BY t1.SEQ_NO");
 
@@ -1271,7 +1376,6 @@ namespace GoWMS.Server.Data
             //cmd.Parameters.Add(new OleDbParameter("@STATUS_GO", OleDbType.VarChar, 1, "Y"));
             //cmd.Parameters.Add(new OleDbParameter("@PALLET_GO", OleDbType.VarChar, 10, pallet));
             //cmd.Parameters.Add(new OleDbParameter("@STATUS", OleDbType.VarChar, 1, "A"));
-
 
             con.Open();
             try
