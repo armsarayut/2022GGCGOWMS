@@ -130,13 +130,13 @@
     <value>Lane</value>
   </data>
   <data name="Pendingpicking" xml:space="preserve">
-    <value>Pending Picking</value>
+    <value>Picking</value>
   </data>
   <data name="PendingPutaway" xml:space="preserve">
-    <value>Pending Putaway</value>
+    <value>Putaway</value>
   </data>
   <data name="PendingReceving" xml:space="preserve">
-    <value>Pending Receving</value>
+    <value>Receving</value>
   </data>
   <data name="Retrieval" xml:space="preserve">
     <value>Retrieval</value>

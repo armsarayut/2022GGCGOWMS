@@ -1,4 +1,4 @@
-﻿@page "/1/1_3"
+﻿@page "/1/1_5"
 @using System
 @using System.IO
 @using System.Linq
@@ -11,6 +11,7 @@
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
 @using GoWMS.Server.Models.Inb
+@using GoWMS.Server.Models.Wcs
 @using GoWMS.Server.Pdf
 @using GoWMS.Server.Reports
 @using System.Security.Claims
@@ -18,6 +19,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ReportService UserlogService
 @inject InboundService ObjInboundService
+@inject WcsService ObjWcsService 
 @inject UserServices OpjUserService
 @inject IJSRuntime JSRuntime
 @inject IStringLocalizer<IbpWcsQueue> L
@@ -48,7 +50,7 @@ else
               Hover="@hover"
               Bordered="@bordered"
               Striped="@striped"
-              Filter="new Func<Inb_Putaway_Go,bool>(FilterFunc)"
+              Filter="new Func<Tas_WorksInfo,bool>(FilterFunc)"
               @bind-SelectedItem="selectedItem">
         <ToolBarContent>
             <MudSpacer />
@@ -58,14 +60,14 @@ else
                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Putaway_Go, object>(x=>x.Created)">@L["Queuetime"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Putaway_Go, object>(x=>x.Palletno)">@L["PalletGo"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Putaway_Go, object>(x=>x.Puttype)">@L["Worktype"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Tas_WorksInfo, object>(x=>x.Created)">@L["Queuetime"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Tas_WorksInfo, object>(x=>x.Lpncode)">@L["PalletGo"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Tas_WorksInfo, object>(x=>x.Work_Code)">@L["Worktype"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="@L["Queuetime"]">@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatDT)</MudTd>
-            <MudTd DataLabel="@L["PalletGo"]">@context.Palletno</MudTd>
-            <MudTd DataLabel="@L["Worktype"]">@context.Puttype</MudTd>
+            <MudTd DataLabel="@L["PalletGo"]">@context.Lpncode</MudTd>
+            <MudTd DataLabel="@L["Worktype"]">@context.Work_Code</MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
@@ -90,9 +92,9 @@ else
     private bool fixed_header = true;
     private bool fixed_footer = true;
     private string searchString = "";
-    private Inb_Putaway_Go selectedItem = null;
-    private HashSet<Inb_Putaway_Go> selectedItems = new HashSet<Inb_Putaway_Go>();
-    private IEnumerable<Inb_Putaway_Go> Elements = new List<Inb_Putaway_Go>();
+    private Tas_WorksInfo selectedItem = null;
+    private HashSet<Tas_WorksInfo> selectedItems = new HashSet<Tas_WorksInfo>();
+    private IEnumerable<Tas_WorksInfo> Elements = new List<Tas_WorksInfo>();
 
     public int elevation = 0;
     private ResultReturn resultReturn = null;
@@ -106,7 +108,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        InboundService objCS = new InboundService();
+        WcsService objCS = new WcsService();
 
         //////// Intial Menu and Privilege//////
         resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
@@ -117,7 +119,7 @@ else
         this.InsertAuditrial("View", pageheader);
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-        Elements = await Task.Run(() => objCS.GetAllInbPutawayGos());
+        Elements = await Task.Run(() => objCS.GetASRSWork());
     }
 
     async Task GetUserAthu()
@@ -153,15 +155,15 @@ else
         }
     }
 
-    private bool FilterFunc(Inb_Putaway_Go element)
+    private bool FilterFunc(Tas_WorksInfo element)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Palletno.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Lpncode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Palletmapkey.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Su_No.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{element.Puttype} {element.Storageno} {element.Storagearea} {element.Storagebin} {element.Efstatus}".Contains(searchString))
+        if ($"{element.Work_Code} {element.Work_Srm} {element.Work_Location}".Contains(searchString))
             return true;
         return false;
     }
@@ -173,12 +175,12 @@ else
             bool? result = await CheckRoleReport();
             if (result == true)
             {
-                IbpWcsQueueRptExcel excelReport = new IbpWcsQueueRptExcel();
-                List<Inb_Putaway_Go> listExcelReport = new List<Inb_Putaway_Go>();
-                listExcelReport = Elements.ToList();
-                var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-                await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
-                this.InsertAuditrial("Export excel file :" + fileName.ToString(), pageheader);
+                //IbpWcsQueueRptExcel excelReport = new IbpWcsQueueRptExcel();
+                //List<Tas_WorksInfo> listExcelReport = new List<Tas_WorksInfo>();
+                //listExcelReport = Elements.ToList();
+                //var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+                //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
+                //this.InsertAuditrial("Export excel file :" + fileName.ToString(), pageheader);
             }
 
         }
@@ -195,13 +197,13 @@ else
             bool? result = await CheckRoleReport();
             if (result==true)
             {
-                IbpWcsQueueRptPdf pdfReport = new IbpWcsQueueRptPdf();
-                List<Inb_Putaway_Go> listPdfReport = new List<Inb_Putaway_Go>();
-                listPdfReport = Elements.ToList();
-                var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
-                //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.Report(listPdfReport)));
-                await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport)));
-                this.InsertAuditrial("Export pdf file :" + fileName.ToString(), pageheader);
+                //IbpWcsQueueRptPdf pdfReport = new IbpWcsQueueRptPdf();
+                //List<Tas_WorksInfo> listPdfReport = new List<Tas_WorksInfo>();
+                //listPdfReport = Elements.ToList();
+                //var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
+                ////await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.Report(listPdfReport)));
+                //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport)));
+                //this.InsertAuditrial("Export pdf file :" + fileName.ToString(), pageheader);
             }
 
 

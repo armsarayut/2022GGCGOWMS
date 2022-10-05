@@ -16,6 +16,7 @@ namespace GoWMS.Server.Models.Inv
         public Int32? Shelfframe { get; set; }
         public Int32? Shelfbay { get; set; }
         public Int32? Shelflevel { get; set; }
+        public Int32? Shelfdeep { get; set; }
         public Int32? Shelfstatus { get; set; }
         public string Lpncode { get; set; }
         public string Refercode { get; set; }
@@ -23,5 +24,7 @@ namespace GoWMS.Server.Models.Inv
         public Int32? Actual_size { get; set; }
         public string Desc_size { get; set; }
         public string St_desc { get; set; }
+        public string Backcolor { get; set; }
+        public string Focecolor { get; set; }
     }
 }

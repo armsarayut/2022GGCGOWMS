@@ -2687,7 +2687,7 @@ namespace GoWMS.Server.Data
                         Class6_7_A objrd = new Class6_7_A
                         {
                             W_Hour = rdr["w_hour"] == DBNull.Value ? null : (DateTime?)rdr["w_hour"],
-                            W_Count = rdr["w_count"] == DBNull.Value ? null : (long?)rdr["w_count"]
+                            W_Count = rdr["w_count"] == DBNull.Value ? null : (Int32?)rdr["w_count"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -2713,12 +2713,12 @@ namespace GoWMS.Server.Data
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT");
-                    sql.Append("dateadd(hour, datediff(hour, 0, stime), 0) as w_hour,");
+                    sql.Append("dateadd(hour, datediff(hour, 0, sretime), 0) as w_hour,");
                     sql.Append("count(su_no) AS w_count ");
-                    sql.AppendLine("FROM wcs.vrptqueueloadtime ");
+                    sql.AppendLine("FROM dbo.vrpt_loadtime_inbound ");
                     sql.AppendLine("WHERE 1=1");
-                    sql.AppendLine("AND (stime >= @startdate AND stime < @stopdate)");
-                    sql.AppendLine("GROUP BY ateadd(hour, datediff(hour, 0, stime), 0) ");
+                    sql.AppendLine("AND (sretime >= @startdate AND sretime < @stopdate)");
+                    sql.AppendLine("GROUP BY dateadd(hour, datediff(hour, 0, sretime), 0) ");
                     sql.AppendLine("ORDER BY w_hour asc ");
                     sql.AppendLine(";");
                     SqlCommand cmd = new SqlCommand(sql.ToString(), con)
@@ -2735,7 +2735,7 @@ namespace GoWMS.Server.Data
                         Class6_7_A objrd = new Class6_7_A
                         {
                             W_Hour = rdr["w_hour"] == DBNull.Value ? null : (DateTime?)rdr["w_hour"],
-                            W_Count = rdr["w_count"] == DBNull.Value ? null : (long?)rdr["w_count"]
+                            W_Count = rdr["w_count"] == DBNull.Value ? null : (Int32?)rdr["w_count"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -2786,7 +2786,7 @@ namespace GoWMS.Server.Data
                         Class6_7_A objrd = new Class6_7_A
                         {
                             W_Hour = rdr["w_hour"] == DBNull.Value ? null : (DateTime?)rdr["w_hour"],
-                            W_Count = rdr["w_count"] == DBNull.Value ? null : (long?)rdr["w_count"]
+                            W_Count = rdr["w_count"] == DBNull.Value ? null : (Int32?)rdr["w_count"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -2875,10 +2875,13 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("SELECT");
                     sql.Append("su_no, lpncode, work_code, srm_no, loc_no, rgv_from,  ");
                     sql.Append("rgv_to, wctime, srstime, sretime, rvloadtime, srloadtime, loadtime ");
-                    sql.AppendLine("FROM public.vrpt_loadtime_inbound ");
+                    sql.AppendLine("FROM dbo.vrpt_loadtime_inbound ");
                     sql.AppendLine("WHERE 1=1");
                     sql.AppendLine("AND (wctime >= @startdate AND wctime < @stopdate)");
                     sql.AppendLine("ORDER BY wctime ASC ");
+
+        
+
                     //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
                     sql.AppendLine(";");
 
@@ -2935,7 +2938,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("SELECT");
                     sql.Append("su_no, lpncode, work_code, srm_no, loc_no, rgv_from,  ");
                     sql.Append("rgv_to, wctime, srstime, sretime, rvloadtime, srloadtime, loadtime ");
-                    sql.AppendLine("FROM public.vrpt_loadtime_inbound ");
+                    sql.AppendLine("FROM dbo.vrpt_loadtime_inbound ");
                     sql.AppendLine("WHERE 1=1");
                     sql.AppendLine("AND (wctime >= @startdate AND wctime < @stopdate)");
                     sql.AppendLine("ORDER BY wctime ASC ");
@@ -3020,7 +3023,7 @@ namespace GoWMS.Server.Data
                         Class6_7_C objrd = new Class6_7_C
                         {
                             W_Hour = rdr["w_hour"] == DBNull.Value ? null : (DateTime?)rdr["w_hour"],
-                            W_Count = rdr["w_count"] == DBNull.Value ? null : (long?)rdr["w_count"]
+                            W_Count = rdr["w_count"] == DBNull.Value ? null : (Int32?)rdr["w_count"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -3046,16 +3049,28 @@ namespace GoWMS.Server.Data
                 {
                     StringBuilder sql = new StringBuilder();
 
+                    //sql.AppendLine("SELECT");
+                    //sql.Append("dateadd(hour, datediff(hour, 0, modified), 0) AS w_hour,");
+                    //sql.Append("count(su_no) AS w_count ");
+                    //sql.AppendLine("FROM dbo.vrpt_loadtime_outbound ");
+                    //sql.AppendLine("WHERE 1=1");
+                    //sql.AppendLine("AND (modified >= @startdate AND modified < @stopdate)");
+                    //sql.AppendLine("GROUP BY dateadd(hour, datediff(hour, 0, modified), 0) ");
+                    //sql.AppendLine("ORDER BY w_hour ASC ");
+                    ////sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine(";");
+
+
                     sql.AppendLine("SELECT");
-                    sql.Append("dateadd(hour, datediff(hour, 0, modified), 0) AS w_hour,");
+                    sql.Append("dateadd(hour, datediff(hour, 0, rvetime), 0) as w_hour,");
                     sql.Append("count(su_no) AS w_count ");
-                    sql.AppendLine("FROM public.vrpt_loadtime_oubrgv ");
+                    sql.AppendLine("FROM dbo.vrpt_loadtime_outbound ");
                     sql.AppendLine("WHERE 1=1");
-                    sql.AppendLine("AND (modified >= @startdate AND modified < @stopdate)");
-                    sql.AppendLine("GROUP BY dateadd(hour, datediff(hour, 0, modified), 0) ");
-                    sql.AppendLine("ORDER BY w_hour ASC ");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    sql.AppendLine("AND (rvetime >= @startdate AND rvetime < @stopdate)");
+                    sql.AppendLine("GROUP BY dateadd(hour, datediff(hour, 0, rvetime), 0) ");
+                    sql.AppendLine("ORDER BY w_hour asc ");
                     sql.AppendLine(";");
+
 
                     SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
@@ -3071,7 +3086,7 @@ namespace GoWMS.Server.Data
                         Class6_7_C objrd = new Class6_7_C
                         {
                             W_Hour = rdr["w_hour"] == DBNull.Value ? null : (DateTime?)rdr["w_hour"],
-                            W_Count = rdr["w_count"] == DBNull.Value ? null : (long?)rdr["w_count"]
+                            W_Count = rdr["w_count"] == DBNull.Value ? null : (Int32?)rdr["w_count"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -3123,7 +3138,7 @@ namespace GoWMS.Server.Data
                         Class6_7_C objrd = new Class6_7_C
                         {
                             W_Hour = rdr["w_hour"] == DBNull.Value ? null : (DateTime?)rdr["w_hour"],
-                            W_Count = rdr["w_count"] == DBNull.Value ? null : (long?)rdr["w_count"]
+                            W_Count = rdr["w_count"] == DBNull.Value ? null : (Int32?)rdr["w_count"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -3579,15 +3594,15 @@ namespace GoWMS.Server.Data
                         Class6_7_F objrd = new Class6_7_F
                         {
                             W_date = rdr["w_date"] == DBNull.Value ? null : (DateTime?)rdr["w_date"],
-                            W01 = rdr["w01"] == DBNull.Value ? null : (long?)rdr["w01"],
-                            W02 = rdr["w02"] == DBNull.Value ? null : (long?)rdr["w02"],
-                            W03 = rdr["w03"] == DBNull.Value ? null : (long?)rdr["w03"],
-                            W05 = rdr["w05"] == DBNull.Value ? null : (long?)rdr["w05"],
-                            W07 = rdr["W07"] == DBNull.Value ? null : (long?)rdr["W07"],
-                            W09 = rdr["w09"] == DBNull.Value ? null : (long?)rdr["w09"],
-                            W101 = rdr["w101"] == DBNull.Value ? null : (long?)rdr["w101"],
-                            W102 = rdr["w102"] == DBNull.Value ? null : (long?)rdr["w102"],
-                            Wtotal = rdr["wtotal"] == DBNull.Value ? null : (long?)rdr["wtotal"]
+                            W01 = rdr["w01"] == DBNull.Value ? null : (Int32?)rdr["w01"],
+                            W02 = rdr["w02"] == DBNull.Value ? null : (Int32?)rdr["w02"],
+                            W03 = rdr["w03"] == DBNull.Value ? null : (Int32?)rdr["w03"],
+                            W05 = rdr["w05"] == DBNull.Value ? null : (Int32?)rdr["w05"],
+                            W07 = rdr["W07"] == DBNull.Value ? null : (Int32?)rdr["W07"],
+                            W09 = rdr["w09"] == DBNull.Value ? null : (Int32?)rdr["w09"],
+                            W101 = rdr["w101"] == DBNull.Value ? null : (Int32?)rdr["w101"],
+                            W102 = rdr["w102"] == DBNull.Value ? null : (Int32?)rdr["w102"],
+                            Wtotal = rdr["wtotal"] == DBNull.Value ? null : (Int32?)rdr["wtotal"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -3647,15 +3662,15 @@ namespace GoWMS.Server.Data
                         Class6_7_F objrd = new Class6_7_F
                         {
                             W_date = rdr["w_date"] == DBNull.Value ? null : (DateTime?)rdr["w_date"],
-                            W01 = rdr["w01"] == DBNull.Value ? null : (long?)rdr["w01"],
-                            W02 = rdr["w02"] == DBNull.Value ? null : (long?)rdr["w02"],
-                            W03 = rdr["w03"] == DBNull.Value ? null : (long?)rdr["w03"],
-                            W05 = rdr["w05"] == DBNull.Value ? null : (long?)rdr["w05"],
-                            W07 = rdr["W07"] == DBNull.Value ? null : (long?)rdr["W07"],
-                            W09 = rdr["w09"] == DBNull.Value ? null : (long?)rdr["w09"],
-                            W101 = rdr["w101"] == DBNull.Value ? null : (long?)rdr["w101"],
-                            W102 = rdr["w102"] == DBNull.Value ? null : (long?)rdr["w102"],
-                            Wtotal = rdr["wtotal"] == DBNull.Value ? null : (long?)rdr["wtotal"]
+                            W01 = rdr["w01"] == DBNull.Value ? null : (Int32?)rdr["w01"],
+                            W02 = rdr["w02"] == DBNull.Value ? null : (Int32?)rdr["w02"],
+                            W03 = rdr["w03"] == DBNull.Value ? null : (Int32?)rdr["w03"],
+                            W05 = rdr["w05"] == DBNull.Value ? null : (Int32?)rdr["w05"],
+                            W07 = rdr["W07"] == DBNull.Value ? null : (Int32?)rdr["W07"],
+                            W09 = rdr["w09"] == DBNull.Value ? null : (Int32?)rdr["w09"],
+                            W101 = rdr["w101"] == DBNull.Value ? null : (Int32?)rdr["w101"],
+                            W102 = rdr["w102"] == DBNull.Value ? null : (Int32?)rdr["w102"],
+                            Wtotal = rdr["wtotal"] == DBNull.Value ? null : (Int32?)rdr["wtotal"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -3716,15 +3731,15 @@ namespace GoWMS.Server.Data
                         Class6_7_F objrd = new Class6_7_F
                         {
                             W_date = rdr["w_date"] == DBNull.Value ? null : (DateTime?)rdr["w_date"],
-                            W01 = rdr["w01"] == DBNull.Value ? null : (long?)rdr["w01"],
-                            W02 = rdr["w02"] == DBNull.Value ? null : (long?)rdr["w02"],
-                            W03 = rdr["w03"] == DBNull.Value ? null : (long?)rdr["w03"],
-                            W05 = rdr["w05"] == DBNull.Value ? null : (long?)rdr["w05"],
-                            W07 = rdr["W07"] == DBNull.Value ? null : (long?)rdr["W07"],
-                            W09 = rdr["w09"] == DBNull.Value ? null : (long?)rdr["w09"],
-                            W101 = rdr["w101"] == DBNull.Value ? null : (long?)rdr["w101"],
-                            W102 = rdr["w102"] == DBNull.Value ? null : (long?)rdr["w102"],
-                            Wtotal = rdr["wtotal"] == DBNull.Value ? null : (long?)rdr["wtotal"]
+                            W01 = rdr["w01"] == DBNull.Value ? null : (Int32?)rdr["w01"],
+                            W02 = rdr["w02"] == DBNull.Value ? null : (Int32?)rdr["w02"],
+                            W03 = rdr["w03"] == DBNull.Value ? null : (Int32?)rdr["w03"],
+                            W05 = rdr["w05"] == DBNull.Value ? null : (Int32?)rdr["w05"],
+                            W07 = rdr["W07"] == DBNull.Value ? null : (Int32?)rdr["W07"],
+                            W09 = rdr["w09"] == DBNull.Value ? null : (Int32?)rdr["w09"],
+                            W101 = rdr["w101"] == DBNull.Value ? null : (Int32?)rdr["w101"],
+                            W102 = rdr["w102"] == DBNull.Value ? null : (Int32?)rdr["w102"],
+                            Wtotal = rdr["wtotal"] == DBNull.Value ? null : (Int32?)rdr["wtotal"]
                         };
                         lstobj.Add(objrd);
                     }

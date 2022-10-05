@@ -127,7 +127,7 @@
     <value>ชื่อสินค้า</value>
   </data>
   <data name="MasterPallet" xml:space="preserve">
-    <value>พาเลท</value>
+    <value>หมายเลขแทก</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
     <value>การทำแพลน</value>

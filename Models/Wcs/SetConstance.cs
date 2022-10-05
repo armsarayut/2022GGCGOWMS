@@ -15,5 +15,7 @@ namespace GoWMS.Server.Models.Wcs
         public string Val_chr { get; set; }
         public DateTime? Val_dt { get; set; }
 
+        public Boolean? Val_bit { get; set; }
+
     }
 }

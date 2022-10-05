@@ -1,5 +1,6 @@
 ﻿@page "/1/1_1"
 @using System
+@using System.Data;
 @using System.IO
 @using System.Linq
 @using System.Text
@@ -23,6 +24,10 @@
 @inject ReportService UserlogService
 @inject CustomerService ObjCustomService
 @inject UserServices OpjUserService
+@inject InboundService ObjInboundService
+@inject IPrintingService PrintingService
+
+
 @attribute [Authorize]
 
 @if (Elements == null)
@@ -91,7 +96,7 @@ else
         </PagerContent>
     </MudTable>*@
 
- <MudDataGrid T="Inb_Goodreceipt_Go" Items="@Elements" Sortable="true" Filterable="true" QuickFilter="@_quickFilter"
+ <MudDataGrid T="Api_ggc" Items="@Elements" Sortable="true" Filterable="true" QuickFilter="@_quickFilter"
     Hideable="true"  FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" >
     <ToolBarContent>
@@ -101,20 +106,23 @@ else
             AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <Columns>
-        @*<SelectColumn T="Inb_Goodreceipt_Go" />*@
-        <Column T="Inb_Goodreceipt_Go" Field="Docdate" Title="@L["DNDate"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Pono" Title="@L["DNDate"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Pallettag" Title="@L["DNSeq"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Itemcode" Title="@L["ItemCode"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Itemname" Title="@L["ItemName"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Quantity" Title="@L["Qty"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Unit" Title="@L["Unit"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Weight" Title="@L["Weight"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Docno" Title="@L["LotNo"]" />
-        <Column T="Inb_Goodreceipt_Go" Field="Docnote" Title="@L["BatchNo"]" />
+        @*<SelectColumn T="Api_ggc" />*@
+        <Column T="Api_ggc" Field="Receiving_date" Title="@L["DNDate"]" />
+        <Column T="Api_ggc" Field="Doc_ref" Title="@L["DNNo"]" />
+        <Column T="Api_ggc" Field="Batch_no" Title="@L["BatchNo"]" />
+        <Column T="Api_ggc" Field="Item_code" Title="@L["ItemCode"]" />
+        <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]" />     
+        <Column T="Api_ggc" Field="Remark" Title="REMARK" />
+        <Column T="Api_ggc" Field="Gr_qty" Title="GR Qty"/>
+@*        <Column T="Api_ggc" Field="Gr_remark" Title="GRRemark" />*@
+         <Column T="Api_ggc" Title="PRINTTAG">
+              <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" OnClick="@(()=>TestCreateTag(context.Item.Idx.Value))" />
+              </CellTemplate>
+         </Column>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="Inb_Goodreceipt_Go" />
+        <MudDataGridPager T="Api_ggc" />
     </PagerContent>
 </MudDataGrid>
 
@@ -141,10 +149,14 @@ else
     private bool fixed_header = true;
     private bool fixed_footer = true;
     private string searchString = "";
-    private Inb_Goodreceipt_Go selectedItem = null;
-    private HashSet<Inb_Goodreceipt_Go> selectedItems = new HashSet<Inb_Goodreceipt_Go>();
-    private IEnumerable<Inb_Goodreceipt_Go> Elements = new List<Inb_Goodreceipt_Go>();
+    private Api_ggc selectedItem = null;
+    private HashSet<Api_ggc> selectedItems = new HashSet<Api_ggc>();
+    private IEnumerable<Api_ggc> Elements = new List<Api_ggc>();
     List<Userroleinfo> Roles = new List<Userroleinfo>();
+
+    List<ggcTag4x4> TagList = new List<ggcTag4x4>();
+
+
 
     [Inject] private IDialogService DialogService { get; set; }
 
@@ -160,7 +172,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        InboundService objCS = new InboundService();
+        ErpApiService objCS = new ErpApiService();
 
         //////// Intial Menu and Privilege//////
         resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
@@ -173,13 +185,15 @@ else
 
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-        Elements = await Task.Run(() => objCS.GetAllInbGoodreceiptGos());
+        Elements = await Task.Run(() => objCS.GetApiInboundAll());
     }
 
     async Task GetUserAthu()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+
+        sUsername = user.Identity.Name;
 
         sGroupID = user.Claims.FirstOrDefault(
         c => c.Type == ClaimTypes.Role)?.Value;
@@ -232,48 +246,48 @@ else
         }
     }
 
-    private bool FilterFunc(Inb_Goodreceipt_Go element)
+    private bool FilterFunc(Api_ggc element)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Itemtag.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Batch_no.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Pallettag.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Doc_ref.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Itemcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Item_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{element.Itemname} {element.Docno} {element.Pono} {element.Docnote}".Contains(searchString))
+        if ($"{element.Create_by} {element.Doc_item_ref}".Contains(searchString))
             return true;
         return false;
     }
 
     private string _searchString;
     private bool _sortNameByLength;
-     // custom sort by name length
-    private Func<Inb_Goodreceipt_Go, object> _sortBy => x =>
+    // custom sort by name length
+    private Func<Api_ggc, object> _sortBy => x =>
     {
         if (_sortNameByLength)
-            return x.Itemtag.Length;
+            return x.Doc_ref.Length;
         else
-            return x.Itemtag;
+            return x.Doc_ref;
     };
 
-     // quick filter - filter gobally across multiple columns with the same input
-    private Func<Inb_Goodreceipt_Go, bool> _quickFilter => x =>
+    // quick filter - filter gobally across multiple columns with the same input
+    private Func<Api_ggc, bool> _quickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
 
-        if (x.Itemtag.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        if (x.Batch_no.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (x.Pallettag.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        if (x.Doc_ref.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
-       if (x.Itemcode.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        if (x.Item_code.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if ($"{x.Itemname} {x.Docno} {x.Pono} {x.Docnote}".Contains(_searchString))
+        if ($"{x.Doc_item_ref} {x.Create_by}".Contains(_searchString))
             return true;
 
         return false;
@@ -285,15 +299,15 @@ else
         try
         {
             bool? result = await CheckRoleReport();
-            if (result == true)
-            {
-                IbpGRNRptExcel excelReport = new IbpGRNRptExcel();
-                List<Inb_Goodreceipt_Go> listExcelReport = new List<Inb_Goodreceipt_Go>();
-                listExcelReport = Elements.ToList();
-                var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-                await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
-                this.InsertAuditrial("Export excel file :" + fileName.ToString(), pageheader);
-            }
+            //if (result == true)
+            //{
+            //    IbpGRNRptExcel excelReport = new IbpGRNRptExcel();
+            //    List<Api_ggc> listExcelReport = new List<Api_ggc>();
+            //    listExcelReport = Elements.ToList();
+            //    var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+            //    await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
+            //    this.InsertAuditrial("Export excel file :" + fileName.ToString(), pageheader);
+            //}
 
         }
         catch (Exception e)
@@ -307,16 +321,16 @@ else
         try
         {
             bool? result = await CheckRoleReport();
-            if (result == true)
-            {
-                IbpGRNRprPdf pdfReport = new IbpGRNRprPdf();
-                List<Inb_Goodreceipt_Go> listPdfReport = new List<Inb_Goodreceipt_Go>();
-                listPdfReport = Elements.ToList();
-                var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
-                //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.Report(listPdfReport)));
-                await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport)));
-                this.InsertAuditrial("Export pdf file :" + fileName.ToString(), pageheader);
-            }
+            //if (result == true)
+            //{
+            //    IbpGRNRprPdf pdfReport = new IbpGRNRprPdf();
+            //    List<Api_ggc> listPdfReport = new List<Api_ggc>();
+            //    listPdfReport = Elements.ToList();
+            //    var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
+            //    //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.Report(listPdfReport)));
+            //    await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport)));
+            //    this.InsertAuditrial("Export pdf file :" + fileName.ToString(), pageheader);
+            //}
         }
         catch (Exception e)
         {
@@ -488,4 +502,38 @@ else
     #endregion
 
 
+    public async Task TestCreateTag(long apiid)
+    {
+
+        var guid = Guid.NewGuid().ToString();
+
+        DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
+        dtTrans.Columns.Add("tyitem", typeof(System.String));
+        dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
+        dtTrans.Columns.Add("tylot", typeof(System.String));
+        dtTrans.Columns.Add("tyexpdate", typeof(System.DateTime));
+        dtTrans.Columns.Add("typallet", typeof(System.String));
+
+        DataRow _ravi = dtTrans.NewRow();
+        _ravi["tyitem"] = "AAA";
+        _ravi["tyqty"] = 10.9;
+        _ravi["tylot"] = "LOT0001";
+        _ravi["tyexpdate"] = DateTime.Now;
+        _ravi["typallet"] = "1";
+        dtTrans.Rows.Add(_ravi);
+
+        ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans);
+
+        //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
+
+        TagList = await Task.Run(() => ObjInboundService.GetTagGGCByIndex(apiid));
+
+        ggcTag4x4Pdf pdfReport = new ggcTag4x4Pdf();
+        List<ggcTag4x4> listPdfReport = new List<ggcTag4x4>();
+        listPdfReport = TagList.ToList();
+
+        await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
+
+
+    }
 }

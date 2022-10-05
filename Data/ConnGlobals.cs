@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+
 
 namespace GoWMS.Server.Data
 {
@@ -9,17 +11,20 @@ namespace GoWMS.Server.Data
     {
         public static string GetConnLocalDB()
         {
-            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQL;Trusted_Connection=True;";
+            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQLCOMM;Trusted_Connection=True;";
         }
 
         #region SQL Database
-        private static readonly string SqlServer = "203.159.93.86"; // Develop
-         private static readonly string SqlDB = "GOSQL"; // Develop
+
+    
+        private static readonly string SqlServer = "10.251.11.3"; // Develop ,Local : DESKTOP-NQ62BHU\MSSQL , Host : 203.159.93.86, GGC QAS : 10.251.11.3
+        private static readonly string SqlDB = "GOSQL"; // Develop , Local : GOSQLGGC , Host : GOSQL
         private static readonly string SqlPort = "1433";
         private static readonly string SqlUser = "sa";
         private static readonly string SqlPass = "@ei0u2020";
         //private static readonly string NpgPass = "@ei0u";
         private static readonly string SqlContime = "120";
+
 
         /// <summary>
         /// GetConnLocalDBSQL
@@ -29,6 +34,8 @@ namespace GoWMS.Server.Data
         public static string GetConnDBSQL()
         {
             return "Server=" + SqlServer + " ," + SqlPort + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
+            //return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQLCOMM;Trusted_Connection=True;";
+
         }
         #endregion
 
@@ -36,7 +43,7 @@ namespace GoWMS.Server.Data
         private static readonly string NpgServer = "localhost"; // Develop
         //private static readonly string NpgServer = "192.168.1.14"; // Production
 
-        private static readonly string NpgDB = "WGCQAS"; // Develop
+        private static readonly string NpgDB = "WGCQASxx"; // Develop
         //private static readonly string NpgDB = "Gowes"; // Production
 
         private static readonly string NpgPort = "5432";

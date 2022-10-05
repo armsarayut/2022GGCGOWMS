@@ -1,90 +1,60 @@
-﻿@page "/2/2_3"
-@using System
-@using System.IO
-@using System.Linq
-@using System.Text
-@using System.Threading
-@using System.Threading.Tasks
-@using System.Collections.Generic
-
+﻿@page "/4/4_5_x"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
-@using GoWMS.Server.Models.Inv
-@using GoWMS.Server.Reports
+@using GoWMS.Server.Models.Wcs
 @using System.Security.Claims
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IJSRuntime JSRuntime
-@inject ReportService UserlogService
-@inject InvService ObjService
+
+
+@inject WcsService ObjService
 @inject UserServices OpjUserService
-@inject IStringLocalizer<WhShelfListPage> L
-@attribute [Authorize]
+@inject ReportService UserlogService
 
 @if (Elements == null)
 {
-
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
-    <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
-
-    <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-        <MudSpacer />
-        <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
-            <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
-            <MudIconButton Icon="@Icons.Custom.FileFormats.FilePdf" Color="Color.Error" OnClick="DownloadPdfDocument"></MudIconButton>
-        </MudTooltip>
-    </MudAppBar>
-
+    <MudText Typo="Typo.h6" Color="Color.Primary"> @pageheader </MudText>
     <MudTable Items="@Elements"
-              FixedHeader="@fixed_header"
-              FixedFooter="@fixed_footer"
-              Height="@(fixed_header || fixed_footer ?"500px":"")"
-              Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
-              Filter="new Func<Vrpt_shelf_listInfo,bool>(FilterFunc)" @bind-SelectedItem="selectedItem"
-              SortLabel="Sort By">
+          FixedHeader="@fixed_header"
+          FixedFooter="@fixed_footer"
+          Height="@(fixed_header || fixed_footer ?"500px":"")"
+          Dense="@dense"
+          Hover="@hover"
+          Bordered="@bordered"
+          Striped="@striped"
+          ReadOnly="@ronly"
+          CanCancelEdit="@canCancelEdit"
+          Filter="new Func<SetConstance,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" SortLabel="Sort By">
         <ToolBarContent>
             <MudSpacer />
             <MudTextField @bind-Value="searchString"
-                          Placeholder=@L["Search"]
-                          Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelfname)">@L["Location"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Srm_no)">@L["LANE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelfbank)">@L["BANK"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelfbay)">@L["BAY"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelflevel)">@L["LEVEL"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelfdeep)">@L["DEEP"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Lpncode)">@L["MasterPallet"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.St_desc)">@L["Status"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Modified)">@L["LastUpdate"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Set_code)">CODE</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Set_desc)">DESCTIPTION</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Val_bit)">ENABLE</MudTableSortLabel></MudTh>
+            <MudTh>ACTION</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="@L["Location"]">@context.Shelfname</MudTd>
-            <MudTd DataLabel="@L["LANE"]">@context.Srm_no</MudTd>
-            <MudTd DataLabel="@L["BANK"]">@context.Shelfbank</MudTd>
-            <MudTd DataLabel="@L["BAY"]">@context.Shelfbay</MudTd>
-            <MudTd DataLabel="@L["LEVEL"]">@context.Shelflevel</MudTd>
-            <MudTd DataLabel="@L["DEEP"]">@context.Shelfdeep</MudTd>
-            <MudTd DataLabel="@L["MasterPallet"]">@context.Lpncode</MudTd>
-            <MudTd DataLabel="@L["Status"]">
-                 <MudAlert Severity="Severity.Info"
-                                  Variant="Variant.Filled"
-                                  Dense="true"
-                                  Style="@($"color:{context.Focecolor}; background:{context.Backcolor};")">
-                            @context.Shelfstatus - @context.St_desc
-                        </MudAlert>
+            <MudTd DataLabel="CODE">@context.Set_code</MudTd>
+            <MudTd DataLabel="DESCRIPTION">@context.Set_desc</MudTd>
+            <MudTd DataLabel="ENABLE"><MudCheckBox @bind-Checked="@context.Val_bit" /></MudTd>
+           <MudTd Class="clm-row-small" DataLabel="ACTION">
+                <MudFab @onclick="@(()=>Commitconstance(@context.Set_code.ToString(), @context.Val_bit.Value, @context.Set_code.ToString()))" Color="Color.Error" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
+                <MudFab @onclick="@(()=>Refreshconstance())" Color="Color.Info" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" IconSize="Size.Small" />
             </MudTd>
-
-            <MudTd DataLabel="@L["LastUpdate"]">@context.Modified</MudTd>
         </RowTemplate>
+
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
         </PagerContent>
@@ -95,10 +65,11 @@ else
 
     IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
 
-    public string mPagedesc { get; set; } = "2.3.Location";
-    private string mPagename { get; set; } = "/2/2_3";
+    private string pageheader { get; set; } = "4.5.x.ASRS-CONSTANCE";
 
-    private readonly string pageheader = "2.3.Location";
+    public string mPagedesc { get; set; } = "4.5.x.ASRS-CONSTANCE";
+    private string mPagename { get; set; } = "/4/4_5_1";
+
     private string msgAction = "Enter Palletcode";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
@@ -110,11 +81,14 @@ else
     private bool fixed_header = true;
     private bool fixed_footer = true;
     private string searchString = "";
-    private Vrpt_shelf_listInfo selectedItem = null;
-    private HashSet<Vrpt_shelf_listInfo> selectedItems = new HashSet<Vrpt_shelf_listInfo>();
-    private IEnumerable<Vrpt_shelf_listInfo> Elements = new List<Vrpt_shelf_listInfo>();
+    private bool ronly = false;
+    private bool canCancelEdit = true;
 
+    private SetConstance selectedItem = null;
+    private HashSet<SetConstance> selectedItems = new HashSet<SetConstance>();
+    private IEnumerable<SetConstance> Elements = new List<SetConstance>();
     public int elevation = 0;
+
     private ResultReturn resultReturn = null;
 
     string sUsername { get; set; } = "";
@@ -126,18 +100,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        InvService objCS = new InvService();
+        WcsService objCS = new WcsService();
 
         //////// Intial Menu and Privilege//////
         resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
         resultReturn = await Task.Run(() => OpjUserService.InsertPrivilege(mPagename));
         ////////////////////////////////////////
-        ///
+        Elements = await Task.Run(() => objCS.GetConstance());
+
         await GetUserAthu();
         this.InsertAuditrial("View", pageheader);
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-        Elements = await Task.Run(() => objCS.GetShelfList());
     }
 
     async Task GetUserAthu()
@@ -173,61 +147,43 @@ else
         }
     }
 
-    private bool FilterFunc(Vrpt_shelf_listInfo element)
+    private bool FilterFunc(SetConstance element)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Shelfcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.Lpncode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Set_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
     }
 
-    public async Task DownloadExcelDocument()
+    private async Task Commitconstance(string setcoed, bool setval, string smsg)
     {
-        try
-        {
-            bool? result = await CheckRoleReport();
-            if (result == true)
-            {
-                WhShelfListPageRptExcel excelReport = new WhShelfListPageRptExcel();
-                List<Vrpt_shelf_listInfo> listExcelReport = new List<Vrpt_shelf_listInfo>();
-                listExcelReport = Elements.ToList();
-                var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-                await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
-                this.InsertAuditrial("Export excel file :" + fileName.ToString(), pageheader);
 
-            }
+        bool? result = await CheckRoleApprove();
+
+        if (result == true)
+        {
+            bool bSet = setval;
+            string msgret = "Call";
+
+
+            //bool bcheck = ObjService.SetEnableConstance(setcoed, bSet);
+
+            bool bcheck = ObjService.SetRelocation(setcoed, bSet, ref msgret);
+
+
+            this.InsertAuditrial("Relocationning " + smsg + " Enable = " + bSet.ToString(), pageheader);
+
+            this.Refreshconstance();
+
 
         }
-        catch (Exception e)
-        {
-            var exmsg = e.Message.ToString();
-        }
+
     }
 
-    public async Task DownloadPdfDocument()
+    private void Refreshconstance()
     {
-        try
-        {
-            bool? result = await CheckRoleReport();
-            if (result == true)
-            {
-                WhShelfListPageRptPdf pdfReport = new WhShelfListPageRptPdf();
-                List<Vrpt_shelf_listInfo> listPdfReport = new List<Vrpt_shelf_listInfo>();
-                listPdfReport = Elements.ToList();
-                var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
-                await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport)));
-                this.InsertAuditrial("Export pdf file :" + fileName.ToString(), pageheader);
-            }
-
-
-        }
-        catch (Exception e)
-        {
-            var exmsg = e.Message.ToString();
-        }
+        Elements = ObjService.GetConstance();
     }
 
     #region "Role"
@@ -392,6 +348,5 @@ else
         return bRet;
     }
     #endregion
-
 
 }

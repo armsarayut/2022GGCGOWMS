@@ -92,7 +92,7 @@ namespace GoWMS.Server.Reports
                 BorderWidthLeft = 0,
                 BorderWidthTop = 0,
                 BorderWidthRight = 0,
-                FixedHeight = 35
+                FixedHeight = 25
             };
             return cell;
         }

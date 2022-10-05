@@ -92,6 +92,20 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
+        public bool SetEnableConstance(String setcode, bool setval)
+        {
+            bool bret = objDAL.SetEnableConstance(setcode, setval);
+            return bret;
+        }
+
+        public Boolean SetRelocation(string stcode, bool valbit, ref string msgret)
+        {
+            bool bret = objDAL.SetRelocation(stcode, valbit, ref msgret);
+            return bret;
+        }
+
+
+
         public List<Set_Srm_Operate> GetSRMOperate()
         {
             List<Set_Srm_Operate> retlist = objDAL.GetSRMOperate().ToList();

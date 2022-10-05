@@ -121,28 +121,28 @@
     <value>Adjust</value>
   </data>
   <data name="BatchNo" xml:space="preserve">
-    <value>BatchNo</value>
+    <value>TAGNO</value>
   </data>
   <data name="DNDate" xml:space="preserve">
-    <value>DNDate</value>
+    <value>DATE</value>
   </data>
   <data name="DNNo" xml:space="preserve">
-    <value>DNNo</value>
+    <value>RESERVATION</value>
   </data>
   <data name="Excel" xml:space="preserve">
     <value>Excel</value>
   </data>
   <data name="GRDatetime" xml:space="preserve">
-    <value>GRDatetime</value>
+    <value>DATETIME</value>
   </data>
   <data name="ItemCode" xml:space="preserve">
-    <value>ItemCode</value>
+    <value>SKU</value>
   </data>
   <data name="ItemName" xml:space="preserve">
-    <value>ItemName</value>
+    <value>NAME</value>
   </data>
   <data name="LotNo" xml:space="preserve">
-    <value>LotNo</value>
+    <value>BATCH</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
     <value>Good Receive</value>
@@ -157,9 +157,9 @@
     <value>Search</value>
   </data>
   <data name="Unit" xml:space="preserve">
-    <value>Unit</value>
+    <value>UNIT</value>
   </data>
   <data name="Weight" xml:space="preserve">
-    <value>Weight</value>
+    <value>WEIGHT</value>
   </data>
 </root>

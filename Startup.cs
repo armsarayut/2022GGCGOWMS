@@ -33,6 +33,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.HttpOverrides;
 
+using Append.Blazor.Printing;
+
 namespace GoWMS.Server
 {
     public class Startup
@@ -87,6 +89,8 @@ namespace GoWMS.Server
             //services.AddTransient<VarGlobalService>();
             services.AddScoped<BlazorAppContext>();
 
+            ////Blazor Printing
+            services.AddScoped<IPrintingService, PrintingService>();
 
             services.AddBlazorTable(); // Install-Package BlazorTable -Version 1.17.0 https://www.nuget.org/packages/BlazorTable
 
@@ -97,7 +101,7 @@ namespace GoWMS.Server
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>
                     {
-                        options.Cookie.Name = "gowmsaeiauth";
+                        options.Cookie.Name = "ggcgowmsaeiauth";
                         options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
                         options.EventsType = typeof(Controllers.CookieAuthenticationEvents);
                         
@@ -124,8 +128,6 @@ namespace GoWMS.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

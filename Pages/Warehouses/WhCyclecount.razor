@@ -16,6 +16,7 @@
 @inject ISnackbar Snackbar
 @inject ErpApiService ObjApiService
 @inject UserServices OpjUserService
+@inject WhService ObjWhService
 @inject IStringLocalizer<WhCyclecount> L
 @attribute [Authorize]
 
@@ -63,10 +64,10 @@ else
                         <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"] </MudTableSortLabel></MudTh>
                         <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"] </MudTableSortLabel></MudTh>
                         <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Docno)">@L["Lot"] </MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"] </MudTableSortLabel></MudTh>
                         <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"] </MudTableSortLabel></MudTh>
                         <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PalletGo"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PalletErp"] </MudTableSortLabel></MudTh>
+                       @* <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PalletErp"] </MudTableSortLabel></MudTh>*@
                     </HeaderContent>
 
 
@@ -74,10 +75,10 @@ else
                         <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
                         <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
                         <MudTd DataLabel=@L["Stock"]>@context.Quantity</MudTd>
-                        <MudTd DataLabel=@L["Lot"]>@context.Docno</MudTd>
+                <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
                         <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
                         <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
-                        <MudTd DataLabel=@L["PalletErp"]>@context.Itembar</MudTd>
+                       @* <MudTd DataLabel=@L["PalletErp"]>@context.Itembar</MudTd>*@
                     </RowTemplate>
                     <PagerContent>
                         <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
@@ -110,10 +111,10 @@ else
     private bool _dense = false;
     private bool _multiSelect = true;
 
-    public string mPagedesc { get; set; } = "2.4.Cycle Count";
+    public string mPagedesc { get; set; } = "2.4.Audit";
     private string mPagename { get; set; } = "/2/2_4";
 
-    private string pageheader = "2.4.Cycle Count";
+    private string pageheader = "2.4.Audit";
     private string msgAction = "Enter Palletcode";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
@@ -220,10 +221,11 @@ else
 
     async Task SelectOrder()
     {
-        var result = selectedItems.GroupBy(t => t.Itemcode)
+        var result = selectedItems.GroupBy(t => new { t.Itemcode , t.Lotno} )
                    .Select(t => new
                    {
-                       Itemcode = t.Key,
+                       Itemcode = t.Key.Itemcode ,
+                       Lot = t.Key.Lotno,
                        Qty = t.Sum(ta => ta.Quantity),
                    }).ToList();
 
@@ -235,6 +237,8 @@ else
             i++;
             strPopup.Append(i.ToString() + ". รายการ : ");
             strPopup.Append(rec.Itemcode.ToString());
+            strPopup.Append(" Batch : ");
+            strPopup.Append(rec.Lot.ToString());
             strPopup.Append(" จำนวน : ");
             strPopup.AppendLine(rec.Qty.ToString());
         }
@@ -263,10 +267,11 @@ else
         bool? result = await CheckRoleAdd();
         if (result == true)
         {
-            var resultlist = selectedItems.GroupBy(t => t.Itemcode)
+            var resultlist = selectedItems.GroupBy(t => new { t.Itemcode, t.Lotno })
          .Select(t => new
          {
-             Itemcode = t.Key,
+             Itemcode = t.Key.Itemcode,
+             Lot = t.Key.Lotno,
              Qty = t.Sum(ta => ta.Quantity),
          }).ToList();
 
@@ -284,6 +289,8 @@ else
                     strPopup.Clear();
                     strPopup.Append(i.ToString() + ". รายการ : ");
                     strPopup.Append(rec.Itemcode.ToString());
+                    strPopup.Append(" Batch : ");
+                    strPopup.Append(rec.Lot.ToString());
                     strPopup.Append(" จำนวน : ");
                     strPopup.AppendLine(rec.Qty.ToString());
 
@@ -294,8 +301,25 @@ else
 
                 if (state == "Confirmed")
                 {
+                    var serializeOptions = new JsonSerializerOptions
+                        {
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                            WriteIndented = true
+                        };
+
                     this.InsertAuditrial("Set Cycle count List : " + strPopup.ToString(), pageheader);
-                    SelectOrderPick();
+
+                    var strRES = resultlist.OrderBy(x => x.Itemcode).Select(x => new { sku = x.Itemcode, quantity = x.Qty, lot = x.Lot}).ToList();
+
+                    var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
+
+                    string sRet = "Call";
+                    bool bRet;
+
+                    bRet = ObjWhService.SetOrderpick(jsonRES, ref sRet);
+
+
+                    //SelectOrderPick();
                 }
 
                 Elements = await Task.Run(() => ObjService.GetStockListInfo());
@@ -308,6 +332,10 @@ else
 
 
     }
+
+
+
+
 
     private void SelectOrderPick()
     {
@@ -328,21 +356,11 @@ else
 
         var pallets = selectedItems.GroupBy(g => g.Pallteno).OrderBy(o => o.Key).Select(s => s.Key);
 
-        // var filteredOrders = Elements.Where(o => allowedStatus.Contains(o.StatusCode));
-
         var filteredOrders = from order in Elements
                              where pallets.Contains(order.Pallteno)
                              select order;
 
-
         var strRES = filteredOrders.OrderBy(x => x.Pallettag).Select(x => new { efidx = x.Efidx, quantity = x.Quantity, packageid = x.Pallettag, materialcode = x.Itemcode, palletno = x.Pallteno, sono = so, customer = cus, lotno = lot, batchno = batch, matematerialdescription = x.Itemname, unit = x.Unit, deliverydate = requestdate }).ToList();
-
-
-        //var strRES = selectedItems.OrderBy(x => x.Pallettag).Select(x => new { efidx = x.Efidx, quantity = x.Quantity, packageid = x.Pallettag, materialcode = x.Itemcode, palletno = x.Pallteno, sono = so, customer = cus, lotno = lot, batchno = batch, matematerialdescription = x.Itemname, unit = x.Unit, deliverydate = requestdate }).ToList();
-
-        //var strLON = selectedItems.OrderBy(x => x.SEQ_NO).Select(x => new { SEQ_NO = x.SEQ_NO, SO_NO = x.SO_NO, DN_SEQ = x.DN_SEQ, ITEM_CODE = x.ITEM_CODE, PALLET_GO = x.PALLET_GO, DN_QTY = x.DN_QTY }).ToList();
-
-        //var jsonLON = JsonSerializer.Serialize(strLON, serializeOptions);
 
         var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
 

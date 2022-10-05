@@ -1,10 +1,11 @@
-﻿@page "/inb-palletmap"
+﻿@page "/1/1_3"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
 @using GoWMS.Server.Models.Api
 @using GoWMS.Server.Models.Mas
 @using GoWMS.Server.Models.Wgc
+@using GoWMS.Server.Models.Inb
 
 
 @inject ErpService ObjErpService
@@ -12,7 +13,10 @@
 @inject MasService ObjMasService
 @inject WgcService ObjWgcService
 @inject UserServices OpjUserService
+@inject InboundService ObjInboundService
+@inject ISnackbar Snackbar
 @inject IStringLocalizer<IbpPalletMap> L
+@inject IJSRuntime js
 @attribute [Authorize]
 
 <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
@@ -43,11 +47,15 @@
 
     <MudItem xs="12">
         <div class="form-group">
-            <input style="width: 100%; height: 40px" type="text" class="form-control" @bind-value="@stringput" @onkeyup="@KeyUp" placeholder="Input scan" />
+            <input Id="inputBar" style="width: 100%; height: 40px" type="text" class="form-control" @bind-value="@stringput" @onkeyup="@KeyUp" placeholder="Input scan" />
         </div>
     </MudItem>
 
 </MudGrid>
+
+<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxGate" Label="TAG" Color="Color.Primary" Size="Size.Large"></MudCheckBox>
+
+<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxConfirm" Label="CONFIRM" Color="Color.Success" Size="Size.Large"></MudCheckBox>
 
 <br />
 
@@ -57,13 +65,12 @@
 }
 else
 {
-
     <MudTable Items="@Elements"
               Dense="@dense"
               Hover="@hover"
               Bordered="@bordered"
               Striped="@striped"
-              Filter="new Func<Api_Receivingorders_Go,bool>(FilterFunc)"
+          Filter="new Func<Inb_Goodreceive_Go,bool>(FilterFunc)"
               @bind-SelectedItem="selectedItem">
         <ToolBarContent>
             <MudText Typo="Typo.h6">@L["MasterPallet"] : [ @mPalletcode ]</MudText>
@@ -71,7 +78,7 @@ else
             <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh>@L["PalletGo"]</MudTh>
+            @*<MudTh>@L["PalletGo"]</MudTh>*@
             <MudTh>@L["SeqNo"]</MudTh>
             <MudTh>@L["ItemCode"]</MudTh>
             <MudTh>@L["ItemName"]</MudTh>
@@ -80,14 +87,14 @@ else
             <MudTh>@L["Action"]</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="MasterPallet">@context.Lpncode</MudTd>
-            <MudTd DataLabel="SEQ">@context.Package_Id</MudTd>
-            <MudTd DataLabel="Material">@context.Material_Code</MudTd>
-            <MudTd DataLabel="Description">@context.Material_Description</MudTd>
-            <MudTd DataLabel="Qty">@context.Gr_Quantity</MudTd>
+            @*<MudTd DataLabel="MasterPallet">@context.Pallteno</MudTd>*@
+            <MudTd DataLabel="SEQ">@context.Itemtag</MudTd>
+            <MudTd DataLabel="Material">@context.Itemcode</MudTd>
+            <MudTd DataLabel="Description">@context.Itemname</MudTd>
+            <MudTd DataLabel="Qty">@context.Quantity</MudTd>
             <MudTd DataLabel="Unit">@context.Unit</MudTd>
             <MudTd DataLabel="">
-                <MudFab @onclick="@(()=>DeleteMap(@context.Package_Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+                <MudFab @onclick="@(()=>DeleteMap(@context.Itemtag))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
             </MudTd>
         </RowTemplate>
         <PagerContent>
@@ -102,7 +109,7 @@ else
 
 
     private string pageheader = "Master Mapping";
-    private string msgAction = "Enter MasterPallet";
+    private string msgAction = "Enter TAG No.";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
     public string stringput { get; set; } = "";
@@ -111,13 +118,12 @@ else
     private bool striped = true;
     private bool bordered = false;
     private string searchString = "";
-    private Api_Receivingorders_Go selectedItem = null;
-    private HashSet<Api_Receivingorders_Go> selectedItems = new HashSet<Api_Receivingorders_Go>();
-    private IEnumerable<Api_Receivingorders_Go> Elements = new List<Api_Receivingorders_Go>();
-
+    private Inb_Goodreceive_Go selectedItem = null;
+    private HashSet<Inb_Goodreceive_Go> selectedItems = new HashSet<Inb_Goodreceive_Go>();
+    private IEnumerable<Inb_Goodreceive_Go> Elements = new List<Inb_Goodreceive_Go>();
     private IEnumerable<Api_Receivingorders_Go> MapPalletItem = new List<Api_Receivingorders_Go>();
-
     private IEnumerable<Mas_Pallet_Go> MasterPallets = new List<Mas_Pallet_Go>();
+    private IEnumerable<Inb_Goodreceive_Go> MasterTags = new List<Inb_Goodreceive_Go>();
 
     public int elevation = 0;
     private ResultReturn resultReturn = null;
@@ -131,6 +137,17 @@ else
     string sRole { get; set; } = "";
     string sGroupID { get; set; } = "";
     string sUserID { get; set; } = "";
+
+    private string compGate = "STORE-G07";
+    private string compCommand = "STORE-CONFIRM";
+
+    private ElementReference firstInput;
+
+    public bool chkboxGate { get; set; } = false;
+    public bool chkboxConfirm { get; set; } = false;
+
+    public bool ReadOnly { get; set; } = true;
+
 
     private void KeyboardEventHandler(KeyboardEventArgs args)
     {
@@ -146,95 +163,131 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        ErpApiService objCS = new ErpApiService();
+        InboundService objCS = new InboundService();
 
-        Elements = await Task.Run(() => objCS.GetAllApiRecevingorderGosypallet(mPalletcode));
-        MasterPallets = ObjMasService.GetAllMasterPallets();
+        //ErpApiService objCS = new ErpApiService();
 
+        //Elements = await Task.Run(() => objCS.GetAllApiRecevingorderGosypallet(mPalletcode));
+        //MasterPallets = ObjMasService.GetAllMasterPallets();
+
+        MasterTags = await Task.Run(() => objCS.GetAllInbGoodreceiveGos());
 
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Focus the element
+            await Focus("inputBar");
+        }
+    }
 
+    public async Task Focus(string elementId)
+    {
+        await js.InvokeVoidAsync("jsfunction.focusElement", elementId);
+    }
 
     private void setstr(string str)
     {
         if (mPalletcode.Length <= 0)
         {
-            var allCorrect = MasterPallets.Where(a => a.Palletno == str).ToList();
+            var allCorrect = MasterTags.Where(a => a.Itemtag == str).ToList();
 
             if (allCorrect.ToList().Count > 0)
             {
 
                 mPalletcode = str;
 
-                MapPalletItem = null;
-                MapPalletItem = ObjWgcService.GetMapPalletApiNewDelivery_note(mPalletcode);
-                if (MapPalletItem.ToList().Count > 0)
-                {
-                    Task<string> retString;
+                //MapPalletItem = null;
+                //MapPalletItem = ObjWgcService.GetMapPalletApiNewDelivery_note(mPalletcode);
+                //if (MapPalletItem.ToList().Count > 0)
+                //{
+                //    Task<string> retString;
 
-                    retString = ObjErpApiService.InsertReceivingOrderbypackAsync(MapPalletItem.ToList(), mPalletcode);
+                //    retString = ObjErpApiService.InsertReceivingOrderbypackAsync(MapPalletItem.ToList(), mPalletcode);
 
-                    //ObjErpApiService.UpdateReceivingOrderbypack(mPalletcode, mPackid);
-                    msgAction = "Enter PalletGo for complete";
-                    elevation = 1;
-                }
-                else
-                {
-                    mPalletcode = "";
-                    msgAction = "Enter PalletGo";
-                    elevation = 1;
-                }
+                //    //ObjErpApiService.UpdateReceivingOrderbypack(mPalletcode, mPackid);
+                msgAction = "Enter Gate  for Put away";
+                elevation = 1;
+                chkboxGate=true;
+
+                //}
+                //else
+                //{
+                //    mPalletcode = "";
+                //    msgAction = "Enter TAG No.";
+                //    elevation = 1;
+                //}
             }
             else
             {
                 mPalletcode = "";
                 elevation = 4;
-                msgAction = "PalletGo find not found";
+                msgAction = "TAG No find not found";
+                chkboxGate=false;
+
             }
         }
         else
         {
-            if (str == mPalletcode)
+            if (str == compCommand)
             {
                 if (Elements.ToList().Count > 0)
                 {
-                    elevation = 2;
-                    msgAction = "Mapping successfully";
-                    //ObjErpApiService.UpdateReceivingOrderbypallet(mPalletcode);
-                    ObjErpApiService.SetMappedPallet(mPalletcode);
-                    ObjWgcService.UpdatePalletNewDelivery_note(mPalletcode);
+
+                    ////ObjErpApiService.UpdateReceivingOrderbypallet(mPalletcode);
+                    //ObjErpApiService.SetMappedPallet(mPalletcode);
+                    //ObjWgcService.UpdatePalletNewDelivery_note(mPalletcode);
+
+
+                    //await Task<> CrestePutAway();
+
+                    //await Task.Run(() => CrestePutAway());
+                    chkboxConfirm =true;
+
+                    CrestePutAway();
+
                     mPalletcode = "";
+                    
+                     chkboxConfirm=false;
+                    chkboxGate = false;
                 }
                 else
                 {
                     elevation = 3;
-                    msgAction = "Please enter PalletGo";
+                    msgAction = "Please enter TAG No.";
+                    chkboxGate = false;
                 }
             }
             else
             {
                 mPackid = str;
                 MapPalletItem = null;
-                MapPalletItem = ObjErpService.GetErpMatReceivingOrdersByTag(mPackid);
-                if (MapPalletItem.ToList().Count > 0)
-                {
-                    Task<string> retString;
+                chkboxConfirm=false;
+                chkboxGate = false;
+                //MapPalletItem = ObjErpService.GetErpMatReceivingOrdersByTag(mPackid);
+                //if (MapPalletItem.ToList().Count > 0)
+                //{
+                //    Task<string> retString;
 
-                    retString = ObjErpApiService.InsertReceivingOrderbypackAsync(MapPalletItem.ToList(), mPalletcode);
+                //    retString = ObjErpApiService.InsertReceivingOrderbypackAsync(MapPalletItem.ToList(), mPalletcode);
 
-                    //ObjErpApiService.UpdateReceivingOrderbypack(mPalletcode, mPackid);
-                    msgAction = "Enter PalletGo for complete";
-                    elevation = 1;
-                }
-                else
-                {
+                //    //ObjErpApiService.UpdateReceivingOrderbypack(mPalletcode, mPackid);
+                //    msgAction = "Enter PalletGo for complete";
+                //    elevation = 1;
+                //}
+                //else
+                //{
 
-                }
+                //}
             }
         }
-        ErpApiService objGR = new ErpApiService();
-        Elements = objGR.GetAllApiRecevingorderGosypallet(mPalletcode);
+
+        Elements = ObjInboundService.GetAllInbGoodreceiveGobyTag(mPalletcode);
+
+        //ErpApiService objGR = new ErpApiService();
+        //Elements = objGR.GetAllApiRecevingorderGosypallet(mPalletcode);
     }
 
     private string stxtInput { get; set; }
@@ -265,15 +318,15 @@ else
         }
     }
 
-    private bool FilterFunc(Api_Receivingorders_Go element)
+    private bool FilterFunc(Inb_Goodreceive_Go element)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Package_Id.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Itembar.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Material_Code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Itemcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{element.Material_Description} {element.Job_Code} {element.Document_Number}".Contains(searchString))
+        if ($"{element.Itemname} {element.Docno} {element.Lotno}".Contains(searchString))
             return true;
         return false;
     }
@@ -284,8 +337,8 @@ else
         ObjErpApiService.CancelReceivingOrderbypack(mPalletcode, pack);
 
 
-        ErpApiService objGR = new ErpApiService();
-        Elements = objGR.GetAllApiRecevingorderGosypallet(mPalletcode);
+        //ErpApiService objGR = new ErpApiService();
+        //Elements = objGR.GetAllApiRecevingorderGosypallet(mPalletcode);
 
     }
 
@@ -293,6 +346,29 @@ else
     {
         this.stringput = string.Empty;
         StateHasChanged();
+    }
+
+
+     public async Task CrestePutAway()
+    {
+
+        string msgReturn = "Call";
+        bool bitReturn;
+        bitReturn = await Task.Run(() => ObjInboundService.CreatePutawayWms("PL001", mPalletcode, "G07", "01", ref msgReturn));
+        if (bitReturn == false)
+        {
+            elevation = 4;
+            msgAction = msgReturn;
+
+            Snackbar.Add(msgReturn, Severity.Error);
+         
+        }else
+        {
+             Snackbar.Add(msgReturn, Severity.Success);
+            elevation = 2;
+            msgAction = "Mapping successfully";
+        }
+
     }
 
 }

@@ -57,7 +57,7 @@ else
                   Striped="@striped"
                   Filter="new Func<Sap_StoreoutInfo,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
             <ToolBarContent>
-                <MudText Typo="Typo.h6">@L["Pallet"]:[@mPalletcode]</MudText>
+                <MudText Typo="Typo.h6">@L["PACKID"]:[@mPalletcode]</MudText>
                 <MudSpacer />
                 <MudTextField @bind-Value="searchString"
                               Placeholder=@L["Search"]
@@ -68,6 +68,7 @@ else
             <HeaderContent>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
+                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
@@ -86,6 +87,7 @@ else
                     }
                 </MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
+                <MudTd Class="clm-row-small" DataLabel=@L["Lot"]>@context.Batch_No</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["MATERIAL"]>@context.Item_Code</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Stock_Qty)</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["UNIT"]>@context.Unit</MudTd>
@@ -159,7 +161,7 @@ else
     public string mPagedesc { get; set; } = "2.5.Counting";
     private string mPagename { get; set; } = "/2/2_5";
 
-    private string msgAction = "Enter MasterPallet";
+    private string msgAction = "Enter Tag No.";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = null;
     public string stringput { get; set; } = "";
@@ -302,8 +304,8 @@ else
             {
                 mPalletcode = "";
                 elevation = 4;
-                msgAction = "Masterpallet find not found";
-                Snackbar.Add("Masterpallet find not found", Severity.Warning);
+                msgAction = "TagNo find not found";
+                Snackbar.Add("TagNo find not found", Severity.Warning);
 
             }
         }
@@ -532,7 +534,7 @@ else
                 }
                 else
                 {
-                    Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                    Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
                 }
             }
         }
@@ -566,7 +568,7 @@ else
             }
             else
             {
-                Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
             }
         }
 

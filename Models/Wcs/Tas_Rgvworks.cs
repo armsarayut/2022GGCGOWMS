@@ -15,7 +15,7 @@ namespace GoWMS.Server.Models.Wcs
 		public string Client_Ip { get; set; }
 		public string Lpncode { get; set; }
 		public string Work_Code { get; set; }
-		public Int32? Work_Status { get; set; }
+		public string Work_Status { get; set; }
 		public Int64? Work_Id { get; set; }
 		public Int32? Rgv_No { get; set; }
 		public Int32? Rgv_From { get; set; }
@@ -25,7 +25,7 @@ namespace GoWMS.Server.Models.Wcs
 		public Int32? Cvy_From { get; set; }
 		public Int32? Cvy_To { get; set; }
 		public Int32? Cvy_Status { get; set; }
-		public Int32? Pallet_No { get; set; }
+		public string Pallet_No { get; set; }
 		public Int32? Pallet_Hight { get; set; }
 		public Int32? Pallet_Width { get; set; }
 		public Int32? Pallet_Size { get; set; }

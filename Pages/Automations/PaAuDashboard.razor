@@ -1,0 +1,1086 @@
+﻿@page "/4/4_0"
+@using System.Runtime.Serialization
+@using Newtonsoft.Json
+@using GoWMS.Server.Controllers
+@using GoWMS.Server.Models.Wcs
+@using GoWMS.Server.Models
+@using GoWMS.Server.Data
+@using System.Net.NetworkInformation
+@using System.Security.Claims
+
+@inject IStringLocalizer<PuAuConveyorStatus> L
+@inject ReportService UserlogService
+@inject WcsService ObjWcsService
+@implements IDisposable
+@inject NavigationManager UriHelper
+@inject IJSRuntime jsRuntime
+@inject UtilityServices ObjUtitityservice
+@inject UserServices OpjUserService
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">MC-Monitor</MudText>
+
+@if (Elements == null)
+{
+    // <p><em>Loading...</em></p>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" sm="4">      
+         <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice01</MudText>      
+                </CardHeaderContent>
+                <CardHeaderActions>
+                     <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice01))"></MudIconButton>
+                </CardHeaderActions>             
+            </MudCardHeader>
+
+              @{if (@alertDevice01 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{@foceColor01}; background:{@backcClor01}; font-wi ")">
+                                ALARM-CODE : @stDevice01
+                            </MudAlert>
+                        }
+                        else if (@alertDevice01 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{@foceColor01}; background:{@backcClor01};")">
+                                STATUS : @stDevice01
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice02</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                     <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice02))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+          @{if (@alertDevice02 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor02}; background:{backcClor02};")">
+                                ALARM-CODE : @stDevice02
+                            </MudAlert>
+                        }
+                        else if (@alertDevice02 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor02}; background:{backcClor02};")">
+                                STATUS : @stDevice02
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice03</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice03))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice03 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor03}; background:{backcClor03};")">
+                                ALARM-CODE : @stDevice03
+                            </MudAlert>
+                        }
+                        else if (@alertDevice03 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor03}; background:{backcClor03};")">
+                                STATUS : @stDevice03
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+           <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice04</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                     <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice04))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice04 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{@foceColor04}; background:{@backcClor04};")">
+                                ALARM-CODE : @stDevice04
+                            </MudAlert>
+                        }
+                        else if (@alertDevice04 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{@foceColor04}; background:{@backcClor04};")">
+                                STATUS : @stDevice04
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice05</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice05))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice05 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor05}; background:{backcClor05};")">
+                                ALARM-CODE : @stDevice05
+                            </MudAlert>
+                        }
+                        else if (@alertDevice05 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor05}; background:{backcClor05};")">
+                                STATUS : @stDevice05
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+         <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice06</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                     <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice06))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice06 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor06}; background:{backcClor06};")">
+                                ALARM-CODE : @stDevice06
+                            </MudAlert>
+                        }
+                        else if (@alertDevice06 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor06}; background:{backcClor06};")">
+                                STATUS : @stDevice06
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice19</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice19))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice19 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor19}; background:{backcClor19};")">
+                                ALARM-CODE : @stDevice19
+                            </MudAlert>
+                        }
+                        else if (@alertDevice19 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor19}; background:{backcClor19};")">
+                                STATUS : @stDevice19
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+
+        </MudCard>
+        </MudItem>
+
+         <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice18</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice18))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice18 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor18}; background:{backcClor18};")">
+                                ALARM-CODE : @stDevice18
+                            </MudAlert>
+                        }
+                        else if (@alertDevice18 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor18}; background:{backcClor18};")">
+                                STATUS : @stDevice18
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+
+        </MudCard>
+        </MudItem>
+
+
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice07</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice07))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice07 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor07}; background:{backcClor07};")">
+                                ALARM-CODE : @stDevice07
+                            </MudAlert>
+                        }
+                        else if (@alertDevice07 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor07}; background:{backcClor07};")">
+                                STATUS : @stDevice07
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice08</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice08))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice08 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor08}; background:{backcClor08};")">
+                                ALARM-CODE : @stDevice08
+                            </MudAlert>
+                        }
+                        else if (@alertDevice08 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor08}; background:{backcClor08};")">
+                                STATUS : @stDevice08
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice09</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice09))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice09 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor09}; background:{backcClor09};")">
+                                ALARM-CODE : @stDevice09
+                            </MudAlert>
+                        }
+                        else if (@alertDevice01 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor09}; background:{backcClor09};")">
+                                STATUS : @stDevice09
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice10</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice10))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice10 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor10}; background:{backcClor10};")">
+                                ALARM-CODE : @stDevice10
+                            </MudAlert>
+                        }
+                        else if (@alertDevice10 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor10}; background:{backcClor10};")">
+                                STATUS : @stDevice10
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+         <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice11</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice11))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+            @{if (@alertDevice11 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor11}; background:{backcClor11};")">
+                                ALARM-CODE : @stDevice11
+                            </MudAlert>
+                        }
+                        else if (@alertDevice11 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor11}; background:{backcClor11};")">
+                                STATUS : @stDevice11
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice12</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice12))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice12 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor12}; background:{backcClor12};")">
+                                ALARM-CODE : @stDevice12
+                            </MudAlert>
+                        }
+                        else if (@alertDevice12 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor12}; background:{backcClor12};")">
+                                STATUS : @stDevice12
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice13</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice13))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice13 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor13}; background:{backcClor13};")">
+                                ALARM-CODE : @stDevice13
+                            </MudAlert>
+                        }
+                        else if (@alertDevice13 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor13}; background:{backcClor13};")">
+                                STATUS : @stDevice13
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+           <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice14</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice14))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice14 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor14}; background:{backcClor14};")">
+                                ALARM-CODE : @stDevice14
+                            </MudAlert>
+                        }
+                        else if (@alertDevice14 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor14}; background:{backcClor14};")">
+                                STATUS : @stDevice14
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice15</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice15))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice15 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor15}; background:{backcClor15};")">
+                                ALARM-CODE : @stDevice15
+                            </MudAlert>
+                        }
+                        else if (@alertDevice15 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor15}; background:{backcClor15};")">
+                                STATUS : @stDevice15
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+         <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice16</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                     <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice16))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice16 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor16}; background:{backcClor16};")">
+                                ALARM-CODE : @stDevice16
+                            </MudAlert>
+                        }
+                        else if (@alertDevice16 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor16}; background:{backcClor16};")">
+                                STATUS : @stDevice16
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="3">
+            <MudCard Elevation="25" Style="height:110px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@mcDevice17</MudText>
+                </CardHeaderContent>
+                 <CardHeaderActions>
+                      <MudIconButton Icon="@Icons.Filled.SettingsApplications" OnClick="@(()=>OpenDialog(mcDevice17))"></MudIconButton>
+                </CardHeaderActions>
+            </MudCardHeader>
+           @{if (@alertDevice17 == true)
+                        {
+                            <MudAlert Severity="Severity.Error"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor17}; background:{backcClor17};")">
+                                ALARM-CODE : @stDevice17
+                            </MudAlert>
+                        }
+                        else if (@alertDevice17 == false )
+                        {
+                            <MudAlert Severity="Severity.Normal"
+                                  Variant="Variant.Filled"
+                                  Dense="true"
+                                  Style="@($"color:{foceColor17}; background:{backcClor17};")">
+                                STATUS : @stDevice17
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText>...</MudText>
+                        }
+                }
+        </MudCard>
+        </MudItem>
+        
+        
+    </MudGrid>
+    
+
+}
+
+@code {
+
+    List<Vmachine> Elements = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice01 = new List<Vmachine>() ;
+    private IEnumerable<Vmachine> listDevice02 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice03 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice04 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice05 = new List<Vmachine>() ;
+    private IEnumerable<Vmachine> listDevice06 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice07 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice08 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice09 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice10 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice11 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice12 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice13 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice14 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice15 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice16 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice17 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice18 = new List<Vmachine>();
+    private IEnumerable<Vmachine> listDevice19 = new List<Vmachine>();
+
+    //private IEnumerable<Vmachine> listDevice01  = new List<Vmachine>();
+
+    private int? stDevice01 = null;
+    private string mcDevice01 = null;
+    private string msgDevice01 = null;
+    private bool? alertDevice01 = false;
+    private string foceColor01 = null;
+    private string backcClor01 = null;
+
+
+    private int? stDevice02 = null;
+    private string mcDevice02 = null;
+    private string msgDevice02 = null;
+    private bool? alertDevice02 = false;
+     private string foceColor02 = null;
+    private string backcClor02 = null;
+
+    private int? stDevice03 = null;
+    private string mcDevice03 = null;
+    private string msgDevice03 = null;
+    private bool? alertDevice03 = false;
+     private string foceColor03 = null;
+    private string backcClor03 = null;
+
+    private int? stDevice04 = null;
+    private string mcDevice04 = null;
+    private string msgDevice04 = null;
+    private bool? alertDevice04 = false;
+     private string foceColor04 = null;
+    private string backcClor04 = null;
+
+    private int? stDevice05 = null;
+    private string mcDevice05 = null;
+    private string msgDevice05 = null;
+    private bool? alertDevice05 = false;
+     private string foceColor05 = null;
+    private string backcClor05 = null;
+
+    private int? stDevice06 = null;
+    private string mcDevice06 = null;
+    private string msgDevice06 = null;
+    private bool? alertDevice06 = false;
+     private string foceColor06 = null;
+    private string backcClor06 = null;
+
+    private int? stDevice07 = null;
+    private string mcDevice07 = null;
+    private string msgDevice07 = null;
+    private bool? alertDevice07 = false;
+     private string foceColor07 = null;
+    private string backcClor07 = null;
+
+    private int? stDevice08 = null;
+    private string mcDevice08 = null;
+    private string msgDevice08 = null;
+    private bool? alertDevice08 = false;
+     private string foceColor08 = null;
+    private string backcClor08 = null;
+
+    private int? stDevice09 = null;
+    private string mcDevice09 = null;
+    private string msgDevice09 = null;
+    private bool? alertDevice09 = false;
+     private string foceColor09 = null;
+    private string backcClor09 = null;
+
+    private int? stDevice10 = null;
+    private string mcDevice10 = null;
+    private string msgDevice10 = null;
+    private bool? alertDevice10 = false;
+     private string foceColor10 = null;
+    private string backcClor10 = null;
+
+    private int? stDevice11 = null;
+    private string mcDevice11 = null;
+    private string msgDevice11 = null;
+    private bool? alertDevice11 = false;
+     private string foceColor11 = null;
+    private string backcClor11 = null;
+
+    private int? stDevice12 = null;
+    private string mcDevice12 = null;
+    private string msgDevice12 = null;
+    private bool? alertDevice12 = false;
+     private string foceColor12 = null;
+    private string backcClor12 = null;
+
+    private int? stDevice13 = null;
+    private string mcDevice13 = null;
+    private string msgDevice13 = null;
+    private bool? alertDevice13 = false;
+     private string foceColor13 = null;
+    private string backcClor13 = null;
+
+    private int? stDevice14 = null;
+    private string mcDevice14 = null;
+    private string msgDevice14 = null;
+    private bool? alertDevice14 = false;
+     private string foceColor14 = null;
+    private string backcClor14 = null;
+
+    private int? stDevice15 = null;
+    private string mcDevice15 = null;
+    private string msgDevice15 = null;
+    private bool? alertDevice15 = false;
+     private string foceColor15 = null;
+    private string backcClor15 = null;
+
+    private int? stDevice16 = null;
+    private string mcDevice16 = null;
+    private string msgDevice16 = null;
+    private bool? alertDevice16 = false;
+     private string foceColor16 = null;
+    private string backcClor16 = null;
+
+    private int? stDevice17 = null;
+    private string mcDevice17 = null;
+    private string msgDevice17 = null;
+    private bool? alertDevice17 = false;
+     private string foceColor17 = null;
+    private string backcClor17 = null;
+
+    private int? stDevice18 = null;
+    private string mcDevice18 = null;
+    private string msgDevice18 = null;
+    private bool? alertDevice18 = false;
+     private string foceColor18 = null;
+    private string backcClor18 = null;
+
+    private int? stDevice19 = null;
+    private string mcDevice19 = null;
+    private string msgDevice19 = null;
+    private bool? alertDevice19 = false;
+     private string foceColor19 = null;
+    private string backcClor19 = null;
+
+
+     [Inject] private IDialogService DialogService { get; set; }
+
+    void IDisposable.Dispose()
+    {
+        //while (bgWorker.IsBusy == true)
+        //{ }
+        timer.Enabled = false;
+        timer.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+     
+         //await Task.Run(() => ExecuteStatus());
+        this.ExecuteStatus();
+
+        await Task.Run(() => InitialTimer());
+    }
+        
+    async void ExecuteStatus()
+    {
+     
+       Elements= ObjWcsService.GetAllMachine();
+
+
+        listDevice01 = Elements.Where(x => x.Mccode == "SRM01").ToList();
+        listDevice02 = Elements.Where(x => x.Mccode == "SRM02").ToList();
+        listDevice03 = Elements.Where(x => x.Mccode == "RGV01").ToList();
+        listDevice04 = Elements.Where(x => x.Mccode == "G01").ToList();
+        listDevice05 = Elements.Where(x => x.Mccode == "G02").ToList();
+        listDevice06 = Elements.Where(x => x.Mccode == "G03").ToList();
+        listDevice07 = Elements.Where(x => x.Mccode == "G06").ToList();
+        listDevice08 = Elements.Where(x => x.Mccode == "G07").ToList();
+        listDevice09 = Elements.Where(x => x.Mccode == "G08").ToList();
+        listDevice10 = Elements.Where(x => x.Mccode == "G11").ToList();
+        listDevice11 = Elements.Where(x => x.Mccode == "G12").ToList();
+        listDevice12 = Elements.Where(x => x.Mccode == "G13").ToList();
+        listDevice13 = Elements.Where(x => x.Mccode == "G14").ToList();
+        listDevice14 = Elements.Where(x => x.Mccode == "G21").ToList();
+        listDevice15 = Elements.Where(x => x.Mccode == "G22").ToList();
+        listDevice16 = Elements.Where(x => x.Mccode == "G23").ToList();
+        listDevice17 = Elements.Where(x => x.Mccode == "G24").ToList();
+        listDevice18 = Elements.Where(x => x.Mccode == "G05").ToList();
+        listDevice19 = Elements.Where(x => x.Mccode == "G04").ToList();
+
+        stDevice01= listDevice01.Select(c => c.St_no).First();
+        mcDevice01 = listDevice01.Select(c => c.Mccode).First();
+        msgDevice01 = listDevice01.Select(c => c.Desc_th).First();
+        alertDevice01 = listDevice01.Select(c => c.Is_alert).First();
+        foceColor01 = listDevice01.Select(c => c.Focecolor).First();
+        backcClor01 = listDevice01.Select(c => c.Backcolor).First();
+
+        stDevice02 = listDevice02.Select(c => c.St_no).First();
+        mcDevice02 = listDevice02.Select(c => c.Mccode).First();
+        msgDevice02 = listDevice02.Select(c => c.Desc_th).First();
+        alertDevice02 = listDevice02.Select(c => c.Is_alert).First();
+        foceColor02 = listDevice02.Select(c => c.Focecolor).First();
+        backcClor02 = listDevice02.Select(c => c.Backcolor).First();
+
+        stDevice03 = listDevice03.Select(c => c.St_no).First();
+        mcDevice03 = listDevice03.Select(c => c.Mccode).First();
+        msgDevice03 = listDevice03.Select(c => c.Desc_th).First();
+        alertDevice03 = listDevice03.Select(c => c.Is_alert).First();
+        foceColor03 = listDevice03.Select(c => c.Focecolor).First();
+        backcClor03 = listDevice03.Select(c => c.Backcolor).First();
+
+        stDevice04 = listDevice04.Select(c => c.St_no).First();
+        mcDevice04 = listDevice04.Select(c => c.Mccode).First();
+        msgDevice04 = listDevice04.Select(c => c.Desc_th).First();
+        alertDevice04 = listDevice04.Select(c => c.Is_alert).First();
+        foceColor04 = listDevice04.Select(c => c.Focecolor).First();
+        backcClor04 = listDevice04.Select(c => c.Backcolor).First();
+
+        stDevice05 = listDevice05.Select(c => c.St_no).First();
+        mcDevice05 = listDevice05.Select(c => c.Mccode).First();
+        msgDevice05 = listDevice05.Select(c => c.Desc_th).First();
+        alertDevice05 = listDevice05.Select(c => c.Is_alert).First();
+        foceColor05 = listDevice05.Select(c => c.Focecolor).First();
+        backcClor05 = listDevice05.Select(c => c.Backcolor).First();
+
+        stDevice06 = listDevice06.Select(c => c.St_no).First();
+        mcDevice06 = listDevice06.Select(c => c.Mccode).First();
+        msgDevice06 = listDevice06.Select(c => c.Desc_th).First();
+        alertDevice06 = listDevice06.Select(c => c.Is_alert).First();
+        foceColor06 = listDevice06.Select(c => c.Focecolor).First();
+        backcClor06 = listDevice06.Select(c => c.Backcolor).First();
+
+        stDevice07 = listDevice07.Select(c => c.St_no).First();
+        mcDevice07 = listDevice07.Select(c => c.Mccode).First();
+        msgDevice07 = listDevice07.Select(c => c.Desc_th).First();
+        alertDevice07 = listDevice07.Select(c => c.Is_alert).First();
+        foceColor07 = listDevice07.Select(c => c.Focecolor).First();
+        backcClor07 = listDevice07.Select(c => c.Backcolor).First();
+
+        stDevice08= listDevice08.Select(c => c.St_no).First();
+        mcDevice08 = listDevice08.Select(c => c.Mccode).First();
+        msgDevice08 = listDevice08.Select(c => c.Desc_th).First();
+        alertDevice08 = listDevice08.Select(c => c.Is_alert).First();
+        foceColor08 = listDevice08.Select(c => c.Focecolor).First();
+        backcClor08 = listDevice08.Select(c => c.Backcolor).First();
+
+        stDevice09= listDevice09.Select(c => c.St_no).First();
+        mcDevice09 = listDevice09.Select(c => c.Mccode).First();
+        msgDevice09 = listDevice09.Select(c => c.Desc_th).First();
+        alertDevice09 = listDevice09.Select(c => c.Is_alert).First();
+        foceColor09 = listDevice09.Select(c => c.Focecolor).First();
+        backcClor09 = listDevice09.Select(c => c.Backcolor).First();
+
+        stDevice10= listDevice10.Select(c => c.St_no).First();
+        mcDevice10 = listDevice10.Select(c => c.Mccode).First();
+        msgDevice10 = listDevice10.Select(c => c.Desc_th).First();
+        alertDevice10 = listDevice10.Select(c => c.Is_alert).First();
+        foceColor10 = listDevice10.Select(c => c.Focecolor).First();
+        backcClor10 = listDevice10.Select(c => c.Backcolor).First();
+
+        stDevice11= listDevice11.Select(c => c.St_no).First();
+        mcDevice11 = listDevice11.Select(c => c.Mccode).First();
+        msgDevice11 = listDevice11.Select(c => c.Desc_th).First();
+        alertDevice11 = listDevice11.Select(c => c.Is_alert).First();
+        foceColor11 = listDevice11.Select(c => c.Focecolor).First();
+        backcClor11 = listDevice11.Select(c => c.Backcolor).First();
+
+        stDevice12= listDevice12.Select(c => c.St_no).First();
+        mcDevice12 = listDevice12.Select(c => c.Mccode).First();
+        msgDevice12 = listDevice12.Select(c => c.Desc_th).First();
+        alertDevice12 = listDevice12.Select(c => c.Is_alert).First();
+        foceColor12 = listDevice12.Select(c => c.Focecolor).First();
+        backcClor12 = listDevice12.Select(c => c.Backcolor).First();
+
+        stDevice13= listDevice13.Select(c => c.St_no).First();
+        mcDevice13 = listDevice13.Select(c => c.Mccode).First();
+        msgDevice13 = listDevice13.Select(c => c.Desc_th).First();
+        alertDevice13 = listDevice13.Select(c => c.Is_alert).First();
+        foceColor13 = listDevice13.Select(c => c.Focecolor).First();
+        backcClor13 = listDevice13.Select(c => c.Backcolor).First();
+
+        stDevice14= listDevice14.Select(c => c.St_no).First();
+        mcDevice14 = listDevice14.Select(c => c.Mccode).First();
+        msgDevice14 = listDevice14.Select(c => c.Desc_th).First();
+        alertDevice14 = listDevice14.Select(c => c.Is_alert).First();
+        foceColor14 = listDevice14.Select(c => c.Focecolor).First();
+        backcClor14 = listDevice14.Select(c => c.Backcolor).First();
+
+        stDevice15= listDevice15.Select(c => c.St_no).First();
+        mcDevice15 = listDevice15.Select(c => c.Mccode).First();
+        msgDevice15 = listDevice15.Select(c => c.Desc_th).First();
+        alertDevice15 = listDevice15.Select(c => c.Is_alert).First();
+        foceColor15 = listDevice15.Select(c => c.Focecolor).First();
+        backcClor15 = listDevice15.Select(c => c.Backcolor).First();
+
+        stDevice16= listDevice16.Select(c => c.St_no).First();
+        mcDevice16 = listDevice16.Select(c => c.Mccode).First();
+        msgDevice16 = listDevice16.Select(c => c.Desc_th).First();
+        alertDevice16 = listDevice16.Select(c => c.Is_alert).First();
+        foceColor16 = listDevice16.Select(c => c.Focecolor).First();
+        backcClor16 = listDevice16.Select(c => c.Backcolor).First();
+
+        stDevice17= listDevice17.Select(c => c.St_no).First();
+        mcDevice17 = listDevice17.Select(c => c.Mccode).First();
+        msgDevice17 = listDevice17.Select(c => c.Desc_th).First();
+        alertDevice17 = listDevice17.Select(c => c.Is_alert).First();
+        foceColor17 = listDevice17.Select(c => c.Focecolor).First();
+        backcClor17 = listDevice17.Select(c => c.Backcolor).First();
+
+        stDevice18= listDevice18.Select(c => c.St_no).First();
+        mcDevice18 = listDevice18.Select(c => c.Mccode).First();
+        msgDevice18 = listDevice18.Select(c => c.Desc_th).First();
+        alertDevice18 = listDevice18.Select(c => c.Is_alert).First();
+        foceColor18 = listDevice18.Select(c => c.Focecolor).First();
+        backcClor18 = listDevice18.Select(c => c.Backcolor).First();
+
+        stDevice19= listDevice19.Select(c => c.St_no).First();
+        mcDevice19 = listDevice19.Select(c => c.Mccode).First();
+        msgDevice19 = listDevice19.Select(c => c.Desc_th).First();
+        alertDevice19 = listDevice19.Select(c => c.Is_alert).First();
+        foceColor19 = listDevice19.Select(c => c.Focecolor).First();
+        backcClor19 = listDevice19.Select(c => c.Backcolor).First();
+    }
+
+    #region timer
+    System.Timers.Timer timer;
+    void InitialTimer()
+    {
+        timer = new System.Timers.Timer();
+        timer.Interval = 1000;
+        timer.Elapsed += TimerElapsed;
+        timer.Enabled = true;
+    }
+    void TimerElapsed(Object source, System.Timers.ElapsedEventArgs e)
+    {
+
+        if (timer.Interval <= 1000)
+            timer.Interval = 10000;
+
+        ExecuteStatus();
+        InvokeAsync(StateHasChanged);
+    }
+    #endregion
+
+
+     private async Task OpenDialog(string mccode)
+    {
+      //  bool? result = await CheckRoleApprove();
+
+          bool result =true;
+
+        if (result==true)
+        {
+            DialogOptions closeOnEscapeKey = new DialogOptions() { CloseButton = true };
+            var parameters = new DialogParameters { ["Mccode"] = mccode };
+
+
+            var dialog = DialogService.Show<DialogKeyboardNavigationExample_Dialog>(mccode, parameters);
+        }
+    }
+
+
+}

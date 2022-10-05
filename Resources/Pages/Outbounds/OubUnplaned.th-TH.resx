@@ -123,6 +123,9 @@
   <data name="ItemName" xml:space="preserve">
     <value>ชื่อสินค้า</value>
   </data>
+  <data name="Lot" xml:space="preserve">
+    <value>ชุด</value>
+  </data>
   <data name="pageHeader" xml:space="preserve">
     <value>เบิกแมนนวล</value>
   </data>

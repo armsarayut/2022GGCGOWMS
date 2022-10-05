@@ -12,6 +12,7 @@ using GoWMS.Server.Models.Public;
 using System.Text;
 using NpgsqlTypes;
 using Serilog;
+using System.Reflection.Emit;
 
 namespace GoWMS.Server.Data
 {
@@ -117,41 +118,74 @@ namespace GoWMS.Server.Data
         public IEnumerable<Sap_StoreoutInfo> GetPicklist(string sPallet)
         {
             List<Sap_StoreoutInfo> lstModels = new List<Sap_StoreoutInfo>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder sqlQurey = new StringBuilder();
 
-                sqlQurey.AppendLine("select row_number() over(order by t1.item_code asc) AS rn, t1.idx, ");
-                sqlQurey.AppendLine("t1.item_code, t1.item_name, t1.request_qty, t1.unit, t1.su_no, ");
-                sqlQurey.AppendLine("t1.pallet_no, t1.stock_qty, t1.transfer_qty, t1.movement_type ");
-                sqlQurey.AppendLine("from public.sap_storeout t1");
-                sqlQurey.AppendLine("where (1=1)");
-                sqlQurey.AppendLine("and t1.pallet_no = @pallet_no");
-                sqlQurey.AppendLine("order by t1.item_code asc ");
-                sqlQurey.AppendLine(";");
+                //sqlQurey.AppendLine("select row_number() over(order by t1.item_code asc) AS rn, t1.idx, ");
+                //sqlQurey.AppendLine("t1.item_code, t1.item_name, t1.request_qty, t1.unit, t1.su_no, ");
+                //sqlQurey.AppendLine("t1.pallet_no, t1.stock_qty, t1.transfer_qty, t1.movement_type ");
+                //sqlQurey.AppendLine("from public.sap_storeout t1");
+                //sqlQurey.AppendLine("where (1=1)");
+                //sqlQurey.AppendLine("and t1.pallet_no = @pallet_no");
+                //sqlQurey.AppendLine("order by t1.item_code asc ");
+                //sqlQurey.AppendLine(";");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(sqlQurey.ToString(), con)
+                sqlQurey.AppendLine("select t0.site,t0.doc_num,cast(t0.trans_num as bigint) trans_num,t0.ref_type,t0.trans_type,t0.trans_date");
+                sqlQurey.AppendLine(" ,t0.unit_key,t0.item_bc,t0.item, t1.item_name, t1.uom, t1.weight_unit,t0.qty");
+                sqlQurey.AppendLine(",t0.lot,t0.prod_date,t0.stat,t0.source");
+                sqlQurey.AppendLine(",t0.reason,t0.createdby,t0.createddate");
+                sqlQurey.AppendLine(",t0.whse,t0.loc,t0.pallet_bc,t0.ref_item");
+                sqlQurey.AppendLine(",t0.flag,t0.require_detail_id,t0.is_req");
+                sqlQurey.AppendLine(",t0.is_hold,t0.is_lock,t0.update2sl,t0.modifie_date");
+                sqlQurey.AppendLine("FROM dbo.wms_trans t0");
+                sqlQurey.AppendLine("INNER JOIN dbo.set_itemmaster t1");
+                sqlQurey.AppendLine("ON t0.item=t1.item_code");
+                sqlQurey.AppendLine("WHERE t0.unit_key = @unit_key");
+                sqlQurey.AppendLine("AND t0.stat = @stat");
+                sqlQurey.AppendLine("AND t0.flag = @flag");
+                sqlQurey.AppendLine("AND t0.item_bc = @pallet_bc");
+                sqlQurey.AppendLine("ORDER BY t0.trans_num");
+
+                //sqlQurey.AppendLine("select row_number() over(order by t1.item_code asc) AS rn, t1.idx, ");
+                //sqlQurey.AppendLine("t1.item_code, t1.item_name, t1.request_qty, t1.unit, t1.su_no, ");
+                //sqlQurey.AppendLine("t1.pallet_no, t1.stock_qty, t1.transfer_qty, t1.movement_type ");
+                //sqlQurey.AppendLine("from public.sap_storeout t1");
+                //sqlQurey.AppendLine("where (1=1)");
+                //sqlQurey.AppendLine("and t1.pallet_no = @pallet_no");
+                //sqlQurey.AppendLine("order by t1.item_code asc ");
+                //sqlQurey.AppendLine(";");
+
+
+
+                SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                cmd.Parameters.AddWithValue("@pallet_no", NpgsqlDbType.Varchar, sPallet);
 
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                cmd.Parameters.AddWithValue("@unit_key", "05");
+                cmd.Parameters.AddWithValue("@stat", 1);
+                cmd.Parameters.AddWithValue("@flag", 2);
+                cmd.Parameters.AddWithValue("@pallet_bc", sPallet);
+
+
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Sap_StoreoutInfo listRead = new Sap_StoreoutInfo
                     {
-                        Idx = rdr["idx"] == DBNull.Value ? null : (Int64?)rdr["idx"],
-                        Item_Code = rdr["item_code"].ToString(),
+                        Idx = rdr["trans_num"] == DBNull.Value ? null : (Int64?)rdr["trans_num"],
+                        Item_Code = rdr["item"].ToString(),
                         Item_Name = rdr["item_name"].ToString(),
-                        Request_Qty = rdr["request_qty"] == DBNull.Value ? null : (decimal?)rdr["request_qty"],
-                        Unit = rdr["unit"].ToString(),
-                        Su_No = rdr["su_no"].ToString(),
-                        Pallet_No = rdr["pallet_no"].ToString(),
-                        Stock_Qty = rdr["stock_qty"] == DBNull.Value ? null : (decimal?)rdr["stock_qty"],
-                        Transfer_Qty = rdr["transfer_qty"] == DBNull.Value ? null : (decimal?)rdr["transfer_qty"],
-                        Movement_Type = rdr["movement_type"].ToString(),
+                        Request_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Unit = rdr["uom"].ToString(),
+                        Su_No = rdr["item_bc"].ToString(),
+                        Pallet_No = rdr["pallet_bc"].ToString(),
+                        Batch_No = rdr["lot"].ToString(),
+                        Stock_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Transfer_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Movement_Type = rdr["unit_key"].ToString(),
                         Bcount=false
                     };
                     lstModels.Add(listRead);
@@ -281,5 +315,61 @@ namespace GoWMS.Server.Data
             return bRet;
         }
 
+
+        public bool SetOrderpick (string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            string cmdcode = "Call";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_createoutboundorder_manual_json");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_pJson", jsonOrder);
+    
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
     }
 }

@@ -48,11 +48,11 @@
         <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => btnLogout_Click())" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="_themeManager.DrawerClipMode" Width="300px">
-        <MudDrawerHeader>
-            <div class="block center">
-                <img src="Images/AEI_Logo_2.png" width="150px" height="40px" style="align-items:center" />
+        @*<MudDrawerHeader>
+               <div class="d-flex justify-center mb-1">
+                 <img src="Images/AEI LOGO MASTER APP 200x100.png" width="250px" height="100px" style="align-items:center" />
             </div>
-        </MudDrawerHeader>
+        </MudDrawerHeader>*@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
@@ -305,6 +305,7 @@
 
     private void InsertAuditrial(String actdesc, String munname, string sUserID)
     {
+
         bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
     }
 

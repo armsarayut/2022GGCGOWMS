@@ -66,6 +66,57 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
+        public async Task<Int64> GetCompleteOrderReceiptofDay()
+        {
+            Int64 lRet = 0;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                StringBuilder sqlQurey = new StringBuilder();
+
+                sqlQurey.AppendLine("select count(*) ");
+                sqlQurey.AppendLine("from [dbo].[v_wmstran_receipt_rpt] t ");
+                sqlQurey.AppendLine("where rptStockDate = cast(GETDATE() as date)");
+                sqlQurey.AppendLine(";");
+
+                SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+                con.Open();
+
+                lRet = Convert.ToInt64(cmd.ExecuteScalar());
+
+                con.Close();
+            }
+
+            return lRet;
+        }
+
+        public async Task<Int64> GetCompleteOrderIssueofDay()
+        {
+            Int64 lRet = 0;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                StringBuilder sqlQurey = new StringBuilder();
+
+                sqlQurey.AppendLine("select count(*) ");
+                sqlQurey.AppendLine("from [dbo].[v_wmstran_issue_rpt] t ");
+                sqlQurey.AppendLine("where rptStockDate = cast(GETDATE() as date)");
+                sqlQurey.AppendLine(";");
+
+                SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+                con.Open();
+
+                lRet = Convert.ToInt64(cmd.ExecuteScalar());
+
+                con.Close();
+            }
+
+            return lRet;
+        }
 
         public IEnumerable<Vrpt_shelfsummary> GetAllLocationSummary()
         {
@@ -122,7 +173,7 @@ namespace GoWMS.Server.Data
                     VLocationDash objrd = new VLocationDash
                     {
                         Work_Code = rdr["work_code"].ToString(),
-                        Clpncode = rdr["clpncode"] == DBNull.Value ? null : (Int64?)rdr["clpncode"]
+                        Clpncode = rdr["clpncode"] == DBNull.Value ? null : (Int32?)rdr["clpncode"]
                     };
                     lstobj.Add(objrd);
                 }
@@ -135,7 +186,7 @@ namespace GoWMS.Server.Data
 
         {
             List<DashTaskTime> lstobj = new List<DashTaskTime>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
@@ -145,13 +196,13 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("FROM wcs.vrptqueuecompleteasrs");
                     sql.AppendLine(";");
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         DashTaskTime objrd = new DashTaskTime
@@ -163,7 +214,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }

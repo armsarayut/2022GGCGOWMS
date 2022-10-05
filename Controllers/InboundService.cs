@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +25,15 @@ namespace GoWMS.Server.Controllers
             List<Inb_Goodreceive_Go> retlist = objDAL.GetAllInbGoodreceiveGo().ToList();
             return retlist;
         }
+
+        public List<Inb_Goodreceive_Go> GetAllInbGoodreceiveGobyTag(string sTag)
+        {
+            List<Inb_Goodreceive_Go> retlist = objDAL.GetAllInbGoodreceiveGobyTag(sTag).ToList();
+            return retlist;
+        }
+
+
+        
 
         public List<Inb_Putaway_Go> GetAllInbPutawayGos()
         {
@@ -74,6 +84,35 @@ namespace GoWMS.Server.Controllers
         public bool CancelReceivingOrdersByPallet(string pallet)
         {
             bool bret = objDAL.CancelReceivingOrdersByPallet(pallet);
+
+            return bret;
+        }
+
+        public bool CreateTagno(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData)
+        {
+            bool bret = objDAL.CreateTagno(valapiref, valpalletfrom, valpalletto, valtranref, valtrancreateby, valTransData);
+
+            return bret;
+        }
+
+
+
+        public List<ggcTag4x4> GetTagGGCByIndex(long apiid)
+        {
+            List<ggcTag4x4> retlist = objDAL.GetTagGGCByIndex(apiid).ToList();
+            return retlist;
+        }
+
+        public bool CreatePutawayWms(string lpncode, string tagcode, string gatecode, string worktype, ref string retstring)
+        {
+            bool bret = objDAL.CreatePutawayWms(lpncode, tagcode, gatecode, worktype, ref retstring);
+
+            return bret;
+        }
+
+        public bool CreatePutawayEmpty(string lpncode, string tagcode, string gatecode, string worktype, ref string retstring)
+        {
+            bool bret = objDAL.CreatePutawayEmpty(lpncode, tagcode, gatecode, worktype, ref retstring);
 
             return bret;
         }

@@ -121,13 +121,13 @@
     <value>Action</value>
   </data>
   <data name="ItemCode" xml:space="preserve">
-    <value>ItemCode</value>
+    <value>SKU</value>
   </data>
   <data name="ItemName" xml:space="preserve">
-    <value>ItemName</value>
+    <value>NAME</value>
   </data>
   <data name="MasterPallet" xml:space="preserve">
-    <value>Master Pallet</value>
+    <value>TAG No</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
     <value>Master Mapping</value>
@@ -139,7 +139,7 @@
     <value>Qty</value>
   </data>
   <data name="SeqNo" xml:space="preserve">
-    <value>SeqNo</value>
+    <value>TAG No.</value>
   </data>
   <data name="Unit" xml:space="preserve">
     <value>Unit</value>

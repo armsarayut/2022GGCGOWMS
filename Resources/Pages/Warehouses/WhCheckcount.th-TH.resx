@@ -123,6 +123,9 @@
   <data name="Inputscan" xml:space="preserve">
     <value>ใสข้อมูล</value>
   </data>
+  <data name="Lot" xml:space="preserve">
+    <value>แบท</value>
+  </data>
   <data name="MATERIAL" xml:space="preserve">
     <value>รหัสสินค้า</value>
   </data>

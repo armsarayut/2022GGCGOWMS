@@ -5,7 +5,11 @@
 @using GoWMS.Server.Data;
 
 <MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
-    <MudCardHeader>
+     <div class="d-flex justify-center mb-1">
+                 <img src="Images/AEI LOGO MASTER APP 200x100.png" width="250px" height="100px" style="align-items:center" />
+            </div>
+        @*    <MudAvatar Image="Images/AEI LOGO MASTER APP 200x100.png" /> *@
+    <MudCardHeader > 
         <CardHeaderAvatar>
             @if (sGroupID == "1")
             {
@@ -32,6 +36,7 @@
             <MudText Typo="Typo.caption">@(sRole)</MudText>
         </CardHeaderContent>
     </MudCardHeader>
+
 </MudCard>
 
 @code { [Parameter] public string Class { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using GoWMS.Server.Data;
 using GoWMS.Server.Models;
@@ -40,6 +41,13 @@ namespace GoWMS.Server.Controllers
         public bool SapComplete(string sPallet)
         {
             bool bRet = objDAL.SapComplete(sPallet);
+            return bRet;
+        }
+
+        public bool SetOrderpick(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            bRet = objDAL.SetOrderpick(jsonOrder, ref msgReturn);
             return bRet;
         }
 

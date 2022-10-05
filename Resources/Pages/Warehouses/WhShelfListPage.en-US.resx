@@ -123,6 +123,9 @@
   <data name="BAY" xml:space="preserve">
     <value>BAY</value>
   </data>
+  <data name="DEEP" xml:space="preserve">
+    <value>DEEP</value>
+  </data>
   <data name="Excel" xml:space="preserve">
     <value>Excel</value>
   </data>
@@ -130,16 +133,16 @@
     <value>LANE</value>
   </data>
   <data name="LastUpdate" xml:space="preserve">
-    <value>LastUpdate</value>
+    <value>UPDATED</value>
   </data>
   <data name="LEVEL" xml:space="preserve">
     <value>LEVEL</value>
   </data>
   <data name="Location" xml:space="preserve">
-    <value>Location</value>
+    <value>LOCATION</value>
   </data>
   <data name="MasterPallet" xml:space="preserve">
-    <value>MasterPallet</value>
+    <value>PALLET</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
     <value>Location</value>
@@ -151,6 +154,6 @@
     <value>Search</value>
   </data>
   <data name="Status" xml:space="preserve">
-    <value>Status</value>
+    <value>STATUS</value>
   </data>
 </root>

@@ -123,17 +123,20 @@
   <data name="Inputscan" xml:space="preserve">
     <value>Input scan</value>
   </data>
+  <data name="Lot" xml:space="preserve">
+    <value>BATCH</value>
+  </data>
   <data name="MATERIAL" xml:space="preserve">
-    <value>ITEMCODE</value>
+    <value>SKU</value>
   </data>
   <data name="PACKID" xml:space="preserve">
-    <value>DNSeq</value>
+    <value>TAGNO</value>
   </data>
   <data name="Pallet" xml:space="preserve">
     <value>Pallet</value>
   </data>
   <data name="QTY" xml:space="preserve">
-    <value>ITEMNAME</value>
+    <value>NAME</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>

@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="AKSoftware.Localization.MultiLanguages" Version="5.2.0" />
     <PackageReference Include="AKSoftware.Localization.MultiLanguages.Blazor" Version="1.0.0" />
+    <PackageReference Include="Append.Blazor.Printing" Version="1.1.0" />
     <PackageReference Include="Blazored.Modal" Version="7.0.0-preiew.2" />
     <PackageReference Include="BlazorTable" Version="1.17.0" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />

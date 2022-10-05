@@ -123,6 +123,9 @@
   <data name="BAY" xml:space="preserve">
     <value>แถว</value>
   </data>
+  <data name="DEEP" xml:space="preserve">
+    <value>ลำดับ</value>
+  </data>
   <data name="Excel" xml:space="preserve">
     <value>เอกเซล</value>
   </data>

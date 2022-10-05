@@ -11,8 +11,8 @@ namespace GoWMS.Server.Models.Wcs
         public string Work_code { get; set; }
         public string Work_text_th { get; set; }
         public Int32? Srm_no { get; set; }
-        public Int32? Srm_from { get; set; }
-        public Int32? Srm_to { get; set; }
+        public Int64? Srm_from { get; set; }
+        public Int64? Srm_to { get; set; }
         public DateTime? Stime { get; set; }
         public DateTime? Etime { get; set; }
         public string Loadtime { get; set; }

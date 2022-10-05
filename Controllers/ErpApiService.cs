@@ -13,6 +13,20 @@ namespace GoWMS.Server.Controllers
     {
         readonly ApiDAL objDAL = new ApiDAL();
 
+
+        public List<Api_ggc> GetApiInboundAll()
+        {
+            List<Api_ggc> retlist = objDAL.GetApiInboundAll().ToList();
+            return retlist;
+        }
+
+        public List<Api_ggc> GetApiOutboundAll()
+        {
+            List<Api_ggc> retlist = objDAL.GetApiOutboundAll().ToList();
+            return retlist;
+        }
+
+
         public List<Api_Itemmaster_Go> GetAllApiItemmasterGos()
         {
             List<Api_Itemmaster_Go> retlist = objDAL.GetAllApiItemmasterGo().ToList();

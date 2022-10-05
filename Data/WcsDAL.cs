@@ -77,7 +77,7 @@ namespace GoWMS.Server.Data
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("select mccode, st_no, st_desc_th, sg_no, sg_desc_th");
-                    sql.AppendLine("from wcs.vmachine_command");
+                    sql.AppendLine("from wcs.view_machine_command");
                     sql.AppendLine("where  mccode=@mccode");
                     sql.AppendLine("order by st_no");
                     SqlCommand cmd = new SqlCommand(sql.ToString(), con)
@@ -194,9 +194,9 @@ namespace GoWMS.Server.Data
                     cmd.Parameters.AddWithValue("@_startpos", startpos);
                     cmd.Parameters.AddWithValue("@_stoppos", stoppos);
                     cmd.Parameters.AddWithValue("@_unittype", unittyp);
-                    cmd.Parameters.AddWithValue("@_entry", startpos);
-                    cmd.Parameters.AddWithValue("@_exit", stoppos);
-                    cmd.Parameters.AddWithValue("@_palletid", palletid);
+                    //cmd.Parameters.AddWithValue("@_entry", startpos);
+                    //cmd.Parameters.AddWithValue("@_exit", stoppos);
+                    cmd.Parameters.AddWithValue("@_lpncode", palletid);
                     cmd.Parameters.AddWithValue("@_weight", weight);
                     cmd.Parameters.AddWithValue("@_command", command);
 
@@ -405,8 +405,8 @@ namespace GoWMS.Server.Data
                             Work_Status = rdr["work_status"] == DBNull.Value ? null : (Int32?)rdr["work_status"],
                             Work_Id = rdr["work_id"] == DBNull.Value ? null : (Int64?)rdr["work_id"],
                             Srm_No = rdr["srm_no"] == DBNull.Value ? null : (Int32?)rdr["srm_no"],
-                            Srm_From = rdr["srm_from"] == DBNull.Value ? null : (Int32?)rdr["srm_from"],
-                            Srm_To = rdr["srm_to"] == DBNull.Value ? null : (Int32?)rdr["srm_to"],
+                            Srm_From = rdr["srm_from"] == DBNull.Value ? null : (Int64?)rdr["srm_from"],
+                            Srm_To = rdr["srm_to"] == DBNull.Value ? null : (Int64?)rdr["srm_to"],
                             Srm_Status = rdr["srm_status"] == DBNull.Value ? null : (Int32?)rdr["srm_status"],
 
                             Rgv_No = rdr["rgv_no"] == DBNull.Value ? null : (Int32?)rdr["rgv_no"],
@@ -419,7 +419,7 @@ namespace GoWMS.Server.Data
                             Cvy_To = rdr["cvy_to"] == DBNull.Value ? null : (Int32?)rdr["cvy_to"],
                             Cvy_Status = rdr["cvy_status"] == DBNull.Value ? null : (Int32?)rdr["cvy_status"],
 
-                            Pallet_No = rdr["pallet_no"] == DBNull.Value ? null : (Int32?)rdr["pallet_no"],
+                            Pallet_No = rdr["pallet_no"].ToString(),
                             Pallet_Hight = rdr["pallet_hight"] == DBNull.Value ? null : (Int32?)rdr["pallet_hight"],
                             Pallet_Width = rdr["pallet_width"] == DBNull.Value ? null : (Int32?)rdr["pallet_width"],
                             Pallet_Size = rdr["pallet_size"] == DBNull.Value ? null : (Int32?)rdr["pallet_size"],
@@ -457,7 +457,7 @@ namespace GoWMS.Server.Data
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT idx, created, entity_lock, modified, client_id, client_ip");
-                    sql.AppendLine(", lpncode, work_code, work_status, work_id");
+                    sql.AppendLine(", lpncode, work_code, work_status, idx_tas_works as work_id");
                     sql.AppendLine(", rgv_no, rgv_from, rgv_to, rgv_status");
                     sql.AppendLine(", cvy_no, cvy_from, cvy_to, cvy_status");
                     sql.AppendLine(", pallet_no, pallet_hight, pallet_width, pallet_size");
@@ -486,7 +486,7 @@ namespace GoWMS.Server.Data
                             Client_Ip = rdr["client_ip"].ToString(),
                             Lpncode = rdr["lpncode"].ToString(),
                             Work_Code = rdr["work_code"].ToString(),
-                            Work_Status = rdr["work_status"] == DBNull.Value ? null : (Int32?)rdr["work_status"],
+                            Work_Status = rdr["work_status"].ToString(),
                             Work_Id = rdr["work_id"] == DBNull.Value ? null : (Int64?)rdr["work_id"],
 
                             Rgv_No = rdr["rgv_no"] == DBNull.Value ? null : (Int32?)rdr["rgv_no"],
@@ -499,7 +499,7 @@ namespace GoWMS.Server.Data
                             Cvy_To = rdr["cvy_to"] == DBNull.Value ? null : (Int32?)rdr["cvy_to"],
                             Cvy_Status = rdr["cvy_status"] == DBNull.Value ? null : (Int32?)rdr["cvy_status"],
 
-                            Pallet_No = rdr["pallet_no"] == DBNull.Value ? null : (Int32?)rdr["pallet_no"],
+                            Pallet_No = rdr["pallet_no"].ToString(),
                             Pallet_Hight = rdr["pallet_hight"] == DBNull.Value ? null : (Int32?)rdr["pallet_hight"],
                             Pallet_Width = rdr["pallet_width"] == DBNull.Value ? null : (Int32?)rdr["pallet_width"],
                             Pallet_Size = rdr["pallet_size"] == DBNull.Value ? null : (Int32?)rdr["pallet_size"],
@@ -586,7 +586,7 @@ namespace GoWMS.Server.Data
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT set_code, set_desc, val_dt, val_int, val_num, val_chr, val_vhr ");
+                    sql.AppendLine("SELECT set_code, set_desc, val_dt, val_int, val_num, val_chr, val_vhr, val_bit ");
                     sql.AppendLine("FROM wcs.set_constant");
                     sql.AppendLine("order by set_code");
 
@@ -610,6 +610,7 @@ namespace GoWMS.Server.Data
                             Val_chr = rdr["val_chr"].ToString(),
                             Val_dt = rdr["val_dt"] == DBNull.Value ? null : (DateTime?)rdr["val_dt"],
                             Val_num = rdr["val_num"] == DBNull.Value ? null : (decimal?)rdr["val_num"],
+                            Val_bit = rdr["val_bit"] == DBNull.Value ? null : (bool?)rdr["val_bit"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -626,6 +627,8 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
+
+        
         public bool SetConstance(string setcode, Int32 setval)
         {
             bool bRet = false;
@@ -664,6 +667,61 @@ namespace GoWMS.Server.Data
             }
 
 
+            return bRet;
+        }
+
+        public Boolean SetRelocation(string stcode, bool valbit, ref string msgret)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            string cmdcode = "CMD08";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("wcs.ssp_update_relocation_config");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_enable", valbit);
+
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+                
+            }
+            msgret = sRet;
             return bRet;
         }
 
@@ -766,6 +824,53 @@ namespace GoWMS.Server.Data
             return bRet;
         }
 
+        public bool SetEnableConstance(string setcode, bool setval)
+        {
+            bool bRet = false;
+            Int32 setvalue = 1;
+
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
+            try
+            {
+                if (setval)
+                {
+                    setvalue = 0;
+                }
+
+
+                StringBuilder sql = new StringBuilder();
+
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
+                sql.AppendLine("UPDATE wcs.set_constant");
+                sql.AppendLine("SET val_bit = @val_bit");
+                sql.AppendLine("WHERE set_code = @set_code");
+                sql.AppendLine(";");
+
+
+                cmd.Parameters.AddWithValue("@val_bit", setval);
+                cmd.Parameters.AddWithValue("@set_code", setcode);
+
+
+                con.Open();
+                cmd.CommandText = sql.ToString();
+                cmd.ExecuteNonQuery();
+
+                bRet = true;
+
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.ToString());
+                bRet = false;
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+            return bRet;
+        }
 
         public IEnumerable<Set_Srm_Operate> GetSRMOperate()
         {
@@ -907,8 +1012,8 @@ namespace GoWMS.Server.Data
                             Work_code = rdr["work_code"].ToString(),
                             Work_text_th = rdr["work_text_th"].ToString(),
                             Srm_no = rdr["srm_no"] == DBNull.Value ? null : (Int32?)rdr["srm_no"],
-                            Srm_from = rdr["srm_from"] == DBNull.Value ? null : (Int32?)rdr["srm_from"],
-                            Srm_to = rdr["srm_to"] == DBNull.Value ? null : (Int32?)rdr["srm_to"],
+                            Srm_from = rdr["srm_from"] == DBNull.Value ? null : (Int64?)rdr["srm_from"],
+                            Srm_to = rdr["srm_to"] == DBNull.Value ? null : (Int64?)rdr["srm_to"],
                             Stime = rdr["stime"] == DBNull.Value ? null : (DateTime?)rdr["stime"],
                             Etime = rdr["etime"] == DBNull.Value ? null : (DateTime?)rdr["etime"],
                             Loadtime = rdr["loadtime"].ToString()
@@ -939,7 +1044,7 @@ namespace GoWMS.Server.Data
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT idx, created, entity_lock, modified, client_id, client_ip");
                     sql.AppendLine(", su_no, lpncode, work_code, work_gate, actual_weight, actual_size, msg");
-                    sql.AppendLine("FROM wcs.vrpt_eject");
+                    sql.AppendLine("FROM wcs.rpt_ejectgate");
                     sql.AppendLine("WHERE created >= @stimefm");
                     sql.AppendLine("AND created <= @stimeto");
                     sql.AppendLine("ORDER BY created");
@@ -1030,12 +1135,44 @@ namespace GoWMS.Server.Data
             return bret;
         }
 
+        public bool SetUrgentAsrsQueueByLot(string slotno)
+        {
+            bool bret = false;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sql = new StringBuilder();
+                    sql.AppendLine("Update wcs.tas_mcworks");
+                    sql.AppendLine("Set work_priority = (SELECT max(work_priority) + 1 FROM wcs.tas_mcworks WHERE work_code = @work_code)");
+                    sql.AppendLine("where work_ref = @work_ref");
 
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                    {
+                        CommandType = CommandType.Text
+                    };
 
+                    cmd.Parameters.AddWithValue("@work_code", "05");
+                    cmd.Parameters.AddWithValue("@work_ref", slotno);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
 
+                    bret = true;
+                }
+                catch (SqlException ex)
+                {
+                    bret = false;
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
 
-
-
+            return bret;
+        }
 
     }
 }

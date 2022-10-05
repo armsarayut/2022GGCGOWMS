@@ -19,7 +19,18 @@ namespace GoWMS.Server.Controllers
             List<Vrpt_operationresult_sum> retlist = objDAL.GetAllOrderofDay().ToList();
             return retlist;
         }
-            public List<Vrpt_shelfsummary> GetAllLocationSummary()
+
+        public Task<Int64> GetCompleteOrderReceiptofDay()
+        {
+            return objDAL.GetCompleteOrderReceiptofDay();
+        }
+
+        public Task<Int64> GetCompleteOrderIssueofDay()
+        {
+            return objDAL.GetCompleteOrderIssueofDay();
+        }
+
+        public List<Vrpt_shelfsummary> GetAllLocationSummary()
         {
             List<Vrpt_shelfsummary> retlist = objDAL.GetAllLocationSummary().ToList();
             return retlist;

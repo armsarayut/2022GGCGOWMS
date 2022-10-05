@@ -1,4 +1,4 @@
-﻿@page "/inb-storage"
+﻿@page "/1/1_4"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -8,7 +8,9 @@
 @inject MasService ObjMasService
 @inject InboundService ObjInboundService
 @inject UserServices OpjUserService
+@inject ISnackbar Snackbar
 @inject IStringLocalizer<InpPutaway> L
+@inject IJSRuntime js
 @attribute [Authorize]
 
 <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
@@ -39,13 +41,23 @@ else if (elevation == 4) // Error
     </MudItem>
     <MudItem xs="12">
         <div class="form-group">
-            <input style="width: 100%; height: 40px" type="text" class="form-control" @bind="@palletcode" @onkeydown="@DoTheThing" placeholder="Input scan" />
+  @*          <input style="width: 100%; height: 40px" type="text" class="form-control" @bind="@palletcode" @onkeydown="@DoTheThing" placeholder="Input scan" />*@
+
+             <input Id="inputBar" style="width: 100%; height: 40px" type="text" class="form-control" @bind-value="@palletcode" @onkeyup="@KeyUp" placeholder="Input scan" />
+
         </div>
     </MudItem>
 </MudGrid>
 
+<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxGate" Label="GATE" Color="Color.Primary" Size="Size.Large"></MudCheckBox>
 
-@if (Elements == null)
+<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxConfirm" Label="CONFIRM" Color="Color.Success" Size="Size.Large"></MudCheckBox>
+
+@*<MudText Typo="Typo.h6">@L["MasterPallet"] : [ @mPalletcode ]</MudText>*@
+
+
+
+@*@if (Elements == null)
 {
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
@@ -85,7 +97,7 @@ else
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
         </PagerContent>
     </MudTable>
-}
+}*@
 
 @code {
     private string pageheader = "Storage";
@@ -98,6 +110,10 @@ else
     private bool striped = true;
     private bool bordered = false;
     private string searchString = "";
+
+    private string compGate = "STORE-G07";
+    private string compCommand = "STORE-CONFIRM";
+
     private Inb_Putaway_Go selectedItem = null;
     private HashSet<Inb_Putaway_Go> selectedItems = new HashSet<Inb_Putaway_Go>();
     private IEnumerable<Inb_Putaway_Go> Elements = new List<Inb_Putaway_Go>();
@@ -109,62 +125,126 @@ else
     public int elevation = 0;
     private ResultReturn resultReturn = null;
 
+
+    public bool chkboxGate { get; set; } = false;
+    public bool chkboxConfirm { get; set; } = false;
+
+    public bool ReadOnly { get; set; } = true;
+
+
+
     protected override async Task OnInitializedAsync()
     {
-        InboundService objCS = new InboundService();
-        Elements = await Task.Run(() => objCS.GetAllInbPutawayGos());
-        MasterStotageBins = ObjMasService.GetAllMasterStorageBins();
+        //InboundService objCS = new InboundService();
+        //Elements = await Task.Run(() => objCS.GetAllInbPutawayGos());
+        //MasterStotageBins = ObjMasService.GetAllMasterStorageBins();
+    }
 
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Focus the element
+            await Focus("inputBar");
+        }
+    }
 
+    public async Task Focus(string elementId)
+    {
+        await js.InvokeVoidAsync("jsfunction.focusElement", elementId);
     }
 
     private void setstr(string str)
     {
-        if (mPalletcode.Length <= 0)
-        {
-            var allCorrect = MasterStotageBins.Where(a => a.Binno == str).ToList();
 
-            if (allCorrect.ToList().Count > 0)
-            {
-                mPalletcode = str;
-                msgAction = "Enter PalletGo";
-                elevation = 1;
-            }
-            else
-            {
-                mPalletcode = "";
-                elevation = 4;
-                msgAction = "Location find not found";
-            }
-        }
-        else
+        if (str==compGate)
         {
-            var allCorrect = Elements.Where(a => a.Palletno == str).ToList();
+            chkboxGate = true;
 
-            if (allCorrect.ToList().Count > 0)
-            {
-                //InQueue
-                ObjInboundService.SetStorageComplete(str, mPalletcode);
-                elevation = 2;
-                msgAction = "Storage successfully";
-                mPalletcode = "";
-            }
-            else
-            {
-                if (mPalletcode.Length > 0)
-                {
-                    elevation = 1;
-                    msgAction = "Please enter PalletGo";
-                }
-                else
-                {
-                    elevation = 1;
-                    msgAction = "Please enter Location";
-                }
-            }
+        }else if(str==compCommand)
+        {
+            chkboxConfirm = true;
         }
-        InboundService objGR = new InboundService();
-        Elements = objGR.GetAllInbPutawayGos();
+
+
+        if (chkboxGate== true && chkboxConfirm == true)
+        {
+            CrestePutAway();
+
+            chkboxConfirm = false;
+            chkboxGate = false;
+        }
+
+        //if (chkboxGate== true || chkboxConfirm == true)
+        //{
+        //    StateHasChanged();
+        //}
+
+        
+
+        //if (mPalletcode.Length <= 0)
+        //{
+        //    var allCorrect = MasterStotageBins.Where(a => a.Binno == str).ToList();
+
+        //    if (allCorrect.ToList().Count > 0)
+        //    {
+        //        mPalletcode = str;
+        //        msgAction = "Enter PalletGo";
+        //        elevation = 1;
+        //    }
+        //    else
+        //    {
+        //        mPalletcode = "";
+        //        elevation = 4;
+        //        msgAction = "Location find not found";
+        //    }
+        //}
+        //else
+        //{
+        //    var allCorrect = Elements.Where(a => a.Palletno == str).ToList();
+
+        //    if (allCorrect.ToList().Count > 0)
+        //    {
+        //        //InQueue
+        //        ObjInboundService.SetStorageComplete(str, mPalletcode);
+        //        elevation = 2;
+        //        msgAction = "Storage successfully";
+        //        mPalletcode = "";
+        //    }
+        //    else
+        //    {
+        //        if (mPalletcode.Length > 0)
+        //        {
+        //            elevation = 1;
+        //            msgAction = "Please enter PalletGo";
+        //        }
+        //        else
+        //        {
+        //            elevation = 1;
+        //            msgAction = "Please enter Location";
+        //        }
+        //    }
+        //}
+        //InboundService objGR = new InboundService();
+        //Elements = objGR.GetAllInbPutawayGos();
+    }
+
+    void KeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+
+            string pallettemp = palletcode;
+
+            setstr(pallettemp);
+            Reset();
+        }
+    }
+
+    private void Reset()
+    {
+        this.palletcode = string.Empty;
+        StateHasChanged();
     }
 
     private string stxtInput { get; set; }
@@ -203,6 +283,31 @@ else
         CustomerService objGR = new CustomerService();
         Elements = objGR.GetReceivingOrdersbypallet(mPalletcode);
         */
+    }
+
+
+
+    public async Task CrestePutAway()
+    {
+
+        string msgReturn = "Call";
+        bool bitReturn;
+        bitReturn = await Task.Run(() => ObjInboundService.CreatePutawayEmpty("PL001", "EMP01", "G07", "101", ref msgReturn));
+        if (bitReturn == false)
+        {
+            elevation = 4;
+            msgAction = msgReturn;
+
+            Snackbar.Add(msgReturn, Severity.Error);
+
+        }
+        else
+        {
+            Snackbar.Add(msgReturn, Severity.Success);
+            elevation = 2;
+            msgAction = "Mapping successfully";
+        }
+
     }
 
 

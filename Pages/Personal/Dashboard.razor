@@ -125,7 +125,8 @@
 
 </MudGrid>
 
-@code { private System.Threading.Timer timer;
+@code {
+    private System.Threading.Timer timer;
     private List<DasLocation> daslos;
     private DasLocation daslocations = new DasLocation();
 
@@ -146,7 +147,9 @@
 
 
     private Int64 mstorage = 0;
+    private Int64 mstorageemp = 0;
     private Int64 mretrieval = 0;
+    private Int64 mretrievalemp = 0;
     private Int64 mtotal = 0;
 
     private Int64 L1Total = 0;
@@ -205,25 +208,25 @@
     private int Index1 = -1; //default value cannot be 0 -> first selectedindex is 0.
     int dataSize1 = 2;
     double[] data1 = { 80, 10, 10, 10 };
-    string[] labels1 = { "Use", "Free", "Block", "Master" };
+    string[] labels1 = { "Use", "Free", "Block", "Stack" };
     string[] xlabels1 = { "80", "100" };
 
     private int Index2 = -1; //default value cannot be 0 -> first selectedindex is 0.
     int dataSize2 = 2;
     double[] data2 = { 80, 10, 10, 10 };
-    string[] labels2 = { "Use", "Free", "Block", "Master" };
+    string[] labels2 = { "Use", "Free", "Block", "Stack" };
     string[] xlabels2 = { "80", "100" };
 
     private int Index3 = -1; //default value cannot be 0 -> first selectedindex is 0.
     int dataSize3 = 2;
     double[] data3 = { 80, 10, 10, 10 };
-    string[] labels3 = { "Use", "Free", "Block", "Master" };
+    string[] labels3 = { "Use", "Free", "Block", "Stack" };
     string[] xlabels3 = { "80", "100" };
 
     private int Index4 = -1; //default value cannot be 0 -> first selectedindex is 0.
     int dataSize4 = 2;
     double[] data4 = { 80, 10, 10, 10 };
-    string[] labels4 = { "Use", "Free", "Block", "Master" };
+    string[] labels4 = { "Use", "Free", "Block", "Stack" };
     string[] xlabels4 = { "80", "100" };
 
 
@@ -258,7 +261,10 @@
         palletPicking = await ObjInbService.GetSumPalletAllOubGoodPickingGo();
         orderPicking = await ObjInbService.GetSumOrderAllOubGoodPickingGo();
 
-        Elementorders = await Task.Run(() => ObjDashService.GetAllOrderofDay());
+        //Elementorders = await Task.Run(() => ObjDashService.GetAllOrderofDay());
+
+        orderCompletePut= await ObjDashService.GetCompleteOrderReceiptofDay();
+        orderCompletePick = await ObjDashService.GetCompleteOrderIssueofDay();
 
         Elementlocation = await Task.Run(() => ObjDashService.GetAllLocationSummary());
 
@@ -267,20 +273,20 @@
 
         AsrsCompleteData = await Task.Run(() => ObjDashService.GetASRSDashboardComplete());
 
-        if (Elementorders.ToList().Count > 0)
-        {
-            var vorderCompletePut = Elementorders.Select(a => a.C01).Single();
-            orderCompletePut = (Int64)vorderCompletePut;
+        //if (Elementorders.ToList().Count > 0)
+        //{
+        //    var vorderCompletePut = Elementorders.Select(a => a.C01).Single();
+        //    orderCompletePut = (Int64)vorderCompletePut;
 
-            var vorderCompletePick = Elementorders.Select(a => a.C05).Single();
-            orderCompletePick = (Int64)vorderCompletePick;
-        }
-        else
-        {
-            orderCompletePut = 0;
-            orderCompletePick = 0;
+        //    var vorderCompletePick = Elementorders.Select(a => a.C05).Single();
+        //    orderCompletePick = (Int64)vorderCompletePick;
+        //}
+        //else
+        //{
+        //    orderCompletePut = 0;
+        //    orderCompletePick = 0;
 
-        }
+        //}
 
         var allCorrect1 = Elementlocation.Where(a => a.Srm_No == 1).ToList();
 
@@ -291,13 +297,13 @@
                 //data1.Concat(new double[] { (double)val.Locavl }).ToArray();
                 //data1.Concat(new double[] { (double)val.Locemp }).ToArray();
 
-                data1[0] = (double)val.Locavl;
-                data1[1] = (double)val.Locemp;
+                data1[0] = (double)val.Locavl ;
+                data1[1] = (double)val.Locemp ;
                 data1[2] = (double)val.Plerr;
                 data1[3] = (double)val.Plemp;
 
                 L1Total = (Int64)val.Total;
-                L1Use = (Int64)val.Locavl;
+                L1Use = (Int64)val.Locavl  +  (Int64)val.Plemp;
                 L1Emp = (Int64)val.Locemp;
             }
         }
@@ -318,13 +324,13 @@
         {
             foreach (var val in allCorrect2)
             {
-                data2[0] = (double)val.Locavl;
+                data2[0] = (double)val.Locavl ;
                 data2[1] = (double)val.Locemp;
                 data2[2] = (double)val.Plerr;
                 data2[3] = (double)val.Plemp;
 
                 L2Total = (Int64)val.Total;
-                L2Use = (Int64)val.Locavl;
+                L2Use = (Int64)val.Locavl +  (Int64)val.Plemp;
                 L2Emp = (Int64)val.Locemp;
             }
         }
@@ -397,6 +403,7 @@
         }
 
         var allCorrectTas01 = ElementWorks.Where(a => a.Work_Code == "01").ToList();
+        var allCorrectTas101 = ElementWorks.Where(a => a.Work_Code == "101").ToList();
 
         if (allCorrectTas01.ToList().Count > 0)
         {
@@ -405,14 +412,40 @@
 
                 mstorage = (Int64)val.Clpncode;
             }
+
+            if (allCorrectTas101.ToList().Count > 0)
+            {
+                foreach (var val in allCorrectTas101)
+                {
+
+                    mstorageemp = (Int64)val.Clpncode;
+                }
+            }
+
+            mstorage = mstorage + mstorageemp;
+
+
         }
         else
         {
 
-            mstorage = 0;
+            if (allCorrectTas101.ToList().Count > 0)
+            {
+                foreach (var val in allCorrectTas101)
+                {
+
+                    mstorageemp = (Int64)val.Clpncode;
+                }
+                mstorage = mstorageemp;
+            }
+            else{
+                mstorage = 0;
+            }
+
         }
 
         var allCorrectTas05 = ElementWorks.Where(a => a.Work_Code == "05").ToList();
+        var allCorrectTas102 = ElementWorks.Where(a => a.Work_Code == "102").ToList();
 
         if (allCorrectTas05.ToList().Count > 0)
         {
@@ -421,11 +454,37 @@
 
                 mretrieval = (Int64)val.Clpncode;
             }
+
+            if (allCorrectTas102.ToList().Count > 0)
+            {
+                foreach (var val in allCorrectTas102)
+                {
+
+                    mretrievalemp = (Int64)val.Clpncode;
+                }
+            }
+            mretrieval = mretrieval + mretrievalemp;
+
         }
         else
         {
 
-            mretrieval = 0;
+              if (allCorrectTas102.ToList().Count > 0)
+            {
+                foreach (var val in allCorrectTas102)
+                {
+
+                    mretrievalemp = (Int64)val.Clpncode;
+                }
+                 mretrieval = mretrievalemp;
+            }
+            else
+            {
+                 mretrieval = 0;
+            }
+
+
+           
         }
 
         mtotal = mstorage + mretrieval;
@@ -552,4 +611,5 @@
     void StartCountdown()
     {
 
-    } }
+    } 
+}

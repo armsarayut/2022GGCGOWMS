@@ -262,7 +262,7 @@
     <value>แนะนำการนับ</value>
   </data>
   <data name="CycleCount" xml:space="preserve">
-    <value>2.4รอบการนับ</value>
+    <value>2.4ตรวจสอบ</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>แผงควบคุม</value>
@@ -328,7 +328,7 @@
     <value>การทำแพลน</value>
   </data>
   <data name="MasterQueuing" xml:space="preserve">
-    <value>1.3.มาสเตอร์คิว</value>
+    <value>1.5.มาสเตอร์คิว</value>
   </data>
   <data name="OrderBooking" xml:space="preserve">
     <value>3.1.รายการจองสินค้า</value>
@@ -352,7 +352,7 @@
     <value>ปล่อยสินค้า</value>
   </data>
   <data name="Return" xml:space="preserve">
-    <value>1.4.คืน</value>
+    <value>1.4.จัดเก็บพาเลทเปล่า</value>
   </data>
   <data name="RGV" xml:space="preserve">
     <value>รถขนส่ง</value>

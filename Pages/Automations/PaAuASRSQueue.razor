@@ -46,7 +46,7 @@ else
                           IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Work_Priority)">@L["PRIORITY"]</MudTableSortLabel></MudTh>
+            @*<MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Work_Priority)">@L["PRIORITY"]</MudTableSortLabel></MudTh>*@
             <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Ctime)">@L["QUEUING"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Lpncode)">@L["PALLET"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Work_Code)">@L["TASKTYPE"]</MudTableSortLabel></MudTh>
@@ -57,7 +57,7 @@ else
             <MudTh>URGENT</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel=@L["PRIORITY"]>@context.Work_Priority</MudTd>
+            @*<MudTd DataLabel=@L["PRIORITY"]>@context.Work_Priority</MudTd>*@
             <MudTd DataLabel=@L["QUEUING"]>@Convert.ToDateTime(context.Ctime).ToString(VarGlobals.FormatDT)</MudTd>
             <MudTd DataLabel=@L["PALLET"]>@context.Lpncode</MudTd>
             <MudTd DataLabel=@L["TASKTYPE"]>@context.Work_Code</MudTd>

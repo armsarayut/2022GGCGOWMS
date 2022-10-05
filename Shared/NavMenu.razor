@@ -1,6 +1,7 @@
 ﻿@inject IStringLocalizer<NavMenu> L
 
 <PersonCard Style="background-color: var(--mud-palette-drawer-background);color: var(--mud-palette-drawer-text);" />
+
 <MudDivider Class="mb-1" />
 <MudNavMenu>
 
@@ -9,8 +10,10 @@
     <MudNavGroup Title=@L["1.Inbound"] IconColor="Color.Primary" Icon="@Icons.Material.Filled.Inbox">
         <MudNavLink Href="/1/1_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["ReceivingOrder"] </MudNavLink>
         <MudNavLink Href="/1/1_2" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["GoodReceive"]</MudNavLink>
-        <MudNavLink Href="/1/1_3" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["MasterQueuing"]</MudNavLink>
+        <MudNavLink Href="/1/1_3" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["MasterMapping"]</MudNavLink>
         <MudNavLink Href="/1/1_4" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["Return"]</MudNavLink>
+        <MudNavLink Href="/1/1_5" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["MasterQueuing"]</MudNavLink>
+        @*<MudNavLink Href="/1/1_4" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["Return"]</MudNavLink>*@
     </MudNavGroup>
 
     <MudNavGroup Title=@L["2.Warehouse"] IconColor="Color.Primary" Icon="@Icons.Material.Filled.Store">
@@ -22,8 +25,8 @@
     </MudNavGroup>
 
     <MudNavGroup Title=@L["3.Outbound"] IconColor="Color.Primary" Icon="@Icons.Material.Filled.Outbox">
-        <MudNavLink Href="/3/3_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Outbox">@L["OrderBooking"]</MudNavLink>
-        <MudNavLink Href="/3/3_2" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Outbox">@L["OrderPicking"]</MudNavLink>
+         <MudNavLink Disabled="true" Href="/3/3_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Outbox">@L["OrderBooking"]</MudNavLink>
+        <MudNavLink Disabled="true" Href="/3/3_2" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Outbox">@L["OrderPicking"]</MudNavLink>
         <MudNavLink Href="/3/3_3" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Outbox">@L["QueuePicking"]</MudNavLink>
         <MudNavLink Href="/3/3_4" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Outbox">@L["Unplanned"]</MudNavLink>
     </MudNavGroup>

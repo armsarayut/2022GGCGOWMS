@@ -66,13 +66,13 @@ else
 
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<Vmachine, object>(x=>x.Mccode)">@L["MCCODE"]</MudTableSortLabel></MudTh>
-            @*<MudTh><MudTableSortLabel SortBy="new Func<Vmachine, object>(x=>x.Information)">@L["INFO"]</MudTableSortLabel></MudTh>*@
+            <MudTh><MudTableSortLabel SortBy="new Func<Vmachine, object>(x=>x.Information)">@L["INFO"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Vmachine, object>(x=>x.St_no)">@L["STATUS"]</MudTableSortLabel></MudTh>
             <MudTh>@L["ACTION"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["MCCODE"]>@context.Mccode</MudTd>
-            @*<MudTd DataLabel=@L["INFO"]>@context.Information</MudTd>*@
+            <MudTd DataLabel=@L["INFO"]>@context.Information</MudTd>
             <MudTd DataLabel=@L["STATUS"]>
                 @{if (@context.Is_alert == true && @context.Mccode != "")
                         {

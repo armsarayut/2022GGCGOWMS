@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,69 +16,90 @@ namespace GoWMS.Server.Data
     public class OubDAL
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
+        readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
 
         public IEnumerable<Sap_Storeout> GetAllSapStoreout()
         {
             List<Sap_Storeout> lstobj = new List<Sap_Storeout>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("select * " +
-                    "from public.sap_storeout  " +
-                    "order by idx", con)
+
+                StringBuilder sql = new StringBuilder();
+
+                sql.AppendLine("select t0.site,t0.doc_num,cast(t0.trans_num as bigint) trans_num,t0.ref_type,t0.trans_type,t0.trans_date");
+                sql.AppendLine(" ,t0.unit_key,t0.item_bc,t0.item, t1.item_name, t1.uom, t1.weight_unit,t0.qty");
+                sql.AppendLine(",t0.lot,t0.prod_date,t0.stat,t0.source");
+                sql.AppendLine(",t0.reason,t0.createdby,t0.createddate");
+                sql.AppendLine(",t0.whse,t0.loc,t0.pallet_bc,t0.ref_item");
+                sql.AppendLine(",t0.flag,t0.require_detail_id,t0.is_req");
+                sql.AppendLine(",t0.is_hold,t0.is_lock,t0.update2sl,t0.modifie_date");
+                sql.AppendLine("FROM dbo.wms_trans t0");
+                sql.AppendLine("INNER JOIN dbo.set_itemmaster t1");
+                sql.AppendLine("ON t0.item=t1.item_code");
+                sql.AppendLine("WHERE t0.unit_key = @unit_key");
+                sql.AppendLine("AND t0.stat = @stat");
+                sql.AppendLine("AND t0.flag = @flag");
+                sql.AppendLine("ORDER BY t0.trans_num");
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
+
+                cmd.Parameters.AddWithValue("@unit_key", "05");
+                cmd.Parameters.AddWithValue("@stat", 0);
+                cmd.Parameters.AddWithValue("@flag", 0);
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Sap_Storeout objrd = new Sap_Storeout
                     {
-                        Idx = rdr["idx"] == DBNull.Value ? null : (Int64?)rdr["idx"],
-                        Entity_Lock = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
-                        Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
-                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
-                        Client_Id = rdr["client_Id"] == DBNull.Value ? null : (Int64?)rdr["client_Id"],
-                        Client_Ip = rdr["client_Ip"].ToString(),
-                        Order_No = rdr["order_no"].ToString(),
-                        Ship_To_Code = rdr["ship_to_code"].ToString(),
-                        Ship_Name = rdr["ship_name"].ToString(),
-                        Delivery_Priority = rdr["delivery_priority"] == DBNull.Value ? null : (Int32?)rdr["delivery_priority"],
-                        Delivery_Date = rdr["delivery_date"] == DBNull.Value ? null : (DateTime?)rdr["delivery_date"],
-                        Item_Code = rdr["item_code"].ToString(),
-                        Batch_Number = rdr["batch_number"].ToString(),
-                        Request_Qty = rdr["request_qty"] == DBNull.Value ? null : (decimal?)rdr["request_qty"],
-                        Status = rdr["status"] == DBNull.Value ? null : (Int32?)rdr["status"],
-                        Error_Code = rdr["error_code"].ToString(),
-                        Movement_Type = rdr["movement_type"].ToString(),
-                        Movement_Reason = rdr["movement_reason"].ToString(),
-                        To_No = rdr["to_no"].ToString(),
-                        To_Line = rdr["to_line"].ToString(),
-                        Po_Header_Txt = rdr["po_header_txt"].ToString(),
-                        Requisitioner = rdr["requisitioner"].ToString(),
-                        Po_No = rdr["po_no"].ToString(),
-                        Remark = rdr["remark"].ToString(),
-                        Doc_Ref = rdr["doc_ref"].ToString(),
+                        Idx = rdr["trans_num"] == DBNull.Value ? null : (Int64?)rdr["trans_num"],
+                        Entity_Lock = 0,
+                        Created = rdr["createddate"] == DBNull.Value ? null : (DateTime?)rdr["createddate"],
+                        Modified = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
+                        Client_Id = 0,
+                        Client_Ip = null,
+                        Order_No = rdr["doc_num"].ToString(),
+                        Ship_To_Code = null,
+                        Ship_Name = null,
+                        Delivery_Priority = 0,
+                        Delivery_Date = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
+                        Item_Code = rdr["item"].ToString(),
+                        Batch_Number = rdr["lot"].ToString(),
+                        Request_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Status = rdr["stat"] == DBNull.Value ? null : (Int32?)rdr["stat"],
+                        Error_Code = null,
+                        Movement_Type = rdr["ref_type"].ToString(),
+                        Movement_Reason = rdr["trans_type"].ToString(),
+                        To_No = null,
+                        To_Line = null,
+                        Po_Header_Txt = null,
+                        Requisitioner = null,
+                        Po_No = rdr["doc_num"].ToString(),
+                        Remark = rdr["reason"].ToString(),
+                        Doc_Ref = null,
                         Created_By = rdr["created_by"].ToString(),
-                        Created_Date = rdr["created_date"] == DBNull.Value ? null : (DateTime?)rdr["created_date"],
-                        Update_By = rdr["update_by"].ToString(),
-                        Update_Date = rdr["update_date"] == DBNull.Value ? null : (DateTime?)rdr["update_date"],
-                        Order_Line = rdr["order_line"].ToString(),
-                        Stock_Consign = rdr["stock_consign"].ToString(),
+                        Created_Date = rdr["createddate"] == DBNull.Value ? null : (DateTime?)rdr["createddate"],
+                        Update_By = null,
+                        Update_Date = null,
+                        Order_Line = null,
+                        Stock_Consign = null,
                         Site = rdr["site"].ToString(),
-                        Storage_Location = rdr["storage_location"].ToString(),
-                        Warehouse = rdr["warehouse"].ToString(),
-                        Item_Name = rdr["item_Name"].ToString(),
-                        Tracking_Number = rdr["tracking_number"].ToString(),
-                        Su_No = rdr["su_no"].ToString(),
-                        Pallet_No = rdr["pallet_no"].ToString(),
-                        Stock_Qty = rdr["stock_qty"] == DBNull.Value ? null : (decimal?)rdr["stock_qty"],
-                        Transfer_Qty = rdr["transfer_qty"] == DBNull.Value ? null : (decimal?)rdr["transfer_qty"],
-                        Ref_No = rdr["ref_no"].ToString(),
-                        Ref_Line = rdr["ref_line"].ToString(),
-                        Unit = rdr["unit"].ToString(),
-                        Vendor_Code = rdr["vendor_code"].ToString(),
-                        Batch_No = rdr["batch_no"].ToString()
+                        Storage_Location = rdr["loc"].ToString(),
+                        Warehouse = rdr["whse"].ToString(),
+                        Item_Name = rdr["item_name"].ToString(),
+                        Tracking_Number = rdr["item_bc"].ToString(),
+                        Su_No = rdr["item_bc"].ToString(),
+                        Pallet_No = rdr["pallet_bc"].ToString(),
+                        Stock_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Transfer_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Ref_No = null,
+                        Ref_Line = null,
+                        Unit = rdr["uom"].ToString(),
+                        Vendor_Code = null,
+                        Batch_No = rdr["lot"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

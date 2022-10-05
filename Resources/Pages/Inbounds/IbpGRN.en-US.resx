@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BatchNo" xml:space="preserve">
-    <value>BatchNo</value>
+    <value>BATCH</value>
   </data>
   <data name="DNDate" xml:space="preserve">
-    <value>DNDate</value>
+    <value>DATE</value>
   </data>
   <data name="DNNo" xml:space="preserve">
-    <value>DNNo</value>
+    <value>RESERVATION</value>
   </data>
   <data name="DNSeq" xml:space="preserve">
     <value>DNSeq</value>
@@ -133,10 +133,10 @@
     <value>Excel</value>
   </data>
   <data name="ItemCode" xml:space="preserve">
-    <value>ItemCode</value>
+    <value>SKU</value>
   </data>
   <data name="ItemName" xml:space="preserve">
-    <value>ItemName</value>
+    <value>NAME</value>
   </data>
   <data name="LotNo" xml:space="preserve">
     <value>LotNo</value>

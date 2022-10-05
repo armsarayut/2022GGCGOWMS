@@ -262,7 +262,7 @@
     <value>Count Suggestion</value>
   </data>
   <data name="CycleCount" xml:space="preserve">
-    <value>2.4.Cycle Count</value>
+    <value>2.4.Audit</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
@@ -325,10 +325,10 @@
     <value>Machine</value>
   </data>
   <data name="MasterMapping" xml:space="preserve">
-    <value>Master Mapping</value>
+    <value>1.3 Putaway</value>
   </data>
   <data name="MasterQueuing" xml:space="preserve">
-    <value>1.3.Master Queuing</value>
+    <value>1.5.Master Queuing</value>
   </data>
   <data name="OrderBooking" xml:space="preserve">
     <value>3.1.Order Booking</value>
@@ -352,7 +352,7 @@
     <value>Release Stock</value>
   </data>
   <data name="Return" xml:space="preserve">
-    <value>1.4.Return</value>
+    <value>1.4. Stacking</value>
   </data>
   <data name="RGV" xml:space="preserve">
     <value>RGV</value>

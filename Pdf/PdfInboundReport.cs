@@ -77,7 +77,7 @@ namespace GoWMS.Server.Pdf
         private void ReportLogo()
         {
             iTextSharp.text.Image png = iTextSharp.text.Image.GetInstance(GoWMS.Server.Data.VarGlobals.Imagelogoreport());
-            png.ScaleAbsolute(40, 40);
+            png.ScaleAbsolute(40, 30);
             png.SetAbsolutePosition(10, 800);
             _document.Add(png);
         }

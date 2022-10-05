@@ -79,7 +79,7 @@ namespace GoWMS.Server.Data
                 Sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
                 Sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
                 Sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
-                Sql.AppendLine(", trans_num, lot, exp_date, mfg_date");
+                Sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date");
                 Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
                 //Sql.AppendLine("WHERE allocatequantity < quantity");
                 Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
@@ -97,7 +97,7 @@ namespace GoWMS.Server.Data
                 {
                     Inv_Stock_GoInfo objrd = new Inv_Stock_GoInfo
                     {
-                        Efidx = null,
+                        Efidx = rdr["trans_num"] == DBNull.Value ? null : (long?)rdr["trans_num"],
                         Efstatus = null,
                         Created = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
                         Modified = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
@@ -197,8 +197,8 @@ namespace GoWMS.Server.Data
             {
                  StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("SELECT modified, srm_no, shelf_no, shelfcode, shelfname");
-                Sql.AppendLine(", shelfbank, shelfframe, shelfbay, shelflevel, shelfstatus");
-                Sql.AppendLine(", lpncode, refercode, actual_weight, actual_size, null as desc_size, st_desc");
+                Sql.AppendLine(", shelfbank, shelfframe, shelfbay, shelflevel, shelfdeep, shelfstatus");
+                Sql.AppendLine(", lpncode, refercode, actual_weight, actual_size, null as desc_size, st_desc, backcolor, focecolor");
                 Sql.AppendLine("from  wcs.vrpt_shelf_list");
                 Sql.AppendLine("order by shelf_no asc");
 
@@ -222,6 +222,7 @@ namespace GoWMS.Server.Data
                         Shelfbay = rdr["shelfbay"] == DBNull.Value ? null : (Int32?)rdr["shelfbay"],
                         Shelfframe = rdr["shelfframe"] == DBNull.Value ? null : (Int32?)rdr["shelfframe"],
                         Shelflevel = rdr["shelflevel"] == DBNull.Value ? null : (Int32?)rdr["shelflevel"],
+                        Shelfdeep = rdr["shelfdeep"] == DBNull.Value ? null : (Int32?)rdr["shelfdeep"],
                         Shelfstatus = rdr["shelfstatus"] == DBNull.Value ? null : (Int32?)rdr["shelfstatus"],
                         Lpncode= rdr["lpncode"].ToString(),
                         Refercode = rdr["refercode"].ToString(),
@@ -229,7 +230,9 @@ namespace GoWMS.Server.Data
                         Actual_size = rdr["actual_size"] == DBNull.Value ? null : (Int32?)rdr["actual_size"],
                         Desc_size = rdr["desc_size"].ToString(),
                         St_desc = rdr["st_desc"].ToString(),
-                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"]
+                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
+                        Backcolor = rdr["backcolor"].ToString(),
+                        Focecolor = rdr["focecolor"].ToString()
 
                     };
                     lstobj.Add(objrd);
