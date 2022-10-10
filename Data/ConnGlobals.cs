@@ -17,7 +17,7 @@ namespace GoWMS.Server.Data
         #region SQL Database
 
     
-        private static readonly string SqlServer = "10.251.11.3"; // Develop ,Local : DESKTOP-NQ62BHU\MSSQL , Host : 203.159.93.86, GGC QAS : 10.251.11.3
+        private static readonly string SqlServer = " 10.251.11.3"; // Develop ,Local : DESKTOP-NQ62BHU\MSSQL , Host : 203.159.93.86, GGC QAS : 10.251.11.3
         private static readonly string SqlDB = "GOSQL"; // Develop , Local : GOSQLGGC , Host : GOSQL
         private static readonly string SqlPort = "1433";
         private static readonly string SqlUser = "sa";
@@ -34,7 +34,7 @@ namespace GoWMS.Server.Data
         public static string GetConnDBSQL()
         {
             return "Server=" + SqlServer + " ," + SqlPort + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
-            //return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQLCOMM;Trusted_Connection=True;";
+            //return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQL-GGCQAS;Trusted_Connection=True;";
 
         }
         #endregion

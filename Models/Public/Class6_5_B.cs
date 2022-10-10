@@ -12,7 +12,7 @@ namespace GoWMS.Server.Models.Public
         public string Desc_Th { get; set; }
         public string Desc_En { get; set; }
         public bool Is_Alert { get; set; }
-        public Int64? Cunt { get; set; }
+        public Int32? Cunt { get; set; }
         public DateTime? Created { get; set; }
     }
 }

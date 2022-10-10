@@ -42,11 +42,25 @@ namespace GoWMS.Server.Controllers
             return retlist;
         }
 
+        public List<VLocationDash> GetAllRGVTasworkofday()
+        {
+            List<VLocationDash> retlist = objDAL.GetAllRGVTasworkofday().ToList();
+            return retlist;
+        }
+
+        
         public List<DashTaskTime> GetASRSDashboardComplete()
         {
             List<DashTaskTime> retlist = objDAL.GetASRSDashboardComplete().ToList();
             return retlist;
         }
+
+        public List<DashTaskTime> GetRGVDashboardComplete()
+        {
+            List<DashTaskTime> retlist = objDAL.GetRGVDashboardComplete().ToList();
+            return retlist;
+        }
+
 
         public List<AsrsTaskSummary> GetTaskofday()
         {

@@ -132,6 +132,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>ITEMNAME</value>
   </data>
+  <data name="LOT" xml:space="preserve">
+    <value>BATCH</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>
@@ -139,7 +142,7 @@
     <value>Search</value>
   </data>
   <data name="SEQ" xml:space="preserve">
-    <value>SEQ</value>
+    <value>TAG</value>
   </data>
   <data name="STOCK" xml:space="preserve">
     <value>STOCK</value>

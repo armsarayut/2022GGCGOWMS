@@ -185,7 +185,9 @@
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Lpncode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Work_code.Equals(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Lpncode.Equals(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
     }

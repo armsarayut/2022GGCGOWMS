@@ -96,28 +96,24 @@ else
         </PagerContent>
     </MudTable>*@
 
- <MudDataGrid T="Api_ggc" Items="@Elements" Sortable="true" Filterable="true" QuickFilter="@_quickFilter"
-    Hideable="true"  FixedHeader="@fixed_header"
-              FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" >
+    <MudDataGrid T="Api_ggc" Items="@Elements" Sortable="true" Filterable="true" QuickFilter="@_quickFilter" Hideable="true"  FixedHeader="@fixed_header"
+                FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" >
     <ToolBarContent>
-    @* <MudText Typo="Typo.h6">@pageheader</MudText>*@
         <MudSpacer />
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
             AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <Columns>
-        @*<SelectColumn T="Api_ggc" />*@
-        <Column T="Api_ggc" Field="Receiving_date" Title="@L["DNDate"]" />
-        <Column T="Api_ggc" Field="Doc_ref" Title="@L["DNNo"]" />
-        <Column T="Api_ggc" Field="Batch_no" Title="@L["BatchNo"]" />
-        <Column T="Api_ggc" Field="Item_code" Title="@L["ItemCode"]" />
-        <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]" />     
-        <Column T="Api_ggc" Field="Remark" Title="REMARK" />
+        <Column T="Api_ggc" Field="Receiving_date" Title="@L["DNDate"]"/>
+        <Column T="Api_ggc" Field="Doc_ref" Title="@L["DNNo"]"/>
+        <Column T="Api_ggc" Field="Batch_no" Title="@L["BatchNo"]"/>
+        <Column T="Api_ggc" Field="Item_code" Title="@L["ItemCode"]"/>
+        <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]"/>     
+        <Column T="Api_ggc" Field="Remark" Title="REMARK"/>
         <Column T="Api_ggc" Field="Gr_qty" Title="GR Qty"/>
-@*        <Column T="Api_ggc" Field="Gr_remark" Title="GRRemark" />*@
          <Column T="Api_ggc" Title="PRINTTAG">
               <CellTemplate>
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" OnClick="@(()=>TestCreateTag(context.Item.Idx.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" OnClick="@(()=>TestCreateTag(context.Item.Idx.Value))"/>
               </CellTemplate>
          </Column>
     </Columns>
@@ -507,6 +503,7 @@ else
 
         var guid = Guid.NewGuid().ToString();
 
+
         DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
         dtTrans.Columns.Add("tyitem", typeof(System.String));
         dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
@@ -522,7 +519,8 @@ else
         _ravi["typallet"] = "1";
         dtTrans.Rows.Add(_ravi);
 
-        ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans);
+
+        ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans, guid.ToString());
 
         //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
 

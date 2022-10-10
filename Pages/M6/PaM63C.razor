@@ -47,6 +47,7 @@ else
 
         <HeaderContent>
 
+            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Batch_Number)">@L["LOT"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Qty)">@L["STOCK"] </MudTableSortLabel></MudTh>
@@ -54,9 +55,10 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Aging)">@L["AGING"] </MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
+             <MudTd DataLabel=@L["LOT"]>@context.Batch_Number</MudTd>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
-            <MudTd DataLabel=@L["STOCK"] Style="text-align:right">@string.Format(VarGlobals.FormatN2, context.Qty)</MudTd>
+            <MudTd DataLabel=@L["STOCK"] Style="text-align:right">@string.Format(VarGlobals.FormatN3, context.Qty)</MudTd>
             <MudTd DataLabel=@L["SEQ"]>@context.Su_No</MudTd>
             <MudTd DataLabel=@L["AGING"] Style="text-align:right">@string.Format(VarGlobals.FormatN0, context.Aging) </MudTd>
         </RowTemplate>

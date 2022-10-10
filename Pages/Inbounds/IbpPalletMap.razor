@@ -91,7 +91,7 @@ else
             <MudTd DataLabel="SEQ">@context.Itemtag</MudTd>
             <MudTd DataLabel="Material">@context.Itemcode</MudTd>
             <MudTd DataLabel="Description">@context.Itemname</MudTd>
-            <MudTd DataLabel="Qty">@context.Quantity</MudTd>
+            <MudTd DataLabel="Qty">@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
             <MudTd DataLabel="Unit">@context.Unit</MudTd>
             <MudTd DataLabel="">
                 <MudFab @onclick="@(()=>DeleteMap(@context.Itemtag))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
@@ -245,10 +245,10 @@ else
 
                     //await Task.Run(() => CrestePutAway());
                     chkboxConfirm =true;
-
+                    //await Task.Run(() => CrestePutAway());
                     CrestePutAway();
 
-                    mPalletcode = "";
+                   
                     
                      chkboxConfirm=false;
                     chkboxGate = false;
@@ -349,12 +349,14 @@ else
     }
 
 
-     public async Task CrestePutAway()
+     public void  CrestePutAway()
     {
 
         string msgReturn = "Call";
         bool bitReturn;
-        bitReturn = await Task.Run(() => ObjInboundService.CreatePutawayWms("PL001", mPalletcode, "G07", "01", ref msgReturn));
+        //bitReturn = await Task.Run(() => ObjInboundService.CreatePutawayWms("PL001", mPalletcode, "G07", "01", ref msgReturn));
+        bitReturn =  ObjInboundService.CreatePutawayWms("PL001", mPalletcode, "G07", "01", ref msgReturn);
+
         if (bitReturn == false)
         {
             elevation = 4;
@@ -368,6 +370,8 @@ else
             elevation = 2;
             msgAction = "Mapping successfully";
         }
+
+        mPalletcode = "";
 
     }
 

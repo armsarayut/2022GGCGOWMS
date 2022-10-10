@@ -74,7 +74,7 @@ else
                     <RowTemplate>
                         <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
                         <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
-                        <MudTd DataLabel=@L["Stock"]>@context.Quantity</MudTd>
+                        <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
                 <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
                         <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
                         <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>

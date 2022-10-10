@@ -52,11 +52,12 @@
             </div>
         </MudPaper>
     </MudItem>
+
     <MudItem xs="12" sm="6" md="3">
         <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
             <MudIcon Icon="@Icons.Material.Filled.Login" Color="Color.Primary" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
             <div>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">@L["Storage"]</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">ASRS @L["Storage"]</MudText>
                 <MudText Typo="Typo.h5">@mstorage</MudText>
             </div>
         </MudPaper>
@@ -65,7 +66,7 @@
         <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
             <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Secondary" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
             <div>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">@L["Retrieval"]</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">ASRS @L["Retrieval"]</MudText>
                 <MudText Typo="Typo.h5">@mretrieval</MudText>
             </div>
         </MudPaper>
@@ -74,7 +75,7 @@
         <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
             <MudIcon Icon="@Icons.Material.Filled.SyncAlt" Color="Color.Success" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
             <div>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">@L["Total"]</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">ASRS @L["Total"]</MudText>
                 <MudText Typo="Typo.h5">@asrstaskcompletenow / @asrstaskcompletelast</MudText>
             </div>
         </MudPaper>
@@ -83,11 +84,51 @@
         <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
             <MudIcon Icon="@Icons.Material.Filled.Speed" Color="Color.Warning" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
             <div>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">@L["AverageTime"]</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">ASRS @L["AverageTime"]</MudText>
                 <MudText Typo="Typo.h5">@asrstasktimenow / @asrstasktimelast</MudText>
             </div>
         </MudPaper>
     </MudItem>
+
+
+     <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
+            <MudIcon Icon="@Icons.Material.Filled.Login" Color="Color.Primary" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RGV @L["Storage"]</MudText>
+                <MudText Typo="Typo.h5">@rstorage</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
+            <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Secondary" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RGV @L["Retrieval"]</MudText>
+                <MudText Typo="Typo.h5">@rretrieval</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
+            <MudIcon Icon="@Icons.Material.Filled.SyncAlt" Color="Color.Success" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RGV @L["Total"]</MudText>
+                <MudText Typo="Typo.h5">@rgvtaskcompletenow / @rgvtaskcompletelast</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
+            <MudIcon Icon="@Icons.Material.Filled.Speed" Color="Color.Warning" Class="mx-4" Style="width:50px; height:50px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">RGV @L["AverageTime"]</MudText>
+                <MudText Typo="Typo.h5">@rgvtasktimenow / @rgvtasktimelast</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+
+
      <MudItem xs="12" sm="6">
         <MudCard Elevation="25" Style="height:350px;">
             <MudCardHeader>
@@ -169,6 +210,15 @@
     private Int64 L4Emp = 0;
 
 
+    private Int64 rstorage = 0;
+    private Int64 rstorageemp = 0;
+    private Int64 rretrieval = 0;
+    private Int64 rretrievalemp = 0;
+    private Int64 rtotal = 0;
+
+
+
+
     private Boolean bRun = true;
 
     private int Count { get; set; } = 10;
@@ -180,9 +230,14 @@
 
     private IEnumerable<VLocationDash> ElementWorks = new List<VLocationDash>();
 
+    private IEnumerable<VLocationDash> ElementRgvWorks = new List<VLocationDash>();
+
     private IEnumerable<DashTaskTime> AsrsCompleteData = new List<DashTaskTime>();
 
     private IEnumerable<AsrsTaskSummary> AsrsTaskofday = new List<AsrsTaskSummary>();
+
+
+    private IEnumerable<DashTaskTime> RgvCompleteData = new List<DashTaskTime>();
 
 
     EarningReport[] earningReports = new EarningReport[]
@@ -240,6 +295,16 @@
     Int64 asrstaskque { get; set; } = 0;
 
 
+    string rgvtasktimenow { get; set; } = "";
+    Int64 rgvtaskcompletenow { get; set; } = 0;
+
+    string rgvtasktimelast { get; set; } = "";
+    Int64 rgvtaskcompletelast { get; set; } = 0;
+
+    Int64 rgvtaskpro { get; set; } = 0;
+    Int64 rgvtaskque { get; set; } = 0;
+
+
     private ChartOptions _lineChartOptions = new ChartOptions
     {
         DisableLegend = true
@@ -271,7 +336,11 @@
 
         ElementWorks = await Task.Run(() => ObjDashService.GetAllTasworkofday());
 
+        ElementRgvWorks  = await Task.Run(() => ObjDashService.GetAllRGVTasworkofday());
+
         AsrsCompleteData = await Task.Run(() => ObjDashService.GetASRSDashboardComplete());
+
+        RgvCompleteData  =   await Task.Run(() => ObjDashService.GetRGVDashboardComplete()); 
 
         //if (Elementorders.ToList().Count > 0)
         //{
@@ -469,22 +538,19 @@
         else
         {
 
-              if (allCorrectTas102.ToList().Count > 0)
+            if (allCorrectTas102.ToList().Count > 0)
             {
                 foreach (var val in allCorrectTas102)
                 {
 
                     mretrievalemp = (Int64)val.Clpncode;
                 }
-                 mretrieval = mretrievalemp;
+                mretrieval = mretrievalemp;
             }
             else
             {
-                 mretrieval = 0;
+                mretrieval = 0;
             }
-
-
-           
         }
 
         mtotal = mstorage + mretrieval;
@@ -498,9 +564,99 @@
         }
 
 
+        var allCorrectTas1001 = ElementRgvWorks.Where(a => a.Work_Code == "1001").ToList();
+        var allCorrectTas1002 = ElementRgvWorks.Where(a => a.Work_Code == "1002").ToList();
+
+
+        if (allCorrectTas1001.ToList().Count > 0)
+        {
+            rstorage =0;
+
+            foreach (var val in allCorrectTas1001)
+            {
+
+                rstorage = (Int64)val.Clpncode;
+            }
+
+            //if (allCorrectTas1001.ToList().Count > 0)
+            //{
+            //    foreach (var val in allCorrectTas1001)
+            //    {
+
+            //        mstorageemp = (Int64)val.Clpncode;
+            //    }
+            //}
+
+            //mrtorage = mstorage + mstorageemp;
+
+
+        }
+        else
+        {
+
+            //if (allCorrectTas1001.ToList().Count > 0)
+            //{
+            //    foreach (var val in allCorrectTas1001)
+            //    {
+
+            //        mstorageemp = (Int64)val.Clpncode;
+            //    }
+            //    mstorage = mstorageemp;
+            //}
+            //else{
+            //    mstorage = 0;
+            //}
+
+            rstorage = 0;
+
+        }
+
+        if (allCorrectTas1002.ToList().Count > 0)
+        {
+            rretrieval=0;
+
+            foreach (var val in allCorrectTas1002)
+            {
+
+                rretrieval = (Int64)val.Clpncode;
+            }
+
+            //if (allCorrectTas102.ToList().Count > 0)
+            //{
+            //    foreach (var val in allCorrectTas1002)
+            //    {
+
+            //        mretrievalemp = (Int64)val.Clpncode;
+            //    }
+            //}
+            //mretrieval = mretrieval + mretrievalemp;
+
+        }
+        else
+        {
+
+            //if (allCorrectTas102.ToList().Count > 0)
+            //{
+            //    foreach (var val in allCorrectTas102)
+            //    {
+
+            //        mretrievalemp = (Int64)val.Clpncode;
+            //    }
+            //    mretrieval = mretrievalemp;
+            //}
+            //else
+            //{
+            //    mretrieval = 0;
+            //}
+
+            rretrieval = 0;
+        }
+
+
+
         ASRSDashboardData();
 
-
+        RGVDashboardData();
 
 
     }
@@ -543,6 +699,41 @@
         }
     }
 
+
+    void RGVDashboardData()
+    {
+        if (RgvCompleteData.ToList().Count > 0)
+        {
+            foreach (var val in RgvCompleteData)
+            {
+                if (val.Checkday.ToString() == "CURR")
+                {
+                    rgvtasktimenow = val.Tasktime.ToString();
+                    rgvtaskcompletenow = val.Counttask.Value;
+                }
+                else if (val.Checkday.ToString() == "LAST")
+                {
+                    rgvtasktimelast = val.Tasktime.ToString();
+                    rgvtaskcompletelast = val.Counttask.Value;
+                }
+                else if (val.Checkday.ToString() == "QUEU")
+                {
+                    rgvtaskque = val.Counttask.Value;
+                }
+                else if (val.Checkday.ToString() == "QPRO")
+                {
+                    rgvtaskpro = val.Counttask.Value;
+                }
+
+               
+            }
+        }
+        else
+        {
+
+
+        }
+    }
 
 
     private void setstr(string str)

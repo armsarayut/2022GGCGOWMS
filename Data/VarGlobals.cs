@@ -33,6 +33,7 @@ namespace GoWMS.Server.Data
 
         public static string FormatN0 { get; set; } = "{0:N0}";
         public static string FormatN2 { get; set; } = "{0:N2}";
+        public static string FormatN3 { get; set; } = "{0:N3}";
         public static string FormatD2 { get; set; } = "{0:D2}";
         public static string FormatD3 { get; set; } = "{0:D3}";
         public static string FormatD4 { get; set; } = "{0:D4}";

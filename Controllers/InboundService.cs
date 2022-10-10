@@ -88,9 +88,9 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
-        public bool CreateTagno(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData)
+        public bool CreateTagno(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData , string valuuid)
         {
-            bool bret = objDAL.CreateTagno(valapiref, valpalletfrom, valpalletto, valtranref, valtrancreateby, valTransData);
+            bool bret = objDAL.CreateTagno(valapiref, valpalletfrom, valpalletto, valtranref, valtrancreateby, valTransData, valuuid);
 
             return bret;
         }

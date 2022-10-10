@@ -15,6 +15,6 @@ namespace GoWMS.Server.Models.Public
         public string Su_No { get; set; }
         public string Palletcode { get; set; }
         public string Shelfname { get; set; }
-        public double? Aging { get; set; }
+        public Int32? Aging { get; set; }
     }
 }

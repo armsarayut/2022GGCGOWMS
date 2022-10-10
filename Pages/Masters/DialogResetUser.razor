@@ -18,9 +18,9 @@
 
         <MudText Typo="Typo.h4" GutterBottom="true">@MEmail</MudText>
 
-        <MudTextField @bind-Value="@MUsername" T="string" Label="Username" Variant="Variant.Outlined" Class="my-4"></MudTextField>
+        @*<MudTextField @bind-Value="@MUsername" T="string" Label="Username" Variant="Variant.Outlined" Class="my-4"></MudTextField>*@
 
-        <MudTextField @bind-Value="@MPassword" Label="New Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-4" />
+        @*<MudTextField @bind-Value="@MPassword" Label="New Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-4" />*@
 
       <MudSelect Label="GROUP" HelperText="Pick the GROUP" @bind-SelectedValues="selectedItems">
             @foreach (var cmd in Elements)
@@ -92,7 +92,7 @@
         var encrypted = EncryptProvider.DESDecrypt(MPassword, key);
         MPassword = encrypted;
         await GetUserAthu();
-        //Elements = await Task.Run(() => ObjUserService.GetUsergroups());
+        Elements = await Task.Run(() => ObjUserService.GetUsergroups());
 
     }
 

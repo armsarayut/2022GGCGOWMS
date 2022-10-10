@@ -132,6 +132,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>ชื่อสินค้า</value>
   </data>
+  <data name="LOT" xml:space="preserve">
+    <value>ชุด</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>

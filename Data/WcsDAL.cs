@@ -880,8 +880,8 @@ namespace GoWMS.Server.Data
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT idx, created, entity_lock, modified, client_id, client_ip, mc_name, mc_no, inbound, outbound");
-                    sql.AppendLine("FROM wcs.set_srm_operate");
+                    sql.AppendLine("SELECT idx, null as  created, null as entity_lock, null as modified, null as client_id, null as client_ip, mc_name, mc_no, inbound, outbound");
+                    sql.AppendLine("FROM wcs.vmcoperate");
                     sql.AppendLine("order by mc_no");
 
                     SqlCommand cmd = new SqlCommand(sql.ToString(), con)
@@ -937,7 +937,7 @@ namespace GoWMS.Server.Data
                 StringBuilder sql = new StringBuilder();
 
                 using var cmd = new SqlCommand(connection: con, cmdText: null);
-                sql.AppendLine("UPDATE wcs.set_srm_operate");
+                sql.AppendLine("UPDATE wcs.set_mcoperate");
                 sql.AppendLine("SET inbound = @inbound");
                 sql.AppendLine(", outbound = @outbound");
                 sql.AppendLine("WHERE idx =  @idx");
@@ -1032,6 +1032,8 @@ namespace GoWMS.Server.Data
             }
             return lstobj;
         }
+
+
 
 
         public IEnumerable<Rpt_Ejectgate> GetReportEject(DateTime stime, DateTime etime)

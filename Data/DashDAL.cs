@@ -182,6 +182,35 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
+        public IEnumerable<VLocationDash> GetAllRGVTasworkofday()
+        {
+            List<VLocationDash> lstobj = new List<VLocationDash>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT  work_code ,count(lpncode)as clpncode " +
+                    "FROM wcs.rpt_rgvworks " +
+                    "WHERE Convert(date, etime) = Convert(date, getdate())" +
+                    "AND work_status=3 " +
+                    "GROUP BY work_code", con)
+                {
+                    CommandType = CommandType.Text
+                };
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    VLocationDash objrd = new VLocationDash
+                    {
+                        Work_Code = rdr["work_code"].ToString(),
+                        Clpncode = rdr["clpncode"] == DBNull.Value ? null : (Int32?)rdr["clpncode"]
+                    };
+                    lstobj.Add(objrd);
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
+
         public IEnumerable<DashTaskTime> GetASRSDashboardComplete()
 
         {
@@ -225,6 +254,51 @@ namespace GoWMS.Server.Data
             }
             return lstobj;
         }
+
+        public IEnumerable<DashTaskTime> GetRGVDashboardComplete()
+
+        {
+            List<DashTaskTime> lstobj = new List<DashTaskTime>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sql = new StringBuilder();
+
+                    sql.AppendLine("SELECT checkday, tasktime, counttask");
+                    sql.AppendLine("FROM wcs.vrptqueuecompletergv");
+                    sql.AppendLine(";");
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                    {
+                        CommandType = CommandType.Text
+                    };
+                    con.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        DashTaskTime objrd = new DashTaskTime
+                        {
+                            Checkday = rdr["checkday"].ToString(),
+                            Tasktime = rdr["tasktime"].ToString(),
+                            Counttask = rdr["counttask"] == DBNull.Value ? null : (Int64?)rdr["counttask"]
+                        };
+                        lstobj.Add(objrd);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+            return lstobj;
+        }
+
 
         public IEnumerable<AsrsTaskSummary> GetTaskofday()
         {

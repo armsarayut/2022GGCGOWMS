@@ -908,54 +908,78 @@ namespace GoWMS.Server.Data
         public IEnumerable<Class6_3_C> GetAllMenu6_3CbyDetail()
         {
             List<Class6_3_C> lstobj = new List<Class6_3_C>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("SELECT ");
-                    sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, t1.qty, t1.su_no, t1.palletcode, t3.shelfname");
-                    sql.AppendLine(" , DATE_PART('day', now()::timestamp - t1.receiving_date::timestamp) as aging");
-                    sql.AppendLine("FROM public.sap_stock t1");
-                    sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
-                    sql.AppendLine("ON t1.item_code=t2.article");
-                    sql.AppendLine("LEFT JOIN wcs.set_shelf t3");
-                    sql.AppendLine("ON t1.palletcode=t3.lpncode");
-                    sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("ORDER BY brand,batch_number,item_code");
-                    //sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine("SELECT ");
+                    //sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, t1.qty, t1.su_no, t1.palletcode, t3.shelfname");
+                    //sql.AppendLine(" , DATE_PART('day', now()::timestamp - t1.receiving_date::timestamp) as aging");
+                    //sql.AppendLine("FROM public.sap_stock t1");
+                    //sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
+                    //sql.AppendLine("ON t1.item_code=t2.article");
+                    //sql.AppendLine("LEFT JOIN wcs.set_shelf t3");
+                    //sql.AppendLine("ON t1.palletcode=t3.lpncode");
+                    //sql.AppendLine("WHERE (1=1)");
+                    //sql.AppendLine("ORDER BY brand,batch_number,item_code");
+                    ////sql.AppendLine("limit " & LimitRecoard & " offset " & (LimitRecoard * CurrentPage) - LimitRecoard);
+                    //sql.AppendLine(";");
+
+
+                    sql.AppendLine("SELECT t1.prodcode, t1.item, t1.itemdesc, t1.supcode, t1.uom, t1.qty, t1.item_bc");
+                    sql.AppendLine(", t1.whse, t1.loc, t1.pallet_bc, t1.is_req, t1.is_hold, t1.is_lock, t1.update2sl");
+                    sql.AppendLine(", t1.doc_num, t1.createdby, t1.trans_date, t1.modifie_date, t1.rptStockDate");
+                    sql.AppendLine(", cast(t1.trans_num as bigint) as trans_num, t1.lot, t1.exp_date, t1.mfg_date");
+                    sql.AppendLine(", DATEDIFF(day, t1.exp_date, GETDATE()) as aging");
+                    sql.AppendLine(",t2.shelfname");
+                    sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot t1");
+                    sql.AppendLine("LEFT JOIN wcs.set_shelf t2");
+                    sql.AppendLine("ON t1.pallet_bc=t2.lpncode");
+                    sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
                     sql.AppendLine(";");
 
 
-                   
 
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    //sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
+                    //sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
+                    //sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
+                    //sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date");
+                    //sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
+                    //sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
+                    //sql.AppendLine(";");
+
+
+
+
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Class6_3_C objrd = new Class6_3_C
                         {
-                            Brand = rdr["brand"].ToString(),
-                            Batch_Number = rdr["batch_number"].ToString(),
-                            Item_Code = rdr["item_code"].ToString(),
-                            Item_Name = rdr["item_name"].ToString(),
+                            Brand = rdr["prodcode"].ToString(),
+                            Batch_Number = rdr["lot"].ToString(),
+                            Item_Code = rdr["item"].ToString(),
+                            Item_Name = rdr["itemdesc"].ToString(),
                             Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
-                            Su_No = rdr["su_no"].ToString(),
-                            Palletcode = rdr["palletcode"].ToString(),
+                            Su_No = rdr["item_bc"].ToString(),
+                            Palletcode = rdr["pallet_bc"].ToString(),
                             Shelfname = rdr["shelfname"].ToString(),
-                            Aging = rdr["aging"] == DBNull.Value ? null : (double?)rdr["aging"]
+                            Aging = rdr["aging"] == DBNull.Value ? null : (Int32?)rdr["aging"]
 
                         };
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }
@@ -973,18 +997,31 @@ namespace GoWMS.Server.Data
             using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
             {
                 StringBuilder sql = new StringBuilder();
-                sql.AppendLine("SELECT ");
-                sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, t1.qty, t1.su_no, t1.palletcode, t3.shelfname");
-                sql.AppendLine(" , DATE_PART('day', now()::timestamp - t1.receiving_date::timestamp) as aging");
-                sql.AppendLine("FROM public.sap_stock t1");
-                sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
-                sql.AppendLine("ON t1.item_code=t2.article");
-                sql.AppendLine("LEFT JOIN wcs.set_shelf t3");
-                sql.AppendLine("ON t1.palletcode=t3.lpncode");
-                sql.AppendLine("WHERE (1=1)");
-                sql.AppendLine("ORDER BY brand,batch_number,item_code");
-                sql.AppendLine("LIMIT @limitrec  OFFSET @offsetrec");
+                //sql.AppendLine("SELECT ");
+                //sql.AppendLine("t2.brand, t1.batch_number, t1.item_code, t1.item_name, t1.qty, t1.su_no, t1.palletcode, t3.shelfname");
+                //sql.AppendLine(" , DATE_PART('day', now()::timestamp - t1.receiving_date::timestamp) as aging");
+                //sql.AppendLine("FROM public.sap_stock t1");
+                //sql.AppendLine("LEFT JOIN public.sap_itemmaster_v t2");
+                //sql.AppendLine("ON t1.item_code=t2.article");
+                //sql.AppendLine("LEFT JOIN wcs.set_shelf t3");
+                //sql.AppendLine("ON t1.palletcode=t3.lpncode");
+                //sql.AppendLine("WHERE (1=1)");
+                //sql.AppendLine("ORDER BY brand,batch_number,item_code");
+                //sql.AppendLine("LIMIT @limitrec  OFFSET @offsetrec");
+                //sql.AppendLine(";");
+
+                sql.AppendLine("SELECT t1.prodcode, t1.item, t1.itemdesc, t1.supcode, t1.uom, t1.qty, t1.item_bc");
+                sql.AppendLine(", t1.whse, t1.loc, t1.pallet_bc, t1.is_req, t1.is_hold, t1.is_lock, t1.update2sl");
+                sql.AppendLine(", t1.doc_num, t1.createdby, t1.trans_date, t1.modifie_date, t1.rptStockDate");
+                sql.AppendLine(", cast(t1.trans_num as bigint) as trans_num, t1.lot, t1.exp_date, t1.mfg_date");
+                sql.AppendLine(", DATEDIFF(day, t1.exp_date, GETDATE()) as aging");
+                sql.AppendLine(",t2.shelfname");
+                sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot t1");
+                sql.AppendLine("LEFT JOIN wcs.set_shelf t2");
+                sql.AppendLine("ON t1.pallet_bc=t2.lpncode");
+                sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
                 sql.AppendLine(";");
+
 
                 NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
                 {
@@ -1007,7 +1044,7 @@ namespace GoWMS.Server.Data
                         Su_No = rdr["su_no"].ToString(),
                         Palletcode = rdr["palletcode"].ToString(),
                         Shelfname = rdr["shelfname"].ToString(),
-                        Aging = rdr["aging"] == DBNull.Value ? null : (int?)rdr["aging"]
+                        Aging = rdr["aging"] == DBNull.Value ? null : (Int32?)rdr["aging"]
 
                     };
                     lstobj.Add(objrd);
@@ -2399,7 +2436,7 @@ namespace GoWMS.Server.Data
                             Desc_Th = rdr["desc_th"].ToString(),
                             Desc_En = rdr["desc_en"].ToString(),
                             Is_Alert = (bool)rdr["is_alert"],
-                            Cunt = rdr["cunt"] == DBNull.Value ? null : (long?)rdr["cunt"]
+                            Cunt = rdr["cunt"] == DBNull.Value ? null : (Int32?)rdr["cunt"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -2430,7 +2467,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("is_alert, count(idx) AS cunt,");
                     sql.AppendLine("TRY_CONVERT(DATE,created) AS created ");
                     sql.AppendLine("FROM wcs.vrpt_mcaudittrail ");
-                    sql.AppendLine("WHERE is_alert=true");
+                    sql.AppendLine("WHERE is_alert = @is_alert");
                     sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
                     sql.AppendLine("GROUP BY mccode, st_no, desc_th, desc_en, remark, is_alert, TRY_CONVERT(DATE,created) ");
                     sql.AppendLine("ORDER BY mccode asc , created asc");
@@ -2442,6 +2479,7 @@ namespace GoWMS.Server.Data
                     {
                         CommandType = CommandType.Text
                     };
+                    cmd.Parameters.AddWithValue("@is_alert", 1);
                     cmd.Parameters.AddWithValue("@startdate", dtStart);
                     cmd.Parameters.AddWithValue("@stopdate",  dtStop);
                     con.Open();
@@ -2457,7 +2495,7 @@ namespace GoWMS.Server.Data
                             Desc_Th = rdr["desc_th"].ToString(),
                             Desc_En = rdr["desc_en"].ToString(),
                             Is_Alert = (bool)rdr["is_alert"],
-                            Cunt = rdr["cunt"] == DBNull.Value ? null : (long?)rdr["cunt"]
+                            Cunt = rdr["cunt"] == DBNull.Value ? null : (Int32?)rdr["cunt"]
                         };
                         lstobj.Add(objrd);
                     }
@@ -2488,7 +2526,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("is_alert, count(idx) AS cunt,");
                     sql.AppendLine("created::date AS created ");
                     sql.AppendLine("FROM wcs.vrpt_mcaudittrail ");
-                    sql.AppendLine("WHERE is_alert=true");
+                    sql.AppendLine("WHERE is_alert = @is_alert");
                     sql.AppendLine("AND (created >= @startdate AND created < @stopdate)");
                     sql.AppendLine("GROUP BY mccode, st_no, desc_th, desc_en, remark, is_alert, created::date ");
                     sql.AppendLine("ORDER BY mccode asc , created asc");
@@ -2499,7 +2537,7 @@ namespace GoWMS.Server.Data
                     {
                         CommandType = CommandType.Text
                     };
-
+                    cmd.Parameters.AddWithValue("@is_alert", 1);
                     cmd.Parameters.AddWithValue("@startdate", NpgsqlDbType.Timestamp, dtStart);
                     cmd.Parameters.AddWithValue("@stopdate", NpgsqlDbType.Timestamp, dtStop);
                     cmd.Parameters.AddWithValue("@limitrec", NpgsqlDbType.Bigint, limitrec);
@@ -2517,7 +2555,7 @@ namespace GoWMS.Server.Data
                             Desc_Th = rdr["desc_th"].ToString(),
                             Desc_En = rdr["desc_en"].ToString(),
                             Is_Alert = (bool)rdr["is_alert"],
-                            Cunt = rdr["cunt"] == DBNull.Value ? null : (long?)rdr["cunt"]
+                            Cunt = rdr["cunt"] == DBNull.Value ? null : (Int32?)rdr["cunt"]
                         };
                         lstobj.Add(objrd);
                     }
