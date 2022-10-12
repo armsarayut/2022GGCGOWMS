@@ -108,14 +108,15 @@ else
         <Column T="Api_ggc" Field="Doc_ref" Title="@L["DNNo"]"/>
         <Column T="Api_ggc" Field="Batch_no" Title="@L["BatchNo"]"/>
         <Column T="Api_ggc" Field="Item_code" Title="@L["ItemCode"]"/>
-        <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]"/>     
+        <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]"> 
+        </Column>
         <Column T="Api_ggc" Field="Remark" Title="REMARK"/>
         <Column T="Api_ggc" Field="Gr_qty" Title="GR Qty"/>
-         <Column T="Api_ggc" Title="PRINTTAG">
+        <Column T="Api_ggc" Title="PRINTTAG" Filterable="false">
               <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" OnClick="@(()=>TestCreateTag(context.Item.Idx.Value))"/>
               </CellTemplate>
-         </Column>
+        </Column>
     </Columns>
     <PagerContent>
         <MudDataGridPager T="Api_ggc" />

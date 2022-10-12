@@ -199,13 +199,13 @@ namespace GoWMS.Server.Data
         {
             bool bRet = false;
 
-            using NpgsqlConnection con = new NpgsqlConnection(connString);
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
             try
             {
 
                 StringBuilder sql = new StringBuilder();
 
-                using var cmd = new NpgsqlCommand(connection: con, cmdText: null);
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
                 // cmd.Parameters.AddWithValue("@package_id", pallet);
 
                 var i = 0;
@@ -225,29 +225,40 @@ namespace GoWMS.Server.Data
                         dStock = 0;
                     }
 
-                    var request_qty = "request_qty" + i.ToString();
-                    var movement_type = "movement_type" + i.ToString();
-                    var su_no = "su_no" + i.ToString();
-                    var su_nostock = "su_no" + i.ToString();
-                    var total_qty = "total_qty" + i.ToString();
+                    var request_qty = "Qty" + i.ToString();
+                    //var movement_type = "movement_type" + i.ToString();
+                    var su_no = "item_bc" + i.ToString();
+                    var su_nostock = "item_bc" + i.ToString();
+                    var total_qty = "Qty" + i.ToString();
 
-                    sql.AppendLine("UPDATE public.sap_storeout");
-                    sql.AppendLine("SET request_qty = @" + request_qty);
-                    sql.AppendLine(", movement_type = @" + movement_type);
-                    sql.AppendLine("WHERE su_no = @" + su_no);
+                    //sql.AppendLine("UPDATE public.sap_storeout");
+                    //sql.AppendLine("SET request_qty = @" + request_qty);
+                    //sql.AppendLine(", movement_type = @" + movement_type);
+                    //sql.AppendLine("WHERE su_no = @" + su_no);
+                    //sql.AppendLine(";");
+
+                    sql.AppendLine("UPDATE dbo.wms_trans");
+                    sql.AppendLine("SET Qty = @" + total_qty);
+                    sql.AppendLine("WHERE item_bc = @" + su_nostock);
+                    sql.AppendLine("AND [unit_key] = '01'");
+                    sql.AppendLine("AND [stat] = 0");
+                    sql.AppendLine("AND [flag] = 0");
+                    sql.AppendLine("AND [is_req] = 0");
+
                     sql.AppendLine(";");
 
-                    sql.AppendLine("UPDATE public.sap_stock");
-                    sql.AppendLine("SET total_qty = @" + total_qty);
-                    sql.AppendLine("WHERE su_no = @" + su_nostock);
-                    sql.AppendLine(";");
+                    cmd.Parameters.Add(new SqlParameter(total_qty.ToString(), SqlDbType.Decimal)).Value = dStock;
+                    cmd.Parameters.Add(new SqlParameter(su_nostock.ToString(), SqlDbType.VarChar)).Value = sSuno;
 
-                    cmd.Parameters.Add(new NpgsqlParameter<decimal>(request_qty, dRequestqty));
-                    cmd.Parameters.Add(new NpgsqlParameter<string>(movement_type, sMovementtype));
-                    cmd.Parameters.Add(new NpgsqlParameter<string>(su_no, sSuno));
 
-                    cmd.Parameters.Add(new NpgsqlParameter<decimal>(total_qty, dStock));
-                    cmd.Parameters.Add(new NpgsqlParameter<string>(su_nostock, sSuno));
+
+                    //cmd.Parameters.Add(new SqlParameter<decimal>(request_qty, dRequestqty));
+                    //cmd.Parameters.Add(new SqlParameter<string>(movement_type, sMovementtype));
+                    //cmd.Parameters.Add(new SqlParameter<string>(su_no, sSuno));
+
+                    //cmd.Parameters.Add(new SqlParameter<decimal>(total_qty, dStock));
+                    //cmd.Parameters.Add(new SqlParameter<string>(su_nostock, sSuno));
+
                     i++;
                 }
                 con.Open();
@@ -257,7 +268,7 @@ namespace GoWMS.Server.Data
                 bRet = true;
 
             }
-            catch (NpgsqlException ex)
+            catch (SqlException ex)
             {
                 Log.Error(ex.ToString());
                 bRet = false;

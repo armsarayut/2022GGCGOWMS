@@ -108,7 +108,7 @@ namespace GoWMS.Server.Reports
             try
             {
                 Logo = iTextSharp.text.Image.GetInstance(pathImage);
-                Logo.ScaleAbsolute(40f, 40f);
+                Logo.ScaleAbsolute(65f, 35f);
 
                 Logo.SetAbsolutePosition(document.LeftMargin, writer.PageSize.GetTop(document.TopMargin) + 10);
 

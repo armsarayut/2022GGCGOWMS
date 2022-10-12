@@ -107,7 +107,7 @@ namespace GoWMS.Server.Data
                     {
                         Efidx = rdr["trans_num"] == DBNull.Value ? null : (Int64?)rdr["trans_num"],
                         Efstatus = 0,
-                        Created = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
+                        Created = rdr["createddate"] == DBNull.Value ? null : (DateTime?)rdr["createddate"],
                         Modified = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
                         Innovator = 0,
                         Device = null,

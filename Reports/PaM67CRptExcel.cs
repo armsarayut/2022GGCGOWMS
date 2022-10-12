@@ -22,10 +22,10 @@ namespace GoWMS.Server.Reports
                 #region Excel Report Header
                 var imagePath = VarGlobals.Imagelogoreport();
                 worksheet.Column(1).Width = 18;
-                worksheet.Row(1).Height = 60;
+                worksheet.Row(1).Height = 40;
                 var image = worksheet.AddPicture(imagePath).MoveTo(worksheet.Cell("A1")); //this will throw an error
-                image.ScaleWidth(.7);
-                image.ScaleHeight(.7);
+                image.ScaleWidth(.25);
+                image.ScaleHeight(.25);
                 worksheet.Cell("B1").Value = "5.5.4.ASRS-Outbound/hour" + " - Report";
                 worksheet.Cell("B1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                 worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
