@@ -290,6 +290,8 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+       
+      
         string sUserID = user.Claims.FirstOrDefault(
         c => c.Type == ClaimTypes.Actor)?.Value;
 

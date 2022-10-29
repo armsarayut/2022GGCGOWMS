@@ -138,6 +138,9 @@
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>
+  <data name="QTYPERPAL" xml:space="preserve">
+    <value>PALET Q'ty</value>
+  </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>

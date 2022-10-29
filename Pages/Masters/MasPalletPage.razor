@@ -7,6 +7,7 @@
 @using GoWMS.Server.Reports
 @using System.Security.Claims
 
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JSRuntime
 
@@ -14,6 +15,8 @@
 @inject MasService ObjService
 @inject UserServices OpjUserService
 @inject ReportService UserlogService
+@inject IPrintingService PrintingService
+
 @attribute [Authorize]
 
 @if (Elements == null)
@@ -51,11 +54,15 @@ else
 
         <HeaderContent>
             <MudTh>@L["Masterpallet"]</MudTh>
-            <MudTh>@L["Type"]</MudTh>
+            @*<MudTh>@L["Type"]</MudTh>*@
+            <MudTh>@L["REPRINT"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["Masterpallet"]>@context.Palletno</MudTd>
-            <MudTd DataLabel=@L["Type"]>@context.Pallettype</MudTd>
+            @*<MudTd DataLabel=@L["Type"]>@context.Pallettype</MudTd>*@
+            <MudTd Class="clm-row-small" DataLabel=@L["REPRINT"]>
+                <MudFab @onclick="@(()=>TestCreateTag(context.Palletno))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Print" Size="Size.Small" IconSize="Size.Small" />
+            </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
@@ -95,6 +102,7 @@ else
     string sUserID { get; set; } = "";
     List<Userroleinfo> Roles = new List<Userroleinfo>();
     [Inject] private IDialogService DialogService { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -221,6 +229,50 @@ else
             var exmsg = e.Message.ToString();
         }
     }
+
+    public async Task TestCreateTag(string palletno)
+    {
+
+        ////var guid = Guid.NewGuid().ToString();
+
+
+        //DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
+        //dtTrans.Columns.Add("tyitem", typeof(System.String));
+        //dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
+        //dtTrans.Columns.Add("tylot", typeof(System.String));
+        //dtTrans.Columns.Add("tyexpdate", typeof(System.DateTime));
+        //dtTrans.Columns.Add("typallet", typeof(System.String));
+
+        //DataRow _ravi = dtTrans.NewRow();
+        //_ravi["tyitem"] = "AAA";
+        //_ravi["tyqty"] = 10.9;
+        //_ravi["tylot"] = "LOT0001";
+        //_ravi["tyexpdate"] = DateTime.Now;
+        //_ravi["typallet"] = "1";
+        //dtTrans.Rows.Add(_ravi);
+
+
+        //ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans, guid.ToString());
+
+        ////TagList = ObjInboundService.GetTagGGCByIndex(apiid);
+
+        //TagList = await Task.Run(() => ObjInboundService.GetTagGGCByIndex(apiid));
+
+        ggcPalletTag4x4Pdf pdfReport = new ggcPalletTag4x4Pdf();
+        List<ggcPallet4x2> listPdfReport = new List<ggcPallet4x2>();
+
+        var pallets = new List<ggcPallet4x2>() {
+                new ggcPallet4x2(){Palletcode = palletno},
+                 new ggcPallet4x2(){Palletcode = palletno}
+            };
+
+        listPdfReport = pallets.ToList();
+
+        await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
+
+
+    }
+
 
     #region "Role"
     private async Task<bool> CheckRoleAdd()

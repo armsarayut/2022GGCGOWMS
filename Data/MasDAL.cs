@@ -129,7 +129,8 @@ namespace GoWMS.Server.Data
                         Weightgross = rdr["gross_weight"] == DBNull.Value ? null : (decimal?)rdr["gross_weight"],
                         Weightuint = rdr["weight_unit"].ToString(),
                         Vendor = rdr["vendor"].ToString(),
-                        IsBatchMgn = rdr["batch_management"] == DBNull.Value ? null : (bool?)rdr["batch_management"]
+                        IsBatchMgn = rdr["batch_management"] == DBNull.Value ? null : (bool?)rdr["batch_management"],
+                        Palqty = rdr["pack_qty"] == DBNull.Value ? null : (decimal?)rdr["pack_qty"]
 
                     };
                     lstobj.Add(objrd);
@@ -179,19 +180,19 @@ namespace GoWMS.Server.Data
         public IEnumerable<Mas_Worktype_Go> GetAllMasterworktypeGo()
         {
             List<Mas_Worktype_Go> lstobj = new List<Mas_Worktype_Go>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
                 Sql.AppendLine("select *");
                 Sql.AppendLine("from wcs.set_worktype");
                 Sql.AppendLine("order by work_code");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     Mas_Worktype_Go objrd = new Mas_Worktype_Go

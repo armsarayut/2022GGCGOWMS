@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoWMS.Server.Models;
 using GoWMS.Server.Data;
-
+using System.Drawing;
 
 namespace GoWMS.Server.Reports
 {
@@ -37,6 +37,8 @@ namespace GoWMS.Server.Reports
 
             iTextSharp.text.Font fonheader = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.BOLD);
             iTextSharp.text.Font fondata = new iTextSharp.text.Font(baseFont, 10, iTextSharp.text.Font.NORMAL);
+            iTextSharp.text.Font fondataProduct = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.NORMAL);
+
             ////                    Set paper                        (4" , 4") Note 1" = 2.54 cm = 72
             Document doc = new Document(new iTextSharp.text.Rectangle(288f, 288f), 5, 5, 1, 1);
 
@@ -188,6 +190,7 @@ namespace GoWMS.Server.Reports
                     bc.StartStopText = false;
                     bc.CodeType = iTextSharp.text.pdf.Barcode128.CODE128;
                     bc.Extended = true;
+               
                     iTextSharp.text.Image img = bc.CreateImageWithBarcode(cb11, iTextSharp.text.BaseColor.Black, iTextSharp.text.BaseColor.Black);
                     cb11.SetTextMatrix(150.0f, 210.0f);
                     img.ScaleToFit(130, 100);
@@ -198,24 +201,22 @@ namespace GoWMS.Server.Reports
                     PdfContentByte cb12 = writer.DirectContent;
                     cb12.BeginText();
                     cb12.SetFontAndSize(baseFont, 12.0f);
-                    cb12.ShowTextAligned(Element.ALIGN_CENTER, listRpt.BatchNo.ToString() , 105f, 193f, 0);
+                    cb12.ShowTextAligned(Element.ALIGN_CENTER, listRpt.BatchNo.ToString() , 120f, 193f, 0);
                     cb12.EndText();
 
                     PdfContentByte cb13 = writer.DirectContent;
                     cb13.BeginText();
                     cb13.SetFontAndSize(baseFont, 12.0f);
-                    cb13.ShowTextAligned(Element.ALIGN_CENTER, listRpt.ProductNo.ToString(), 105f, 175f, 0);
+                    cb13.ShowTextAligned(Element.ALIGN_CENTER, listRpt.ProductNo.ToString(), 110f, 175f, 0);
                     cb13.EndText();
 
                     PdfContentByte cb14 = writer.DirectContent;
-                    Phrase phrase = new Phrase(listRpt.ProductName.ToString());
-                    phrase.Font.Size = fondata.Size;
-                    phrase.Font = fondata;
-                    ColumnText ct14 = new ColumnText(cb14);
-                    ct14.SetSimpleColumn(10f, 90f, 280f, 168f);
-                    ct14.Alignment = Element.ALIGN_MIDDLE;
-                    ct14.AddElement(phrase);
-                    ct14.Go();
+                    ColumnText cl14 = new ColumnText(cb14);
+                    cl14.SetSimpleColumn(10f, 90f, 280f, 168f);
+                    string text = listRpt.ProductName.ToString();
+                    Paragraph p = new Paragraph(text, fondataProduct);
+                    cl14.AddElement(p);
+                    cl14.Go();
 
                     PdfContentByte cb15 = writer.DirectContent;
                     cb15.BeginText();

@@ -29,6 +29,8 @@ namespace GoWMS.Server.Models.Api
         public string Api_name { get; set; }
         public decimal? Gr_qty { get; set; }
         public string Gr_remark { get; set; }
+        public string Unit { get; set; }
+        public string Item_name { get; set; }
 
     }
 }

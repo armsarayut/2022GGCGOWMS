@@ -53,9 +53,15 @@
 
 </MudGrid>
 
-<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxGate" Label="TAG" Color="Color.Primary" Size="Size.Large"></MudCheckBox>
+<MudGrid>
+       <MudItem xs="3">
+           <MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxGate" Label="TAG" Color="Color.Primary" Size="Size.Large"></MudCheckBox>
+       </MudItem>
+         <MudItem xs="3">
+        <MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxConfirm" Label="CONFIRM" Color="Color.Success" Size="Size.Large"></MudCheckBox>
+        </MudItem>
+</MudGrid>
 
-<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxConfirm" Label="CONFIRM" Color="Color.Success" Size="Size.Large"></MudCheckBox>
 
 <br />
 
@@ -65,7 +71,7 @@
 }
 else
 {
-    <MudTable Items="@Elements"
+   @* <MudTable Items="@Elements"
               Dense="@dense"
               Hover="@hover"
               Bordered="@bordered"
@@ -78,7 +84,6 @@ else
             <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            @*<MudTh>@L["PalletGo"]</MudTh>*@
             <MudTh>@L["SeqNo"]</MudTh>
             <MudTh>@L["ItemCode"]</MudTh>
             <MudTh>@L["ItemName"]</MudTh>
@@ -87,7 +92,6 @@ else
             <MudTh>@L["Action"]</MudTh>
         </HeaderContent>
         <RowTemplate>
-            @*<MudTd DataLabel="MasterPallet">@context.Pallteno</MudTd>*@
             <MudTd DataLabel="SEQ">@context.Itemtag</MudTd>
             <MudTd DataLabel="Material">@context.Itemcode</MudTd>
             <MudTd DataLabel="Description">@context.Itemname</MudTd>
@@ -100,7 +104,50 @@ else
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
         </PagerContent>
-    </MudTable>
+    </MudTable>*@
+
+
+    
+    <MudDataGrid T="Inb_Goodreceive_Go" 
+        Items="@Elements"
+        Filterable="true" 
+        QuickFilter="@_quickFilter"
+        Hideable="true"
+        FixedHeader="@fixed_header"    
+        FixedFooter="@fixed_footer" 
+        Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")" 
+        Dense="@dense" >
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@L["MasterPallet"] : [ @mPalletcode ]</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+            <Column T="Inb_Goodreceive_Go" Field="Itemtag" Title="@L["SeqNo"]" />
+             <Column T="Inb_Goodreceive_Go" Field="Itemcode" Title="@L["ItemCode"]" />
+            <Column T="Inb_Goodreceive_Go" Field="Itemname" Title="@L["ItemName"]" />
+             <Column T="Inb_Goodreceive_Go" Field="Quantity" Title="@L["Qty"]">
+            <CellTemplate>
+                @string.Format(VarGlobals.FormatN3, context.Item.Quantity) 
+            </CellTemplate>
+
+        </Column>
+        <Column T="Inb_Goodreceive_Go" Field="Unit" Title="@L["Unit"]" />
+            <Column T="Inb_Goodreceive_Go" Title="@L["Action"]" Filterable="false">
+              <CellTemplate>
+                    <MudIconButton Size="@Size.Small" 
+                        Icon="@Icons.Outlined.Delete" 
+                        Color="Color.Primary" 
+                        OnClick="@(()=>DeleteMap(@context.Item.Itemtag))"/>
+              </CellTemplate>
+        </Column>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="Inb_Goodreceive_Go" />
+    </PagerContent>
+</MudDataGrid>
+
 }
 
 @code {
@@ -118,6 +165,9 @@ else
     private bool striped = true;
     private bool bordered = false;
     private string searchString = "";
+    private bool fixed_header = true;
+    private bool fixed_footer = true;
+
     private Inb_Goodreceive_Go selectedItem = null;
     private HashSet<Inb_Goodreceive_Go> selectedItems = new HashSet<Inb_Goodreceive_Go>();
     private IEnumerable<Inb_Goodreceive_Go> Elements = new List<Inb_Goodreceive_Go>();
@@ -196,7 +246,6 @@ else
 
             if (allCorrect.ToList().Count > 0)
             {
-
                 mPalletcode = str;
 
                 //MapPalletItem = null;
@@ -204,10 +253,9 @@ else
                 //if (MapPalletItem.ToList().Count > 0)
                 //{
                 //    Task<string> retString;
-
                 //    retString = ObjErpApiService.InsertReceivingOrderbypackAsync(MapPalletItem.ToList(), mPalletcode);
-
                 //    //ObjErpApiService.UpdateReceivingOrderbypack(mPalletcode, mPackid);
+
                 msgAction = "Enter Gate  for Put away";
                 elevation = 1;
                 chkboxGate=true;
@@ -226,7 +274,6 @@ else
                 elevation = 4;
                 msgAction = "TAG No find not found";
                 chkboxGate=false;
-
             }
         }
         else
@@ -240,7 +287,6 @@ else
                     //ObjErpApiService.SetMappedPallet(mPalletcode);
                     //ObjWgcService.UpdatePalletNewDelivery_note(mPalletcode);
 
-
                     //await Task<> CrestePutAway();
 
                     //await Task.Run(() => CrestePutAway());
@@ -248,9 +294,7 @@ else
                     //await Task.Run(() => CrestePutAway());
                     CrestePutAway();
 
-                   
-                    
-                     chkboxConfirm=false;
+                    chkboxConfirm=false;
                     chkboxGate = false;
                 }
                 else
@@ -375,4 +419,33 @@ else
 
     }
 
+
+        private string _searchString;
+    private bool _sortNameByLength;
+    // custom sort by name length
+    private Func<Inb_Goodreceive_Go, object> _sortBy => x =>
+    {
+        if (_sortNameByLength)
+            return x.Itembar.Length;
+        else
+            return x.Itembar;
+    };
+
+    // quick filter - filter gobally across multiple columns with the same input
+    private Func<Inb_Goodreceive_Go, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Itembar.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Itemcode.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Itemname} {x.Docno} {x.Lotno}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
 }

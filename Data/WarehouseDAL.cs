@@ -131,7 +131,7 @@ namespace GoWMS.Server.Data
                 //sqlQurey.AppendLine("order by t1.item_code asc ");
                 //sqlQurey.AppendLine(";");
 
-                sqlQurey.AppendLine("select t0.site,t0.doc_num,cast(t0.trans_num as bigint) trans_num,t0.ref_type,t0.trans_type,t0.trans_date");
+                sqlQurey.AppendLine("select top (1) t0.site,t0.doc_num,cast(t0.trans_num as bigint) trans_num,t0.ref_type,t0.trans_type,t0.trans_date");
                 sqlQurey.AppendLine(" ,t0.unit_key,t0.item_bc,t0.item, t1.item_name, t1.uom, t1.weight_unit,t0.qty");
                 sqlQurey.AppendLine(",t0.lot,t0.prod_date,t0.stat,t0.source");
                 sqlQurey.AppendLine(",t0.reason,t0.createdby,t0.createddate");
@@ -145,7 +145,7 @@ namespace GoWMS.Server.Data
                 sqlQurey.AppendLine("AND t0.stat = @stat");
                 sqlQurey.AppendLine("AND t0.flag = @flag");
                 sqlQurey.AppendLine("AND t0.item_bc = @pallet_bc");
-                sqlQurey.AppendLine("ORDER BY t0.trans_num");
+                sqlQurey.AppendLine("ORDER BY t0.trans_num desc");
 
                 //sqlQurey.AppendLine("select row_number() over(order by t1.item_code asc) AS rn, t1.idx, ");
                 //sqlQurey.AppendLine("t1.item_code, t1.item_name, t1.request_qty, t1.unit, t1.su_no, ");
@@ -214,6 +214,7 @@ namespace GoWMS.Server.Data
                     decimal dRequestqty = (decimal)s.Request_Qty;
                     string sMovementtype = s.Movement_Type;
                     string sSuno = s.Su_No;
+                    string sCreatedby = s.Update_By;
                     decimal dStock;
 
                     if (dRequestqty == 0)
@@ -230,6 +231,7 @@ namespace GoWMS.Server.Data
                     var su_no = "item_bc" + i.ToString();
                     var su_nostock = "item_bc" + i.ToString();
                     var total_qty = "Qty" + i.ToString();
+                    var createdby = "createdby" + i.ToString();
 
                     //sql.AppendLine("UPDATE public.sap_storeout");
                     //sql.AppendLine("SET request_qty = @" + request_qty);
@@ -239,9 +241,20 @@ namespace GoWMS.Server.Data
 
                     sql.AppendLine("UPDATE dbo.wms_trans");
                     sql.AppendLine("SET Qty = @" + total_qty);
+                    if (dStock == 0 )
+                    {
+                        sql.AppendLine(",[stat] = 1");
+                    }
+                    else
+                    {
+                        sql.AppendLine(",[stat] = 0");
+                    }
+
+                    sql.AppendLine(",[createdby] = @" + createdby);
+
                     sql.AppendLine("WHERE item_bc = @" + su_nostock);
                     sql.AppendLine("AND [unit_key] = '01'");
-                    sql.AppendLine("AND [stat] = 0");
+                    //sql.AppendLine("AND [stat] = 0");
                     sql.AppendLine("AND [flag] = 0");
                     sql.AppendLine("AND [is_req] = 0");
 
@@ -249,7 +262,7 @@ namespace GoWMS.Server.Data
 
                     cmd.Parameters.Add(new SqlParameter(total_qty.ToString(), SqlDbType.Decimal)).Value = dStock;
                     cmd.Parameters.Add(new SqlParameter(su_nostock.ToString(), SqlDbType.VarChar)).Value = sSuno;
-
+                    cmd.Parameters.Add(new SqlParameter(createdby.ToString(), SqlDbType.VarChar)).Value = sCreatedby;
 
 
                     //cmd.Parameters.Add(new SqlParameter<decimal>(request_qty, dRequestqty));
@@ -363,6 +376,237 @@ namespace GoWMS.Server.Data
                     sRet = (string)cmd.Parameters["@_retmsg"].Value;
                 }
                 catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
+
+        public bool SetOrderpickErp(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            string cmdcode = "Call";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_createoutboundorder_manual_json");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_pJson", jsonOrder);
+
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
+
+        public bool SetOrderpickErpTest(string sku, string batch, decimal needqty, string user, long apiid, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            string cmdcode = "Call";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_createoutboundorder_manual_erp");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_sku", sku);
+                    cmd.Parameters.AddWithValue("@_batch", batch);
+                    cmd.Parameters.AddWithValue("@_needqty", needqty);
+                    cmd.Parameters.AddWithValue("@_pUsername", user);
+                    cmd.Parameters.AddWithValue("@_pApiid", apiid);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
+
+
+
+
+        public bool SetOrderaudit(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            string cmdcode = "Call";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_createoutbound_manual_audit_json");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_pJson", jsonOrder);
+
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
+
+
+        public bool StartOrderpick(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            string cmdcode = "Call";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_startoutboundorder_manual_json");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_pJson", jsonOrder);
+
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }

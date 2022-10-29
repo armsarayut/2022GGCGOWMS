@@ -30,6 +30,12 @@ namespace GoWMS.Server.Controllers
             return ListRet;
         }
 
+        public List<InvStockSumByLot> GetStockSumByLot()
+        {
+            List<InvStockSumByLot> ListRet = objDAL.GetStockSumByLot().ToList();
+            return ListRet;
+        }
+
         public List<Vrpt_shelf_listInfo> GetShelfList()
         {
             List<Vrpt_shelf_listInfo> ListRet = objDAL.GetShelfLocation().ToList();

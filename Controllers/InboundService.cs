@@ -95,6 +95,13 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
+        public bool CreateTagnoACC(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData, string valuuid)
+        {
+            bool bret = objDAL.CreateTagnoACC(valapiref, valpalletfrom, valpalletto, valtranref, valtrancreateby, valTransData, valuuid);
+
+            return bret;
+        }
+
 
 
         public List<ggcTag4x4> GetTagGGCByIndex(long apiid)
@@ -102,6 +109,14 @@ namespace GoWMS.Server.Controllers
             List<ggcTag4x4> retlist = objDAL.GetTagGGCByIndex(apiid).ToList();
             return retlist;
         }
+
+        public List<ggcTag4x4> GetTagGGCByIndexKey(long apiid, string sKey)
+        {
+            List<ggcTag4x4> retlist = objDAL.GetTagGGCByIndexKey(apiid, sKey).ToList();
+            return retlist;
+        }
+
+        
 
         public bool CreatePutawayWms(string lpncode, string tagcode, string gatecode, string worktype, ref string retstring)
         {

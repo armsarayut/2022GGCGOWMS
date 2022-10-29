@@ -50,7 +50,7 @@ else
     {
         <MudTable Items="@Elements" FixedHeader="@fixed_header"
                   FixedFooter="@fixed_footer"
-                  Height="@(fixed_header || fixed_footer ?"500px":"")"
+                  Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
                   Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
                   Filter="new Func<Inv_Stock_GoInfo,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
             <ToolBarContent>
@@ -91,9 +91,9 @@ else
         <MudTable Items="@Elements_"
                   FixedHeader="@fixed_header"
                   FixedFooter="@fixed_footer"
-                  Height="@(fixed_header || fixed_footer ?"500px":"")"
+                  Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
                   Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
-                  Filter="new Func<InvStockSum,bool>(FilterFunc_)" @bind-SelectedItem="selectedItem_">
+                  Filter="new Func<InvStockSumByLot,bool>(FilterFunc_)" @bind-SelectedItem="selectedItem_">
             <ToolBarContent>
                 <MudSpacer />
                 <MudTextField @bind-Value="searchString"
@@ -103,13 +103,15 @@ else
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSum, object>(x=>x.Item_code)">@L["ItemCode"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSum, object>(x=>x.Item_name)">@L["ItemName"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSum, object>(x=>x.Totalstock)">@L["TotalStock"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Item_code)">@L["ItemCode"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Item_name)">@L["ItemName"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Lot)">@L["Lot"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Totalstock)">@L["TotalStock"]</MudTableSortLabel></MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="ItemCode">@context.Item_code</MudTd>
                 <MudTd DataLabel="ItemName">@context.Item_name</MudTd>
+                <MudTd DataLabel="ItemName">@context.Lot</MudTd>
                 <MudTd DataLabel="TotalStock">@string.Format(VarGlobals.FormatN3, @context.Totalstock) </MudTd>
             </RowTemplate>
             <PagerContent>
@@ -142,9 +144,9 @@ else
     private HashSet<Inv_Stock_GoInfo> selectedItems = new HashSet<Inv_Stock_GoInfo>();
     private IEnumerable<Inv_Stock_GoInfo> Elements = new List<Inv_Stock_GoInfo>();
 
-    private InvStockSum selectedItem_ = null;
-    private HashSet<InvStockSum> selectedItems_ = new HashSet<InvStockSum>();
-    private IEnumerable<InvStockSum> Elements_ = new List<InvStockSum>();
+    private InvStockSumByLot selectedItem_ = null;
+    private HashSet<InvStockSumByLot> selectedItems_ = new HashSet<InvStockSumByLot>();
+    private IEnumerable<InvStockSumByLot> Elements_ = new List<InvStockSumByLot>();
 
     public int elevation = 0;
     private ResultReturn resultReturn = null;
@@ -172,7 +174,7 @@ else
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
         Elements = await Task.Run(() => objCS.GetStockListInfo());
-        Elements_ = await Task.Run(() => objCS.GetStockSum());
+        Elements_ = await Task.Run(() => objCS.GetStockSumByLot());
 
         this.OnSelectChange();
     }
@@ -227,7 +229,7 @@ else
         return false;
     }
 
-    private bool FilterFunc_(InvStockSum element)
+    private bool FilterFunc_(InvStockSumByLot element)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
@@ -257,7 +259,7 @@ else
                 else
                 {
                     WhStockSumRptExcel excelReport = new WhStockSumRptExcel();
-                    List<InvStockSum> listExcelReport = new List<InvStockSum>();
+                    List<InvStockSumByLot> listExcelReport = new List<InvStockSumByLot>();
                     listExcelReport = Elements_.ToList();
                     var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
                     await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
@@ -296,7 +298,7 @@ else
                 {
                     WhStockSumRptPdf pdfReport = new WhStockSumRptPdf();
 
-                    List<InvStockSum> listPdfReport = new List<InvStockSum>();
+                    List<InvStockSumByLot> listPdfReport = new List<InvStockSumByLot>();
                     listPdfReport = Elements_.ToList();
                     var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
                     //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.Report(listPdfReport)));

@@ -49,9 +49,19 @@ else if (elevation == 4) // Error
     </MudItem>
 </MudGrid>
 
-<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxGate" Label="GATE" Color="Color.Primary" Size="Size.Large"></MudCheckBox>
+<MudGrid>
+       <MudItem xs="3">
+            <MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxGate" Label="GATE" Color="Color.Primary" Size="Size.Large"></MudCheckBox>
+       </MudItem>
+         <MudItem xs="3">
+            <MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxConfirm" Label="CONFIRM" Color="Color.Success" Size="Size.Large"></MudCheckBox>
+        </MudItem>
+</MudGrid>
 
-<MudCheckBox ReadOnly="@ReadOnly" @bind-Checked="@chkboxConfirm" Label="CONFIRM" Color="Color.Success" Size="Size.Large"></MudCheckBox>
+
+
+
+
 
 @*<MudText Typo="Typo.h6">@L["MasterPallet"] : [ @mPalletcode ]</MudText>*@
 

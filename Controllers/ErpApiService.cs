@@ -20,9 +20,21 @@ namespace GoWMS.Server.Controllers
             return retlist;
         }
 
+        public List<Api_ggc> GetApiInboundAllACC()
+        {
+            List<Api_ggc> retlist = objDAL.GetApiInboundAllACC().ToList();
+            return retlist;
+        }
+
         public List<Api_ggc> GetApiOutboundAll()
         {
             List<Api_ggc> retlist = objDAL.GetApiOutboundAll().ToList();
+            return retlist;
+        }
+
+        public List<Api_ggc> GetApiOutboundAllACC()
+        {
+            List<Api_ggc> retlist = objDAL.GetApiOutboundAllACC().ToList();
             return retlist;
         }
 

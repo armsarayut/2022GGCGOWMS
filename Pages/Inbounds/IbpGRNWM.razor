@@ -1,4 +1,4 @@
-﻿@page "/1/1_1"
+﻿@page "/1/1_x"
 @using System
 @using System.Data;
 @using System.IO
@@ -49,7 +49,7 @@ else
         </MudTooltip>
     </MudAppBar>
 
- @*   <MudTable Items="@Elements"
+    @*   <MudTable Items="@Elements"
               FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
               Height="@(fixed_header || fixed_footer ?"500px":"")"
@@ -98,57 +98,57 @@ else
         </PagerContent>
     </MudTable>*@
 
-    <MudDataGrid T="Api_ggc" 
-        Items="@Elements" 
-        SortMode="SortMode.Multiple" 
-        Hideable="@hideable"
- Filterable ="@filterable"
-        FilterMode="@DataGridFilterMode.ColumnFilterRow"
-        FixedHeader="@fixed_header" 
-        FixedFooter="@fixed_footer"
-        Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
-        Dense="@dense" >
-@*    
+    <MudDataGrid T="Api_ggc"
+             Items="@Elements"
+             SortMode="SortMode.Multiple"
+             Hideable="@hideable"
+             Filterable="@filterable"
+             FilterMode="@DataGridFilterMode.ColumnFilterRow"
+             FixedHeader="@fixed_header"
+             FixedFooter="@fixed_footer"
+             Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
+             Dense="@dense">
+        @*
     <ToolBarContent>
-        <MudSpacer />
-        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    <MudSpacer />
+    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>*@
 
-    <Columns >
+        <Columns>
             <Column T="Api_ggc" Field="Receiving_date" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNDate"]">
-            <CellTemplate>
+                <CellTemplate>
                     @Convert.ToDateTime(context.Item.Receiving_date).ToString(VarGlobals.FormatD)
-            </CellTemplate>
-        </Column>
-        <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNNo"]"/>
-        <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["BatchNo"]"/>
-        <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemCode"]"/>
-        <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Qty"]">
-            <CellTemplate>
-                    @string.Format(VarGlobals.FormatN3, context.Item.Total_qty) 
-            </CellTemplate>
-        </Column>
-        <Column T="Api_ggc" Field="Unit" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Unit"]"/>
+                </CellTemplate>
+            </Column>
+            <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNNo"]" />
+            <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["BatchNo"]" />
+            <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemCode"]" />
+            <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Qty"]">
+                <CellTemplate>
+                    @string.Format(VarGlobals.FormatN3, context.Item.Total_qty)
+                </CellTemplate>
+            </Column>
+            <Column T="Api_ggc" Field="Unit" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Unit"]" />
             <Column T="Api_ggc" Field="Remark" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["REMARK"]" />
-        <Column T="Api_ggc" Field="Gr_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["GRQty"]">
-            <CellTemplate>
+            <Column T="Api_ggc" Field="Gr_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["GRQty"]">
+                <CellTemplate>
                     @string.Format(VarGlobals.FormatN3, context.Item.Gr_qty)
-            </CellTemplate>
-        </Column>
-        <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false">
-              <CellTemplate>
-                 
-                      <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Primary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
-                 
-                    
-              </CellTemplate>
-        </Column>
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager T="Api_ggc" />
-    </PagerContent>
-</MudDataGrid>
+                </CellTemplate>
+            </Column>
+            <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false">
+                <CellTemplate>
+
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Primary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
+
+
+                </CellTemplate>
+            </Column>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Api_ggc" />
+        </PagerContent>
+    </MudDataGrid>
 
 }
 
@@ -156,10 +156,10 @@ else
 
     private string msgAction = "Enter Palletcode";
 
-    public string pageheader { get; set; } = "1.1.Receiving Order";
+    public string pageheader { get; set; } = "1.x.Receiving Order";
 
-    public string mPagedesc { get; set; } = "1.1.Receiving Order";
-    private string mPagename { get; set; } = "/1/1_1";
+    public string mPagedesc { get; set; } = "1.x.Receiving Order";
+    private string mPagename { get; set; } = "/1/1_x";
 
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
@@ -171,7 +171,7 @@ else
     private bool fixed_header = true;
     private bool fixed_footer = true;
     private bool filterable = true;
-    private bool hideable =true;
+    private bool hideable = true;
     private string searchString = "";
     private Api_ggc selectedItem = null;
     private HashSet<Api_ggc> selectedItems = new HashSet<Api_ggc>();
@@ -209,7 +209,7 @@ else
 
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-        Elements = await Task.Run(() => objCS.GetApiInboundAll());
+        Elements = await Task.Run(() => objCS.GetApiInboundAllACC());
     }
 
     async Task GetUserAthu()
@@ -557,8 +557,8 @@ else
                 parameters.Add("pUsername", sUsername);
                 parameters.Add("pRef", strRunning);
 
-                var dialog = await DialogService.Show<DialogGenTagGrn>("Create TAG Pallet", parameters).Result;
-                //var dialog = await Task.Run(() => DialogService.Show<DialogGenTagGrn>("Create TAG Pallet", parameters));
+                var dialog = await DialogService.Show<DialogGenTagGrnWM>("Create TAG Pallet", parameters).Result;
+                //var dialog = await Task.Run(() => DialogService.Show<DialogGenTagGrnWM>("Create TAG Pallet", parameters));
 
 
                 if (!dialog.Cancelled)
@@ -577,11 +577,12 @@ else
                 }
             }
         }
-        else{
+        else
+        {
             Snackbar.Add("Total > GR", Severity.Warning);
         }
 
-       
+
 
     }
 

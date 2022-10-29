@@ -126,6 +126,9 @@
   <data name="3.Outbound" xml:space="preserve">
     <value>3.Outbound</value>
   </data>
+  <data name="4.0.ASRS-DASHBOARD" xml:space="preserve">
+    <value>ASRS-MONITOR</value>
+  </data>
   <data name="4.1.ASRS-STATUS" xml:space="preserve">
     <value>4.1.ASRS-Status</value>
   </data>
@@ -338,6 +341,9 @@
   </data>
   <data name="Outbound" xml:space="preserve">
     <value>Outbound</value>
+  </data>
+  <data name="pickconfirm" xml:space="preserve">
+    <value>3.5 Pickconfirm</value>
   </data>
   <data name="Picking" xml:space="preserve">
     <value>Picking</value>

@@ -29,6 +29,14 @@ namespace GoWMS.Server.Controllers
             return retlist;
         }
 
+        public List<Userinfo> GetUserAD(string uusname, string uspass)
+        {
+            List<Userinfo> retlist = objDAL.GetUserAD(uusname, uspass).ToList();
+            return retlist;
+        }
+
+        
+
         public List<Userroleinfo> GetUserRole(string menu_desc, long group_id)
         {
             List<Userroleinfo> retlist = objDAL.GetUserRole(menu_desc, group_id).ToList();
@@ -67,6 +75,16 @@ namespace GoWMS.Server.Controllers
             ResultReturn retlist = await Task.Run(() => objDAL.UpsertRegister(ugid, usid, uspass, usfirstname));
             return retlist;
         }
+
+        public ResultReturn UpsertRegisterAD(long ugid, string usid, string uspass, string usfirstname)
+        {
+            ResultReturn retlist = objDAL.UpsertRegisterAD(ugid, usid, uspass, usfirstname);
+            
+            return retlist;
+        }
+
+
+        
 
 
     }

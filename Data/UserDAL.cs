@@ -135,7 +135,9 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("where");
                     sql.AppendLine("u.usid=@usid");
                     sql.AppendLine("and");
-                    sql.AppendLine("u.uspass=@uspass");
+                    sql.AppendLine("u.uspass = @uspass");
+                    sql.AppendLine("and");
+                    sql.AppendLine("u.departmentid = @departmentid");
                     //sql.AppendLine("Limit 1");
                     sql.AppendLine(";");
 
@@ -145,6 +147,69 @@ namespace GoWMS.Server.Data
                     };
                     cmd.Parameters.AddWithValue("@usid", uusname);
                     cmd.Parameters.AddWithValue("@uspass", uspass);
+                    cmd.Parameters.AddWithValue("@departmentid", 0);
+
+                    //cmd.Parameters.AddWithValue("@usid", NpgsqlDbType.Varchar, uusname);
+                    //cmd.Parameters.AddWithValue("@uspass", NpgsqlDbType.Varchar, uspass);
+
+                    con.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        Userinfo objrd = new Userinfo
+                        {
+                            Usid = rdr["idx"] == DBNull.Value ? null : (long?)rdr["idx"],
+                            Usname = rdr["usfirstname"].ToString(),
+                            Uspass = rdr["uspass"].ToString(),
+                            Usgid = rdr["ugid"] == DBNull.Value ? null : (long?)rdr["ugid"],
+                            UserId = rdr["usid"].ToString()
+                        };
+                        lstobj.Add(objrd);
+                    }
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+            return lstobj;
+        }
+
+        public IEnumerable<Userinfo> GetUserAD(string uusname, string uspass)
+        {
+            List<Userinfo> lstobj = new List<Userinfo>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    StringBuilder sql = new StringBuilder();
+
+                    sql.AppendLine("select top(1) u.idx, u.usid, u.usfirstname, u.uspass");
+                    sql.AppendLine(", u.ugid");
+                    sql.AppendLine("from dbo.set_users u");
+                    sql.AppendLine("inner join dbo.set_usergroups g");
+                    sql.AppendLine("on u.ugid=g.idx");
+                    sql.AppendLine("where");
+                    sql.AppendLine("u.usid=@usid");
+                    sql.AppendLine("and");
+                    sql.AppendLine("u.uspass=@uspass");
+                    sql.AppendLine("and");
+                    sql.AppendLine("u.departmentid = @departmentid");
+                    //sql.AppendLine("Limit 1");
+                    sql.AppendLine(";");
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                    {
+                        CommandType = CommandType.Text
+                    };
+                    cmd.Parameters.AddWithValue("@usid", uusname);
+                    cmd.Parameters.AddWithValue("@uspass", uspass);
+                    cmd.Parameters.AddWithValue("@departmentid", 1);
 
                     //cmd.Parameters.AddWithValue("@usid", NpgsqlDbType.Varchar, uusname);
                     //cmd.Parameters.AddWithValue("@uspass", NpgsqlDbType.Varchar, uspass);
@@ -488,12 +553,13 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(", usgridcolor = @usgridcolor");
                 sql.AppendLine(", ugid = @ugid");
                 sql.AppendLine(", uspass = @uspass");
+                sql.AppendLine(", departmentid = @departmentid");
                 sql.AppendLine("WHERE usid = @usid");
                 sql.AppendLine(";");
                 sql.AppendLine("insert into dbo.set_users");
-                sql.AppendLine("(ugid, usid, uspass, usfirstname, uslastname, usgridcolor)");
+                sql.AppendLine("(ugid, usid, uspass, usfirstname, uslastname, usgridcolor, departmentid)");
                 sql.AppendLine("SELECT ");
-                sql.AppendLine("@ugidins, @usidins, @uspassins, @usfirstnameins, @uslastnameins, @usgridcolorins");
+                sql.AppendLine("@ugidins, @usidins, @uspassins, @usfirstnameins, @uslastnameins, @usgridcolorins, @departmentids");
                 sql.AppendLine("WHERE NOT EXISTS (SELECT 1 FROM dbo.set_users WHERE usid = @usidinsw)");
                 sql.AppendLine(";");
 
@@ -511,7 +577,8 @@ namespace GoWMS.Server.Data
                 string puslastnameins = "@uslastnameins";
                 string pusgridcolorins = "@usgridcolorins";
                 string pusidinsw = "@usidinsw";
-
+                string pdepartmentid = "@departmentid";
+                string pdepartmentids = "@departmentids";
 
                 cmd.Parameters.AddWithValue(pusfirstname, usfirstname);
                 cmd.Parameters.AddWithValue(pusgridcolor, "WhiteSmoke");
@@ -525,7 +592,9 @@ namespace GoWMS.Server.Data
                 cmd.Parameters.AddWithValue(puslastnameins, usfirstname);
                 cmd.Parameters.AddWithValue(pusgridcolorins, "WhiteSmoke");
                 cmd.Parameters.AddWithValue(pusidinsw, usid);
-
+                cmd.Parameters.AddWithValue(pdepartmentid, 1);
+                cmd.Parameters.AddWithValue(pdepartmentids, 1);
+                
 
                 //cmd.Parameters.Add(new SqlParameter<string>(pusfirstname, usfirstname));
                 //cmd.Parameters.Add(new SqlParameter<string>(pusgridcolor, "WhiteSmoke"));
@@ -543,6 +612,108 @@ namespace GoWMS.Server.Data
                 con.Open();
                 cmd.CommandText = sql.ToString();
                 await cmd.ExecuteNonQueryAsync();
+                listRet.Bret = true;
+                listRet.Iret = 1;
+                listRet.Sret = "OK";
+
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.ToString());
+                listRet.Bret = false;
+                listRet.Iret = 0;
+                listRet.Sret = "Error :" + ex.ToString();
+            }
+            finally
+            {
+                con.Close();
+            }
+
+            return listRet;
+        }
+
+
+        public ResultReturn UpsertRegisterAD(long ugid, string usid, string uspass, string usfirstname)
+        {
+
+            ResultReturn listRet = new ResultReturn
+            {
+                Bret = false,
+                Iret = 0,
+                Sret = "Error:Intarial"
+            };
+
+            using SqlConnection con = new SqlConnection(connectionString);
+            try
+            {
+                StringBuilder sql = new StringBuilder();
+
+                //WhiteSmoke
+
+                sql.AppendLine("UPDATE dbo.set_users");
+                sql.AppendLine("SET usfirstname = @usfirstname");
+                sql.AppendLine(", usgridcolor = @usgridcolor");
+                //sql.AppendLine(", ugid = @ugid");
+                sql.AppendLine(", uspass = @uspass");
+                sql.AppendLine(", departmentid = @departmentid");
+                sql.AppendLine("WHERE usid = @usid");
+                sql.AppendLine(";");
+                sql.AppendLine("insert into dbo.set_users");
+                sql.AppendLine("(ugid, usid, uspass, usfirstname, uslastname, usgridcolor, departmentid)");
+                sql.AppendLine("SELECT ");
+                sql.AppendLine("@ugidins, @usidins, @uspassins, @usfirstnameins, @uslastnameins, @usgridcolorins, @departmentids");
+                sql.AppendLine("WHERE NOT EXISTS (SELECT 1 FROM dbo.set_users WHERE usid = @usidinsw)");
+                sql.AppendLine(";");
+
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
+
+                string pusfirstname = "@usfirstname";
+                string pusgridcolor = "@usgridcolor";
+                //string pugid = "@ugid";
+                string puspass = "@uspass";
+                string pusid = "@usid";
+                string pugidins = "@ugidins";
+                string pusidins = "@usidins";
+                string puspassins = "@uspassins";
+                string pusfirstnameins = "@usfirstnameins";
+                string puslastnameins = "@uslastnameins";
+                string pusgridcolorins = "@usgridcolorins";
+                string pusidinsw = "@usidinsw";
+                string pdepartmentid = "@departmentid";
+                string pdepartmentids = "@departmentids";
+
+                cmd.Parameters.AddWithValue(pusfirstname, usfirstname);
+                cmd.Parameters.AddWithValue(pusgridcolor, "WhiteSmoke");
+                //cmd.Parameters.AddWithValue(pugid, ugid);
+                cmd.Parameters.AddWithValue(puspass, uspass);
+                cmd.Parameters.AddWithValue(pusid, usid);
+                cmd.Parameters.AddWithValue(pugidins, ugid);
+                cmd.Parameters.AddWithValue(pusidins, usid);
+                cmd.Parameters.AddWithValue(puspassins, uspass);
+                cmd.Parameters.AddWithValue(pusfirstnameins, usfirstname);
+                cmd.Parameters.AddWithValue(puslastnameins, usfirstname);
+                cmd.Parameters.AddWithValue(pusgridcolorins, "WhiteSmoke");
+                cmd.Parameters.AddWithValue(pusidinsw, usid);
+                cmd.Parameters.AddWithValue(pdepartmentid, 1);
+                cmd.Parameters.AddWithValue(pdepartmentids, 1);
+
+
+                //cmd.Parameters.Add(new SqlParameter<string>(pusfirstname, usfirstname));
+                //cmd.Parameters.Add(new SqlParameter<string>(pusgridcolor, "WhiteSmoke"));
+                //cmd.Parameters.Add(new SqlParameter<long>(pugid, ugid));
+                //cmd.Parameters.Add(new SqlParameter<string>(puspass, uspass));
+                //cmd.Parameters.Add(new SqlParameter<string>(pusid, usid));
+                //cmd.Parameters.Add(new SqlParameter<long>(pugidins, ugid));
+                //cmd.Parameters.Add(new SqlParameter<string>(pusidins, usid));
+                //cmd.Parameters.Add(new SqlParameter<string>(puspassins, uspass));
+                //cmd.Parameters.Add(new SqlParameter<string>(pusfirstnameins, usfirstname));
+                //cmd.Parameters.Add(new SqlParameter<string>(puslastnameins, usfirstname));
+                //cmd.Parameters.Add(new SqlParameter<string>(pusgridcolorins, "WhiteSmoke"));
+                //cmd.Parameters.Add(new SqlParameter<string>(pusidinsw, usid));
+
+                con.Open();
+                cmd.CommandText = sql.ToString();
+                cmd.ExecuteNonQuery();
                 listRet.Bret = true;
                 listRet.Iret = 1;
                 listRet.Sret = "OK";

@@ -138,6 +138,9 @@
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>
+  <data name="QTYPERPAL" xml:space="preserve">
+    <value>จำนวนต่อพาเลท</value>
+  </data>
   <data name="Search" xml:space="preserve">
     <value>ค้นหา</value>
   </data>

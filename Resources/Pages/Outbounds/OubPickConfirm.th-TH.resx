@@ -117,40 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DNSEQ" xml:space="preserve">
-    <value>DNSEQ</value>
+  <data name="ACTION" xml:space="preserve">
+    <value>การกระทำ</value>
   </data>
-  <data name="ITEMCODE" xml:space="preserve">
-    <value>ITEMCODE</value>
+  <data name="Inputscan" xml:space="preserve">
+    <value>ใสข้อมูล</value>
   </data>
-  <data name="ITEMNAME" xml:space="preserve">
-    <value>ITEMNAME</value>
+  <data name="Lot" xml:space="preserve">
+    <value>แบท</value>
   </data>
-  <data name="LOT" xml:space="preserve">
-    <value>BATCH</value>
+  <data name="MATERIAL" xml:space="preserve">
+    <value>รหัสสินค้า</value>
   </data>
-  <data name="ORDERNO" xml:space="preserve">
-    <value>ORDERNO</value>
+  <data name="PACKID" xml:space="preserve">
+    <value>เลขลำดับ</value>
   </data>
-  <data name="pageHeader" xml:space="preserve">
-    <value>Order Picking</value>
-  </data>
-  <data name="PALLET" xml:space="preserve">
-    <value>PALLET</value>
+  <data name="Pallet" xml:space="preserve">
+    <value>พาเลท</value>
   </data>
   <data name="QTY" xml:space="preserve">
-    <value>QTY</value>
+    <value>ชื่อสินค้า</value>
   </data>
-  <data name="REQUESTDATE" xml:space="preserve">
-    <value>REQUESTDATE</value>
+  <data name="Search" xml:space="preserve">
+    <value>ค้นหา</value>
   </data>
-  <data name="Start ASRS" xml:space="preserve">
-    <value>Start ASRS</value>
-  </data>
-  <data name="Total" xml:space="preserve">
-    <value>Total</value>
+  <data name="STATE" xml:space="preserve">
+    <value>สถานะ</value>
   </data>
   <data name="UNIT" xml:space="preserve">
-    <value>UNIT</value>
+    <value>หน่วยนับ</value>
   </data>
 </root>

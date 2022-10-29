@@ -1,0 +1,115 @@
+﻿@using System
+@using System.Data;
+@using System.IO
+@using System.Linq
+@using System.Text
+@using System.Threading
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject InboundService ObjInboundService
+@inject ReportService UserlogService
+<MudDialog>
+    <DialogContent>
+
+        <MudNumericField Immediate="false" Label="From" Format="N0" T="int?" @bind-Value="_valuePalletfrom" HelperText="@_valuePalletfrom.ToString()" />
+
+        <MudNumericField Immediate="false" Label="To" Format="N0" T="int?" @bind-Value="_valuePalletto" HelperText="@_valuePalletto.ToString()" />
+
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Int64 pApiid { get; set; }
+    [Parameter] public string pGuid { get; set; }
+    [Parameter] public string pUsername{ get; set; }
+    [Parameter] public string pRef { get; set; }
+
+
+
+    public int? _valuePalletfrom = 0;
+
+    public int? _valuePalletto = 0;
+
+    private readonly string pageheader = "1.1.Receiving Order";
+    string sUsername { get; set; } = "";
+    string sRole { get; set; } = "";
+    string sGroupID { get; set; } = "";
+    string sUserID { get; set; } = "";
+
+     protected override async Task OnInitializedAsync()
+    {
+        await GetUserAthu();
+    }
+
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+
+        if (_valuePalletto != null && _valuePalletfrom != null)
+        {
+
+
+            DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
+            dtTrans.Columns.Add("tyitem", typeof(System.String));
+            dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
+            dtTrans.Columns.Add("tylot", typeof(System.String));
+            dtTrans.Columns.Add("tyexpdate", typeof(System.DateTime));
+            dtTrans.Columns.Add("typallet", typeof(System.String));
+
+            DataRow _ravi = dtTrans.NewRow();
+            _ravi["tyitem"] = "AAA";
+            _ravi["tyqty"] = 10.9;
+            _ravi["tylot"] = "LOT0001";
+            _ravi["tyexpdate"] = DateTime.Now;
+            _ravi["typallet"] = "1";
+            dtTrans.Rows.Add(_ravi);
+
+            bool bRet ;
+
+            bRet = await Task.Run(() => ObjInboundService.CreateTagno(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid));
+
+            //bRet = ObjInboundService.CreateTagno(pApiid, 1, 5, "A0001", pUsername, dtTrans, pGuid);
+
+            if (bRet == true)
+            {
+                this.InsertAuditrial("Create Tag Pallet From : " + _valuePalletfrom.ToString() + " To: " + _valuePalletto.ToString(), pageheader);
+
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+
+        }
+
+    }
+
+    private void InsertAuditrial(String actdesc, String munname)
+    {
+        bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
+    }
+
+    async Task GetUserAthu()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        sGroupID = user.Claims.FirstOrDefault(
+        c => c.Type == ClaimTypes.Role)?.Value;
+
+        sUserID = user.Claims.FirstOrDefault(
+            c => c.Type == ClaimTypes.Actor)?.Value;
+    }
+
+
+
+}

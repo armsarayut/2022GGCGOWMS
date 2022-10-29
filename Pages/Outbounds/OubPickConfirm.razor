@@ -1,4 +1,4 @@
-﻿@page "/2/2_5"
+﻿@page "/3/3_5"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -8,7 +8,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JSRuntime
-@inject IStringLocalizer<WhCheckcount> L
+@inject IStringLocalizer<OubPickConfirm> L
 
 @inject WhService ObjWhService
 @inject WcsService ObjWcsService
@@ -32,138 +32,140 @@
 
 @if (Elements == null)
 {
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
-<MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-    <MudTooltip Text="Check All" Color="Color.Inherit" Placement="Placement.Top">
-        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Error" OnClick="@CountMapAll"></MudIconButton>
-    </MudTooltip>
-    <MudTooltip Text="Claer All" Color="Color.Inherit" Placement="Placement.Top">
-        <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Warning" OnClick="@DeleteMapAll"></MudIconButton>
-    </MudTooltip>
-    <MudTooltip Text="Reset All" Color="Color.Inherit" Placement="Placement.Top">
-        <MudIconButton Icon="@Icons.Material.Filled.Restore" Color="Color.Primary" OnClick="@ResetMapAll"></MudIconButton>
-    </MudTooltip>
-    <MudSpacer />
-</MudAppBar>
+    <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
+        <MudTooltip Text="Check All" Color="Color.Inherit" Placement="Placement.Top">
+            <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Error" OnClick="@CountMapAll"></MudIconButton>
+        </MudTooltip>
+        <MudTooltip Text="Claer All" Color="Color.Inherit" Placement="Placement.Top">
+            <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Warning" OnClick="@DeleteMapAll"></MudIconButton>
+        </MudTooltip>
+        <MudTooltip Text="Reset All" Color="Color.Inherit" Placement="Placement.Top">
+            <MudIconButton Icon="@Icons.Material.Filled.Restore" Color="Color.Primary" OnClick="@ResetMapAll"></MudIconButton>
+        </MudTooltip>
+        <MudSpacer />
+    </MudAppBar>
 
-    <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudTable Items="@Elements"
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudTable Items="@Elements"
                   Dense="@dense"
                   Hover="@hover"
                   Bordered="@bordered"
                   Striped="@striped"
                   Filter="new Func<Sap_StoreoutInfo,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">@L["PACKID"]:[@mPalletcode]</MudText>
-                <MudSpacer />
-                <MudTextField @bind-Value="searchString"
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">@L["PACKID"]:[@mPalletcode]</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString"
                               Placeholder=@L["Search"]
                               Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Search"
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
-                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
-                 @*<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
-                <MudTh>@L["ACTION"]</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel=@L["STATE"]>
-                    @{if (@context.Bcount == true)
-                            {
-                            <MudCheckBox Checked="true" Size="Size.Medium" Color="Color.Tertiary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
-                            }
-                            else
-                            {
-                            <MudCheckBox Checked="false" Size="Size.Medium" Color="Color.Secondary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
-                            }
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
+                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+                @*<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
+                    <MudTh>@L["ACTION"]</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel=@L["STATE"]>
+                    @{
+                        if (@context.Bcount == true)
+                        {
+                                        <MudCheckBox Checked="true" Size="Size.Medium" Color="Color.Tertiary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
+                        }
+                        else
+                        {
+                                        <MudCheckBox Checked="false" Size="Size.Medium" Color="Color.Secondary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
+                        }
                     }
-                </MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["Lot"]>@context.Batch_No</MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["MATERIAL"]>@context.Item_Code</MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Stock_Qty)</MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["UNIT"]>@context.Unit</MudTd>
-                //<MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Request_Qty)</MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>
-                    <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
-                </MudTd>
-            </RowTemplate>
+                    </MudTd>
+                    <MudTd Class="clm-row-small" DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
+                    <MudTd Class="clm-row-small" DataLabel=@L["Lot"]>@context.Batch_No</MudTd>
+                    <MudTd Class="clm-row-small" DataLabel=@L["MATERIAL"]>@context.Item_Code</MudTd>
+                    <MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Stock_Qty)</MudTd>
+                    <MudTd Class="clm-row-small" DataLabel=@L["UNIT"]>@context.Unit</MudTd>
+                    //<MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Request_Qty)</MudTd>
+                    <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>
+                        <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
+                        <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
+                        <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
+                    </MudTd>
+                </RowTemplate>
 
-            <PagerContent>
-                <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
-            </PagerContent>
-        </MudTable>
-    </MudHidden>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
+                </PagerContent>
+            </MudTable>
+        </MudHidden>
 
-    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-        <MudTable Items="@Elements"
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudTable Items="@Elements"
                   Dense="@dense"
                   Hover="@hover"
                   Bordered="@bordered"
                   Striped="@striped"
                   Filter="new Func<Sap_StoreoutInfo,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">@L["Pallet"]:[@mPalletcode]</MudText>
-                <MudSpacer />
-                <MudTextField @bind-Value="searchString"
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">@L["Pallet"]:[@mPalletcode]</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString"
                               Placeholder=@L["Search"]
                               Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Search"
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                //<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                <MudTh>@L["ACTION"]</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel=@L["STATE"]>
-                    @{if (@context.Bcount == true)
-                            {
-                            <MudCheckBox Checked="true" Size="Size.Medium" Color="Color.Tertiary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
-                            }
-                            else
-                            {
-                            <MudCheckBox Checked="false" Size="Size.Medium" Color="Color.Secondary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
-                            }
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+                    //<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+                    <MudTh>@L["ACTION"]</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel=@L["STATE"]>
+                    @{
+                        if (@context.Bcount == true)
+                        {
+                                        <MudCheckBox Checked="true" Size="Size.Medium" Color="Color.Tertiary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
+                        }
+                        else
+                        {
+                                        <MudCheckBox Checked="false" Size="Size.Medium" Color="Color.Secondary" ReadOnly="true">@context.Movement_Type</MudCheckBox>
+                        }
                     }
-                </MudTd>
-                <MudTd DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
-                <MudTd DataLabel=@L["QTY"]>@context.Stock_Qty</MudTd>
-                //<MudTd DataLabel=@L["QTY"]>@context.Request_Qty</MudTd>
-                <MudTd DataLabel=@L["ACTION"]>
-                    <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
-                </MudTd>
+                    </MudTd>
+                    <MudTd DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
+                    <MudTd DataLabel=@L["QTY"]>@context.Stock_Qty</MudTd>
+                    //<MudTd DataLabel=@L["QTY"]>@context.Request_Qty</MudTd>
+                    <MudTd DataLabel=@L["ACTION"]>
+                        <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
+                        <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
+                        <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
+                    </MudTd>
 
-            </RowTemplate>
+                </RowTemplate>
 
-            <PagerContent>
-                <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
-            </PagerContent>
-        </MudTable>
-    </MudHidden>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
+                </PagerContent>
+            </MudTable>
+        </MudHidden>
 }
 
 @code {
-    private string pageheader = "2.5.Counting";
+    private string pageheader = "3.5.Pickconfirm";
 
-    public string mPagedesc { get; set; } = "2.5.Counting";
-    private string mPagename { get; set; } = "/2/2_5";
+    public string mPagedesc { get; set; } = "3.5.Counting";
+    private string mPagename { get; set; } = "/3/3_5";
 
     private string msgAction = "Enter Tag No.";
     private string mPalletcode { get; set; } = "";

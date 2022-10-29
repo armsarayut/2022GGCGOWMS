@@ -47,18 +47,21 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh>@L["ITEMCODE"]</MudTh>
-            <MudTh>@L["ITEMNAME"]</MudTh>
-            <MudTh>@L["UNIT"]</MudTh>
-            <MudTh>@L["NETWEIGHT"]</MudTh>
-            <MudTh>@L["GROSSWEIGHT"]</MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["ITEMCODE"]</MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["ITEMNAME"]</MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["UNIT"]</MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["QTYPERPAL"]</MudTh>
+
+            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["NETWEIGHT"]</MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["GROSSWEIGHT"]</MudTh>
            @* <MudTh>@L["WEIGHTUNIT"]</MudTh>*@
-             <MudTh>BATCH</MudTh>
+             <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">BATCH</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Itemcode</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Itemname</MudTd>
             <MudTd DataLabel=@L["UNIT"]>@context.Itemunit</MudTd>
+            <MudTd DataLabel=@L["QTYPERPAL"]>@context.Palqty</MudTd>
             <MudTd DataLabel=@L["NETWEIGHT"]>@context.Weightnet</MudTd>
             <MudTd DataLabel=@L["GROSSWEIGHT"]>@context.Weightgross</MudTd>
             @*<MudTd DataLabel=@L["WEIGHTUNIT"]>@context.Weightuint</MudTd>*@

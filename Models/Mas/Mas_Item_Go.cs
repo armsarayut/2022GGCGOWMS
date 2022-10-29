@@ -23,6 +23,7 @@ namespace GoWMS.Server.Models.Mas
 		public string Weightuint { get; set; }
 		public string Vendor { get; set; }
 		public bool ? IsBatchMgn { get; set; }
+        public Decimal? Palqty { get; set; }
 
-	}
+    }
 }

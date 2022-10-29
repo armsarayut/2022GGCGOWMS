@@ -13,7 +13,7 @@ namespace GoWMS.Server.Reports
     {
         MemoryStream _memoryStream = new MemoryStream();
         //List<Vrpt_shelf_listInfo> ListReport = new List<Vrpt_shelf_listInfo>();
-        public byte[] Report(List<InvStockSum> ListRpt)
+        public byte[] Report(List<InvStockSumByLot> ListRpt)
         {
             using (var workbook = new XLWorkbook())
             {

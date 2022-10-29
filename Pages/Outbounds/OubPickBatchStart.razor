@@ -3,6 +3,7 @@
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
 @using GoWMS.Server.Models.Oub
+@using System.Text.Json
 @using System.Security.Claims
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -11,8 +12,9 @@
 @inject StoreoutService ObjService
 @inject UserServices OpjUserService
 @inject ReportService UserlogService
+@inject WhService ObjWhService
 @inject ISnackbar Snackbar
-@inject IStringLocalizer<OubPickBatch> L
+@inject IStringLocalizer<OubPickBatchStart> L
 @attribute [Authorize]
 
 <style>
@@ -37,67 +39,69 @@ else
 
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
         <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
-                   Color="Color.Error"
-                   OnClick=@SetOrderpicking>@L["Start ASRS"]</MudButton>
-                <MudSpacer />
-            </MudAppBar>
+               Color="Color.Error"
+               OnClick=@SetOrderpicking>@L["Start ASRS"]</MudButton>
+        <MudSpacer />
+    </MudAppBar>
 
-            <MudTable Hover="true"
-                      Breakpoint="Breakpoint.Sm"
-                      Height="500px" FixedHeader="true"
-                      Items="@Elements"
-                      GroupBy="@_groupDefinition"
-                      GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
-                      GroupFooterClass="mb-4"
-                      Dense="_dense"
-                      SelectedItems="@selectedItems"
-                      MultiSelection="_multiSelect">
-                <ColGroup>
-                    @if (_multiSelect)
-                    {
-                        <col style="width: 60px;" />
-                    }
-                    @if (_groupDefinition.Expandable)
-                    {
-                        <col style="width: 60px;" />
-                    }
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                </ColGroup>
-                <HeaderContent>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Order_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Delivery_Date)">@L["REQUESTDATE"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Su_No)">@L["DNSEQ"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Pallet_No)">@L["PALLET"]</MudTableSortLabel></MudTh>
-                </HeaderContent>
-                <GroupHeaderTemplate>
-                    <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName} : {context.Key}") @L["Total"]: @context.Items.Sum((e) => e.Request_Qty)</MudTh>
-                </GroupHeaderTemplate>
-                <RowTemplate>
-                    <MudTd DataLabel=@L["ORDERNO"]>@context.Order_No</MudTd>
-                    <MudTd DataLabel=>@L["REQUESTDATE"]>@Convert.ToDateTime(context.Delivery_Date).ToString(VarGlobals.FormatD)</MudTd>
-                    <MudTd DataLabel=@L["DNSEQ"]>@context.Su_No</MudTd>
-                    <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
-                    <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
-                    <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN0, context.Request_Qty)</MudTd>
-                    <MudTd DataLabel=@L["UNIT"]>@context.Unit</MudTd>
-                    <MudTd DataLabel=@L["PALLET"]>@context.Pallet_No</MudTd>
-                </RowTemplate>
-                <GroupFooterTemplate>
-                    <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="6">@L["Total"]: @context.Items.Sum((e) => e.Request_Qty)</MudTh>
-                </GroupFooterTemplate>
-            </MudTable>
+    <MudTable Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Height="500px" FixedHeader="true"
+          Items="@Elements"
+          GroupBy="@_groupDefinition"
+          GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
+          GroupFooterClass="mb-4"
+          Dense="_dense"
+          SelectedItems="@selectedItems"
+          MultiSelection="_multiSelect">
+        <ColGroup>
+            @if (_multiSelect)
+            {
+                <col style="width: 60px;" />
+            }
+            @if (_groupDefinition.Expandable)
+            {
+                <col style="width: 60px;" />
+            }
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+        </ColGroup>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Order_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Batch_Number)">@L["LOT"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Su_No)">@L["DNSEQ"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Pallet_No)">@L["PALLET"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Delivery_Date)">@L["REQUESTDATE"]</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <GroupHeaderTemplate>
+            <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName} : {context.Key}") @L["Total"]: @context.Items.Sum((e) => e.Request_Qty)</MudTh>
+        </GroupHeaderTemplate>
+        <RowTemplate>
+            <MudTd DataLabel=@L["ORDERNO"]>@context.Order_No</MudTd>
+           <MudTd DataLabel=@L["LOT"]>@context.Batch_Number</MudTd>
+            <MudTd DataLabel=@L["DNSEQ"]>@context.Su_No</MudTd>
+            <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
+            <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
+            <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN0, context.Request_Qty)</MudTd>
+            <MudTd DataLabel=@L["UNIT"]>@context.Unit</MudTd>
+            <MudTd DataLabel=@L["PALLET"]>@context.Pallet_No</MudTd>
+            <MudTd DataLabel=@L["REQUESTDATE"]>@Convert.ToDateTime(context.Delivery_Date).ToString(VarGlobals.FormatD)</MudTd>
+        </RowTemplate>
+        <GroupFooterTemplate>
+            <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="6">@L["Total"]: @context.Items.Sum((e) => e.Request_Qty)</MudTh>
+        </GroupFooterTemplate>
+    </MudTable>
 
-        }
+}
 
 @code {
 
@@ -179,13 +183,13 @@ else
     }
 
     private TableGroupDefinition<Sap_Storeout> _groupDefinition = new TableGroupDefinition<Sap_Storeout>()
-    {
-        GroupName = "PalletGo",
-        Indentation = false,
-        Expandable = true,
-        IsInitiallyExpanded = false,
-        Selector = (e) => e.Pallet_No
-    };
+        {
+            GroupName = "ORDER",
+            Indentation = false,
+            Expandable = true,
+            IsInitiallyExpanded = false,
+            Selector = (e) => e.Order_No
+        };
 
     private string stxtInput { get; set; }
 
@@ -212,81 +216,105 @@ else
         bool? result = await CheckRoleApprove();
         if (result == true)
         {
-            string strRunning = ObjService.GetRunnning("sq002", 4);
-
-            var strLON1 = selectedItems.GroupBy(c => new
-            {
-                c.Delivery_Date,
-                c.Delivery_Priority,
-                c.Order_No,
-                c.Ship_To_Code
-            })
-            .Select(gcs => new
-            {
-                delivery_date = gcs.Key.Delivery_Date,
-                delivery_priority = gcs.Key.Delivery_Priority,
-                order_no = gcs.Key.Order_No,
-                ship_to_code = gcs.Key.Ship_To_Code,
-            }).ToList();
-
-            Int32 iTotal = strLON1.Count;
-            Int32 iCount = 0;
-            Boolean bCheck;
-            foreach (var recItem in strLON1)
-            {
-                DateTime delivery_date = (DateTime)recItem.delivery_date;
-                Int32 delivery_priority = (Int32)recItem.delivery_priority;
-                string order_no = recItem.order_no;
-                string ship_to_code = recItem.ship_to_code;
-
-                // Create Batch Order
-
-                bCheck = false;
-                bCheck = ObjService.CreateBatchOrder(delivery_date, delivery_priority, order_no, ship_to_code, strRunning);
-
-                if (bCheck == true)
+            var serializeOptions = new JsonSerializerOptions
                 {
-                    this.InsertAuditrial("Create batch order [Delivery : " + delivery_date.ToString() + " Order : " + order_no.ToString() + "Batchno : " + strRunning.ToString(), pageheader);
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
 
-                    iCount++;
-                }
-                else
-                {
-                    break;
-                }
-            }
 
-            // Create Batch Setting
-            if (iCount == iTotal)
-            {
-                bCheck = false;
-                bCheck = ObjService.CreateBatchSetting(strRunning, 0);
-                this.InsertAuditrial("Create Batchno : " + strRunning.ToString(), pageheader);
-            }
-            else
-            {
-                bCheck = false;
-                bCheck = ObjService.RollbackBatch(strRunning);
-                Snackbar.Add("Order Losss", Severity.Error);
-            }
 
-            // Start Batch
+               
 
-            if (bCheck == true)
-            {
-                bCheck = false;
-                bCheck = ObjService.StartBatchsetting(strRunning, 0);
-                this.InsertAuditrial("Start Batchno : " + strRunning.ToString(), pageheader);
-            }
+            var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, pallet = x.Pallet_No, gateout = "G08" }).ToList();
 
-            if (bCheck == true)
-            {
-                Snackbar.Add("Success", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add("Start Losss", Severity.Error);
-            }
+                            var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
+
+                             string sRet = "Call";
+                            bool bRet;
+
+                             bRet = ObjWhService.StartOrderpick(jsonRES, ref sRet);
+
+
+                              this.InsertAuditrial("Start ASRS : " + jsonRES.ToString(), pageheader);
+                        //await SelectOrderPick();
+
+
+            //string strRunning = ObjService.GetRunnning("sq002", 4);
+
+            //var strLON1 = selectedItems.GroupBy(c => new
+            //{
+            //    c.Delivery_Date,
+            //    c.Delivery_Priority,
+            //    c.Order_No,
+            //    c.Ship_To_Code
+            //})
+            //.Select(gcs => new
+            //{
+            //    delivery_date = gcs.Key.Delivery_Date,
+            //    delivery_priority = gcs.Key.Delivery_Priority,
+            //    order_no = gcs.Key.Order_No,
+            //    ship_to_code = gcs.Key.Ship_To_Code,
+            //}).ToList();
+
+            //Int32 iTotal = strLON1.Count;
+            //Int32 iCount = 0;
+            //Boolean bCheck;
+            //foreach (var recItem in strLON1)
+            //{
+            //    DateTime delivery_date = (DateTime)recItem.delivery_date;
+            //    Int32 delivery_priority = (Int32)recItem.delivery_priority;
+            //    string order_no = recItem.order_no;
+            //    string ship_to_code = recItem.ship_to_code;
+
+            //    // Create Batch Order
+
+            //    bCheck = false;
+            //    bCheck = ObjService.CreateBatchOrder(delivery_date, delivery_priority, order_no, ship_to_code, strRunning);
+
+            //    if (bCheck == true)
+            //    {
+            //        this.InsertAuditrial("Create batch order [Delivery : " + delivery_date.ToString() + " Order : " + order_no.ToString() + "Batchno : " + strRunning.ToString(), pageheader);
+
+            //        iCount++;
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
+
+            //// Create Batch Setting
+            //if (iCount == iTotal)
+            //{
+            //    bCheck = false;
+            //    bCheck = ObjService.CreateBatchSetting(strRunning, 0);
+            //    this.InsertAuditrial("Create Batchno : " + strRunning.ToString(), pageheader);
+            //}
+            //else
+            //{
+            //    bCheck = false;
+            //    bCheck = ObjService.RollbackBatch(strRunning);
+            //    Snackbar.Add("Order Losss", Severity.Error);
+            //}
+
+            //// Start Batch
+
+            //if (bCheck == true)
+            //{
+            //    bCheck = false;
+            //    bCheck = ObjService.StartBatchsetting(strRunning, 0);
+            //    this.InsertAuditrial("Start Batchno : " + strRunning.ToString(), pageheader);
+            //}
+
+            //if (bCheck == true)
+            //{
+            //    Snackbar.Add("Success", Severity.Success);
+            //}
+            //else
+            //{
+            //    Snackbar.Add("Start Losss", Severity.Error);
+            //}
 
             Elements = ObjService.GetSapStoreoutSetBatch();
             selectedItems.Clear();

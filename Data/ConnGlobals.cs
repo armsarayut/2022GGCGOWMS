@@ -11,7 +11,7 @@ namespace GoWMS.Server.Data
     {
         public static string GetConnLocalDB()
         {
-            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQLCOMM;Trusted_Connection=True;";
+            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL-SIT27;Trusted_Connection=True;";
         }
 
         #region SQL Database
@@ -26,6 +26,7 @@ namespace GoWMS.Server.Data
         private static readonly string SqlContime = "120";
 
 
+
         /// <summary>
         /// GetConnLocalDBSQL
         /// </summary>
@@ -33,8 +34,9 @@ namespace GoWMS.Server.Data
         /// <returns></returns>
         public static string GetConnDBSQL()
         {
-            return "Server=" + SqlServer + " ," + SqlPort + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
-            //return "server=DESKTOP-NQ62BHU\\MSSQL; database=GoSQL-GGCQAS;Trusted_Connection=True;";
+            //return "Server=" + SqlServer + " ," + SqlPort + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
+           
+            return GetConnLocalDB();
 
         }
         #endregion

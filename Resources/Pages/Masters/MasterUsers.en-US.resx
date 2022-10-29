@@ -132,6 +132,9 @@
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>
+  <data name="REPRINT" xml:space="preserve">
+    <value>RE-PRINT</value>
+  </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>

@@ -84,8 +84,8 @@ namespace GoWMS.Server
             services.AddSingleton<PublicFunServices>();
 
             services.AddBlazoredModal();
+         
 
-            
             //services.AddTransient<VarGlobalService>();
             services.AddScoped<BlazorAppContext>();
 

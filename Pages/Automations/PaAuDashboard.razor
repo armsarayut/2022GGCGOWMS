@@ -17,7 +17,7 @@
 @inject UtilityServices ObjUtitityservice
 @inject UserServices OpjUserService
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">MC-Monitor</MudText>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">ASRS-MONITOR</MudText>
 
 @if (Elements == null)
 {
@@ -1076,7 +1076,6 @@ else
         {
             DialogOptions closeOnEscapeKey = new DialogOptions() { CloseButton = true };
             var parameters = new DialogParameters { ["Mccode"] = mccode };
-
 
             var dialog = DialogService.Show<DialogKeyboardNavigationExample_Dialog>(mccode, parameters);
         }

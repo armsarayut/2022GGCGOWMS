@@ -21,7 +21,7 @@ namespace GoWMS.Server.Reports
                 var worksheet = workbook.AddWorksheet("5.3.3");
                 #region Excel Report Header
                 var imagePath = VarGlobals.Imagelogoreport();
-                w worksheet.Column(1).Width = 18;
+                worksheet.Column(1).Width = 18;
                 worksheet.Row(1).Height = 40;
                 var image = worksheet.AddPicture(imagePath).MoveTo(worksheet.Cell("A1")); //this will throw an error
                 image.ScaleWidth(.25);

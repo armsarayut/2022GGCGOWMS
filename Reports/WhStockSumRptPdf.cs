@@ -160,7 +160,7 @@ namespace GoWMS.Server.Reports
         /// </summary>
         /// <param name="ListRpt">List Data</param>
         /// <returns></returns>
-        public byte[] ExportPDF(List<InvStockSum> ListRpt)
+        public byte[] ExportPDF(List<InvStockSumByLot> ListRpt)
         {
             WhStockSumRptPdf pdfReport = new WhStockSumRptPdf();
             Document document;
@@ -191,7 +191,7 @@ namespace GoWMS.Server.Reports
         /// <param name="document"></param>
         /// <param name="ListRpts">List<Vrpt_shelf_listInfo></param>
         /// <returns></returns>
-        private void ReportBody(Document document, List<InvStockSum> ListRpts)
+        private void ReportBody(Document document, List<InvStockSumByLot> ListRpts)
         {
             BaseFont baseFont = BaseFontForHeaderFooter;
 

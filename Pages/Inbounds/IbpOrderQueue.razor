@@ -54,7 +54,7 @@ else
         </MudTooltip>
     </MudAppBar>
 
-    <MudTable Hover="@hover" Breakpoint="Breakpoint.Sm" Height="@(fixed_header || fixed_footer ?"500px":"")" FixedHeader="@fixed_header"
+@*    <MudTable Hover="@hover" Breakpoint="Breakpoint.Sm" Height="@(fixed_header || fixed_footer ?"500px":"")" FixedHeader="@fixed_header"
               Items="@Elements"
               Dense="@dense"
               FixedFooter="@fixed_footer"
@@ -73,37 +73,81 @@ else
      
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Created)">@L["GRDatetime"]</MudTableSortLabel></MudTh>
-           @* <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Docdate)">@L["DNDate"]</MudTableSortLabel></MudTh>*@
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Pono)">@L["DNNo"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Quantity)">@L["Qty"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
-         @*   <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Weight)">@L["Weight"]</MudTableSortLabel></MudTh>*@
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Docno)">@L["LotNo"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceive_Go, object>(x=>x.Docnote)">@L["BatchNo"]</MudTableSortLabel></MudTh>
             <MudTh>@L["Adjust"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="@L["GRDatetime"]">@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatDT)</MudTd>
-           @* <MudTd DataLabel="@L["DNDate"]">@Convert.ToDateTime(context.Docdate).ToString(VarGlobals.FormatD)</MudTd>*@
             <MudTd DataLabel="@L["DNNo"]">@context.Pono</MudTd>
             <MudTd DataLabel="@L["ItemCode"]">@context.Itemcode</MudTd>
             <MudTd DataLabel="@L["ItemName"]">@context.Itemname</MudTd>
             <MudTd DataLabel="@L["Qty"]" Style="text-align: right">@string.Format(VarGlobals.FormatN2, context.Quantity)</MudTd>
             <MudTd DataLabel="@L["Unit"]">@context.Unit</MudTd>
-   @*         <MudTd DataLabel="@L["Weight"]" Style="text-align: right">@string.Format(VarGlobals.FormatN2, context.Weight)</MudTd>*@
             <MudTd DataLabel="@L["LotNo"]">@context.Lotno</MudTd>
             <MudTd DataLabel="@L["BatchNo"]">@context.Pallettag</MudTd>
             <MudTd DataLabel="@L["Adjust"]">
-                <MudFab @onclick="@(()=>DeleteMap(@context.Pallteno, @context.Pallettag))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Delete" Color="Color.Secondary" @onclick="@(()=>DeleteMap(@context.Pallteno, @context.Pallettag))" />
             </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
         </PagerContent>
 
-    </MudTable>
+    </MudTable>*@
+
+
+
+    <MudDataGrid T="Inb_Goodreceive_Go" 
+        Items="@Elements"
+        SortMode="SortMode.Multiple"
+        Filterable="true" 
+        QuickFilter="@_quickFilter"
+        Hideable="true"
+        FixedHeader="@fixed_header"    
+        FixedFooter="@fixed_footer" 
+        Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")" 
+        Dense="@dense" >
+    <ToolBarContent>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <Column T="Inb_Goodreceive_Go" Field="Created" Title="@L["GRDatetime"]">
+            <CellTemplate>
+                @Convert.ToDateTime(context.Item.Created).ToString(VarGlobals.FormatDT)
+            </CellTemplate>
+        </Column>
+        <Column T="Inb_Goodreceive_Go" Field="Pono" Title="@L["DNNo"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Itemcode" Title="@L["ItemCode"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Itemname" Title="@L["ItemName"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Quantity" Title="@L["Qty"]">
+            <CellTemplate>
+                @string.Format(VarGlobals.FormatN3, context.Item.Quantity) 
+            </CellTemplate>
+        </Column>
+        <Column T="Inb_Goodreceive_Go" Field="Unit" Title="@L["Unit"]"/>
+        <Column T="Inb_Goodreceive_Go" Field="Lotno" Title="@L["LotNo"]"/>
+        <Column T="Inb_Goodreceive_Go" Field="Pallettag" Title="@L["BatchNo"]"/>
+        <Column T="Inb_Goodreceive_Go" Title="@L["Adjust"]" Filterable="false">
+              <CellTemplate>
+                    <MudIconButton Size="@Size.Small" 
+                        Icon="@Icons.Outlined.Delete" 
+                        Color="Color.Primary" 
+                        OnClick="@(()=>DeleteMap(@context.Item.Pallteno, @context.Item.Pallettag))"/>
+              </CellTemplate>
+        </Column>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="Inb_Goodreceive_Go" />
+    </PagerContent>
+</MudDataGrid>
 
 }
 
@@ -182,6 +226,8 @@ else
     {
 
     }
+
+
 
     private string stxtInput { get; set; }
 
@@ -290,6 +336,40 @@ else
         this.StateHasChanged();
 
     }
+
+    private string _searchString;
+    private bool _sortNameByLength;
+    // custom sort by name length
+    private Func<Inb_Goodreceive_Go, object> _sortBy => x =>
+    {
+        if (_sortNameByLength)
+            return x.Pono.Length;
+        else
+            return x.Pono;
+    };
+
+    // quick filter - filter gobally across multiple columns with the same input
+    private Func<Inb_Goodreceive_Go, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Pallteno.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Itemtag.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Itemcode.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Itemname} {x.Docno} {x.Pono} {x.Docnote}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+
+
 
     #region "Role"
     private async Task<bool> CheckRoleAdd()

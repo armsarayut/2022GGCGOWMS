@@ -187,7 +187,44 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
+        public IEnumerable<InvStockSumByLot> GetStockSumByLot()
+        {
+            List<InvStockSumByLot> lstobj = new List<InvStockSumByLot>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                StringBuilder Sql = new StringBuilder();
 
+                Sql.AppendLine("select row_number() over(order by item asc) AS rn,");
+                Sql.AppendLine("item, itemdesc, lot, sum(qty) as totalstock, count(pallet_bc) as countpallet");
+                Sql.AppendLine("from dbo.v_wmstran_stock_rpt_lot ");
+                Sql.AppendLine("group by item, itemdesc, lot");
+                Sql.AppendLine("order by item");
+
+
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    InvStockSumByLot objrd = new InvStockSumByLot
+                    {
+                        Rn = rdr["rn"] == DBNull.Value ? null : (Int64?)rdr["rn"],
+                        Item_code = rdr["item"].ToString(),
+                        Item_name = rdr["itemdesc"].ToString(),
+                        Lot = rdr["lot"].ToString(),
+                        Totalstock = rdr["totalstock"] == DBNull.Value ? null : (Decimal?)rdr["totalstock"],
+                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int32?)rdr["countpallet"]
+                    };
+                    lstobj.Add(objrd);
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
 
 
         public IEnumerable<Vrpt_shelf_listInfo> GetShelfLocation()

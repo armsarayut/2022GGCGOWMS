@@ -27,14 +27,17 @@ namespace GoWMS.Server.Data
             {
                 StringBuilder sql = new StringBuilder();
 
-                sql.AppendLine("select idx, created, entity_lock, modified, client_id, client_ip");
-                sql.AppendLine(",item_code, total_qty, doc_ref, receiving_date, create_by, create_date");
-                sql.AppendLine(",batch_no, doc_item_ref, deletion_flag, remark, delivery_priority");
-                sql.AppendLine(",flow_type, api_name, gr_qty, gr_remark");
-                sql.AppendLine("FROM dbo.api_ggc");
-                sql.AppendLine("WHERE flow_type=@flow_type");
-                sql.AppendLine("AND total_qty > iif(gr_qty is null, 0, gr_qty)");
-                sql.AppendLine("ORDER BY idx");
+                sql.AppendLine("select t1.idx, t1.created, t1.entity_lock, t1.modified, t1.client_id, t1.client_ip");
+                sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
+                sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
+                sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
+                sql.AppendLine(",t2.uom ");
+                sql.AppendLine("FROM dbo.api_ggc t1");
+                sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
+                sql.AppendLine("ON t1.item_code=t2.item_code");
+                sql.AppendLine("WHERE t1.flow_type=@flow_type");
+                sql.AppendLine("AND t1.total_qty > iif(t1.gr_qty is null, 0, t1.gr_qty)");
+                sql.AppendLine("ORDER BY t1.idx");
 
                 SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                 {
@@ -69,7 +72,70 @@ namespace GoWMS.Server.Data
                         Flow_type = rdr["flow_type"].ToString(),
                         Api_name = rdr["api_name"].ToString(),
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
-                        Gr_remark = rdr["gr_remark"].ToString()
+                        Gr_remark = rdr["gr_remark"].ToString(),
+                        Unit = rdr["uom"].ToString()
+                    };
+                    lstobj.Add(objrd);
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
+
+        public IEnumerable<Api_ggc> GetApiInboundAllACC()
+        {
+            List<Api_ggc> lstobj = new List<Api_ggc>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                StringBuilder sql = new StringBuilder();
+
+                sql.AppendLine("select t1.idx, t1.created, t1.entity_lock, t1.modified, t1.client_id, t1.client_ip");
+                sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
+                sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
+                sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
+                sql.AppendLine(",t2.uom ");
+                sql.AppendLine("FROM dbo.api_ggc t1");
+                sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
+                sql.AppendLine("ON t1.item_code=t2.item_code");
+                sql.AppendLine("WHERE t1.flow_type=@flow_type");
+                sql.AppendLine("AND t1.total_qty > iif(t1.gr_qty is null, 0, t1.gr_qty)");
+                sql.AppendLine("ORDER BY t1.idx");
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                cmd.Parameters.AddWithValue("@flow_type", "I01");
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Api_ggc objrd = new Api_ggc
+                    {
+                        Idx = rdr["idx"] == DBNull.Value ? null : (long?)rdr["idx"],
+                        Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
+                        Entity_lock = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
+                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
+                        Client_id = rdr["client_id"] == DBNull.Value ? null : (long?)rdr["client_id"],
+                        Client_ip = rdr["client_ip"].ToString(),
+                        Item_code = rdr["item_code"].ToString(),
+                        Total_qty = rdr["total_qty"] == DBNull.Value ? null : (Decimal?)rdr["total_qty"],
+                        Doc_ref = rdr["doc_ref"].ToString(),
+                        Receiving_date = rdr["receiving_date"] == DBNull.Value ? null : (DateTime?)rdr["receiving_date"],
+                        Create_by = rdr["create_by"].ToString(),
+                        Create_date = rdr["create_date"] == DBNull.Value ? null : (DateTime?)rdr["create_date"],
+                        Batch_no = rdr["batch_no"].ToString(),
+                        Doc_item_ref = rdr["doc_item_ref"].ToString(),
+                        Deletion_flag = rdr["deletion_flag"] == DBNull.Value ? null : (bool?)rdr["deletion_flag"],
+                        Remark = rdr["remark"].ToString(),
+                        Delivery_priority = rdr["delivery_priority"] == DBNull.Value ? null : (Int32?)rdr["delivery_priority"],
+                        Flow_type = rdr["flow_type"].ToString(),
+                        Api_name = rdr["api_name"].ToString(),
+                        Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
+                        Gr_remark = rdr["gr_remark"].ToString(),
+                        Unit = rdr["uom"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -85,14 +151,17 @@ namespace GoWMS.Server.Data
             {
                 StringBuilder sql = new StringBuilder();
 
-                sql.AppendLine("select idx, created, entity_lock, modified, client_id, client_ip");
-                sql.AppendLine(",item_code, total_qty, doc_ref, receiving_date, create_by, create_date");
-                sql.AppendLine(",batch_no, doc_item_ref, deletion_flag, remark, delivery_priority");
-                sql.AppendLine(",flow_type, api_name, gr_qty, gr_remark");
-                sql.AppendLine("FROM dbo.api_ggc");
-                sql.AppendLine("WHERE flow_type=@flow_type");
-                sql.AppendLine("AND total_qty > iif(gr_qty is null, 0, gr_qty)");
-                sql.AppendLine("ORDER BY idx");
+                sql.AppendLine("select t1.idx, t1.created, t1.entity_lock, t1.modified, t1.client_id, t1.client_ip");
+                sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
+                sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
+                sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
+                sql.AppendLine(",t2.uom ");
+                sql.AppendLine("FROM dbo.api_ggc t1");
+                sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
+                sql.AppendLine("ON t1.item_code=t2.item_code");
+                sql.AppendLine("WHERE t1.flow_type=@flow_type");
+                sql.AppendLine("AND t1.total_qty > iif(t1.gr_qty is null, 0, t1.gr_qty)");
+                sql.AppendLine("ORDER BY t1.idx");
 
                 SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                 {
@@ -126,7 +195,69 @@ namespace GoWMS.Server.Data
                         Flow_type = rdr["flow_type"].ToString(),
                         Api_name = rdr["api_name"].ToString(),
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
-                        Gr_remark = rdr["gr_remark"].ToString()
+                        Gr_remark = rdr["gr_remark"].ToString(),
+                        Unit = rdr["uom"].ToString()
+                    };
+                    lstobj.Add(objrd);
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
+
+        public IEnumerable<Api_ggc> GetApiOutboundAllACC()
+        {
+            List<Api_ggc> lstobj = new List<Api_ggc>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                StringBuilder sql = new StringBuilder();
+
+                sql.AppendLine("select t1.idx, t1.created, t1.entity_lock, t1.modified, t1.client_id, t1.client_ip");
+                sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
+                sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
+                sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
+                sql.AppendLine(",t2.uom ");
+                sql.AppendLine("FROM dbo.api_ggc t1");
+                sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
+                sql.AppendLine("ON t1.item_code=t2.item_code");
+                sql.AppendLine("WHERE t1.flow_type=@flow_type");
+                sql.AppendLine("AND t1.total_qty > iif(t1.gr_qty is null, 0, t1.gr_qty)");
+                sql.AppendLine("ORDER BY t1.idx");
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+                cmd.Parameters.AddWithValue("@flow_type", "I05");
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Api_ggc objrd = new Api_ggc
+                    {
+                        Idx = rdr["idx"] == DBNull.Value ? null : (long?)rdr["idx"],
+                        Created = rdr["created"] == DBNull.Value ? null : (DateTime?)rdr["created"],
+                        Entity_lock = rdr["entity_lock"] == DBNull.Value ? null : (Int32?)rdr["entity_lock"],
+                        Modified = rdr["modified"] == DBNull.Value ? null : (DateTime?)rdr["modified"],
+                        Client_id = rdr["client_id"] == DBNull.Value ? null : (long?)rdr["client_id"],
+                        Client_ip = rdr["client_ip"].ToString(),
+                        Item_code = rdr["item_code"].ToString(),
+                        Total_qty = rdr["total_qty"] == DBNull.Value ? null : (Decimal?)rdr["total_qty"],
+                        Doc_ref = rdr["doc_ref"].ToString(),
+                        Receiving_date = rdr["receiving_date"] == DBNull.Value ? null : (DateTime?)rdr["receiving_date"],
+                        Create_by = rdr["create_by"].ToString(),
+                        Create_date = rdr["create_date"] == DBNull.Value ? null : (DateTime?)rdr["create_date"],
+                        Batch_no = rdr["batch_no"].ToString(),
+                        Doc_item_ref = rdr["doc_item_ref"].ToString(),
+                        Deletion_flag = rdr["deletion_flag"] == DBNull.Value ? null : (bool?)rdr["deletion_flag"],
+                        Remark = rdr["remark"].ToString(),
+                        Delivery_priority = rdr["delivery_priority"] == DBNull.Value ? null : (Int32?)rdr["delivery_priority"],
+                        Flow_type = rdr["flow_type"].ToString(),
+                        Api_name = rdr["api_name"].ToString(),
+                        Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
+                        Gr_remark = rdr["gr_remark"].ToString(),
+                        Unit = rdr["uom"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

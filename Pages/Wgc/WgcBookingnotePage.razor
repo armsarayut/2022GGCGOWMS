@@ -1,139 +1,157 @@
 ﻿@page "/3/3_1"
+@using System
+@using System.Data;
+@using System.IO
+@using System.Linq
+@using System.Text
+@using System.Threading
+@using System.Threading.Tasks
+@using System.Collections.Generic
+
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
-@using GoWMS.Server.Models
-@using GoWMS.Server.Models.Wgc
-@using System.Globalization
-@using System.Reflection
-@using System.Text.Json
+@using GoWMS.Server.Models;
+@using GoWMS.Server.Models.Api
+@using GoWMS.Server.Models.Inb
+@using Microsoft.Extensions.Localization
+@using GoWMS.Server.Pdf
+@using GoWMS.Server.Reports
 @using System.Security.Claims
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IJSRuntime JSRuntime
-@inject WgcService ObjErpService
-@inject ISnackbar Snackbar
-@inject ErpApiService ObjApiService
-@inject UserServices OpjUserService
-@inject ReportService UserlogService
 @inject IStringLocalizer<WgcBookingnotePage> L
+@inject IJSRuntime JSRuntime
+@inject ReportService UserlogService
+@inject CustomerService ObjCustomService
+@inject UserServices OpjUserService
+@inject InboundService ObjInboundService
+@inject WhService ObjWhService
+@inject IPrintingService PrintingService
+@inject ISnackbar Snackbar
+
 @attribute [Authorize]
-
-<style>
-    .mud-table-cell-custom-group {
-        font-weight: 500;
-    }
-
-    .mud-table-cell-custom-group-footer {
-        padding-bottom: 50px;
-        text-align: left;
-    }
-</style>
-
 
 @if (Elements == null)
 {
-    // <p><em>Loading...</em></p>
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
+
     <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
 
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
-                   Color="Color.Success"
-                   OnClick=@SelectOrder>@L["StartPick"]</MudButton>
-                <MudSpacer />
-            </MudAppBar>
+        <MudSpacer />
+        <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
+            <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
+            <MudIconButton Icon="@Icons.Custom.FileFormats.FilePdf" Color="Color.Error" OnClick="DownloadPdfDocument"></MudIconButton>
+        </MudTooltip>
+    </MudAppBar>
 
-            <MudTable Hover="@hover"
-                      Breakpoint="Breakpoint.Sm"
-                      Height="@(fixed_header || fixed_footer ?"500px":"")"
-                      MultiSelection=@_multiSelect
-                      FixedHeader="@fixed_header"
-                      Items="@Elements.OrderBy(o => o.PALETTE_NO)"
-                      GroupBy="@_groupDefinition"
-                      GroupHeaderStyle="background-color:var(--mud-palette-background-white)"
-                      GroupFooterClass="mb-4"
-                      Dense="@dense"
-                      FixedFooter="@fixed_footer"
-                      Bordered="@bordered"
-                      Striped="@striped"
-                      Filter="new Func<BOOKING_NOTE_ITEMS,bool>(FilterFunc1)" @bind-SelectedItems="selectedItems">
-                <ToolBarContent>
-                    <MudSpacer />
-                    <MudTextField @bind-Value="searchString1"
-                                  Placeholder=@L["Search"]
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                </ToolBarContent>
+    @*   <MudTable Items="@Elements"
+              FixedHeader="@fixed_header"
+              FixedFooter="@fixed_footer"
+              Height="@(fixed_header || fixed_footer ?"500px":"")"
+              Dense="@dense"
+              Hover="@hover"
+              Bordered="@bordered"
+              Striped="@striped"
+              Filter="new Func<Inb_Goodreceipt_Go,bool>(FilterFunc)"
+              @bind-SelectedItem="selectedItem">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString"
+                          Placeholder=@L["Search"]
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
 
-                <ColGroup>
-                    @if (_multiSelect)
-                        {
-                        <col style="width: 60px;" />
-                        }
-                    @if (_groupDefinition.Expandable)
-                        {
-                        <col style="width: 60px;" />
-                        }
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                </ColGroup>
-                <HeaderContent>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.SO_NO)">@L["SoNo"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PALETTE_NO)">@L["PalletNo"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.ITEM_CODE)">@L["ItemCode"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.CUSTOMER_CODE)">@L["Customer"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_SEQ)">@L["Seq"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.LOT_NO)">@L["LotNo"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.BATCH_NO)">@L["BatchNo"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PACKETING_CODE)">@L["Packeting"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_QTY)">@L["Qty"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.DN_UM)">@L["Unit"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<BOOKING_NOTE_ITEMS, object>(x=>x.PALLET_GO)">@L["PalletGo"]</MudTableSortLabel></MudTh>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Docdate)">@L["DNDate"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Pono)">@L["DNNo"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Pallettag)">@L["DNSeq"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Quantity)">@L["Qty"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Weight)">@L["Weight"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Docno)">@L["LotNo"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Inb_Goodreceipt_Go, object>(x=>x.Docnote)">@L["BatchNo"]</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@L["DNDate"]">@Convert.ToDateTime(context.Docdate).ToString(VarGlobals.FormatD)</MudTd>
+            <MudTd DataLabel="@L["DNNo"]">@context.Pono</MudTd>
+            <MudTd DataLabel=@L["DNSeq"]>@context.Pallettag</MudTd>
+            <MudTd DataLabel="@L["ItemCode"]">@context.Itemcode</MudTd>
+            <MudTd DataLabel="@L["ItemName"]">@context.Itemname</MudTd>
+            <MudTd DataLabel="@L["Qty"]" Style="text-align: right">@string.Format(VarGlobals.FormatN0, context.Quantity)</MudTd>
+            <MudTd DataLabel="@L["Unit"]">@context.Unit</MudTd>
+            <MudTd DataLabel="@L["Weight"]" Style="text-align: right">@string.Format(VarGlobals.FormatN2, context.Weight) </MudTd>
+            <MudTd DataLabel="@L["LotNo"]">@context.Docno</MudTd>
+            <MudTd DataLabel="@L["BatchNo"]">@context.Docnote</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
 
-                </HeaderContent>
-                <GroupHeaderTemplate>
-                    <MudTh Class="mud-table-cell-custom-group" colspan="10">@($"{context.GroupName}: {context.Key}") @L["TotalQuantity"]: @string.Format(VarGlobals.FormatN0, @context.Items.Sum((e) => e.DN_QTY))</MudTh>
-                </GroupHeaderTemplate>
-                <RowTemplate>
-                    <MudTd DataLabel="@L["SoNo"]">@context.SO_NO</MudTd>
-                    <MudTd DataLabel="@L["PalletNo"]">@context.PALETTE_NO</MudTd>
-                    <MudTd DataLabel="@L["ItemCode"]">@context.ITEM_CODE</MudTd>
-                    <MudTd DataLabel="@L["Customer"]">@context.CUSTOMER_CODE</MudTd>
-                    <MudTd DataLabel="@L["Seq"]">@context.DN_SEQ</MudTd>
-                    <MudTd DataLabel="@L["LotNo"]">@context.LOT_NO</MudTd>
-                    <MudTd DataLabel="@L["BatchNo"]">@context.BATCH_NO</MudTd>
-                    <MudTd DataLabel="@L["Packeting"]">@context.PACKETING_CODE</MudTd>
-                    <MudTd DataLabel="@L["Qty"]">@context.DN_QTY</MudTd>
-                    <MudTd DataLabel="@L["Unit"]">@context.DN_UM</MudTd>
-                    <MudTd DataLabel="@L["PalletGo"]">@context.PALLET_GO</MudTd>
-                </RowTemplate>
-                <GroupFooterTemplate>
-                    <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="1">@L["TotalQuantity"]: @string.Format(VarGlobals.FormatN0, @context.Items.Sum((e) => e.DN_QTY))</MudTh>
-                </GroupFooterTemplate>
-            </MudTable>
+        </PagerContent>
+    </MudTable>*@
 
-        }
+    <MudDataGrid T="Api_ggc"
+             Items="@Elements"
+             SortMode="SortMode.Multiple"
+             Filterable="true"
+             QuickFilter="@_quickFilter"
+             Hideable="true"
+             FixedHeader="@fixed_header"
+             FixedFooter="@fixed_footer"
+             Height="@(fixed_header || fixed_footer ?"500px":"")"
+             Dense="@dense">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <Columns>
+            <Column T="Api_ggc" Field="Receiving_date" Title="@L["DNDate"]">
+                <CellTemplate>
+                    @Convert.ToDateTime(context.Item.Receiving_date).ToString(VarGlobals.FormatD)
+                </CellTemplate>
+            </Column>
+            <Column T="Api_ggc" Field="Doc_ref" Title="@L["DNNo"]" />
+            <Column T="Api_ggc" Field="Batch_no" Title="@L["BatchNo"]" />
+            <Column T="Api_ggc" Field="Item_code" Title="@L["ItemCode"]" />
+            <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]">
+                <CellTemplate>
+                    @string.Format(VarGlobals.FormatN3, context.Item.Total_qty)
+                </CellTemplate>
+            </Column>
+            <Column T="Api_ggc" Field="Remark" Title="REMARK" />
+            <Column T="Api_ggc" Title="PICK" Filterable="false">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.RequestQuote" Color="Color.Primary" OnClick="@(()=>RequestPick(context.Item.Item_code , context.Item.Batch_no, context.Item.Total_qty.Value, sUsername, context.Item.Idx.Value))" />
+                </CellTemplate>
+            </Column>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Api_ggc" />
+        </PagerContent>
+    </MudDataGrid>
+
+
+
+
+
+}
 
 @code {
-    private bool _dense = true;
-    private bool _multiSelect = true;
+
+    private string msgAction = "Enter Palletcode";
+
     public string mPagedesc { get; set; } = "3.1.Order Booking";
     private string mPagename { get; set; } = "/3/3_1";
 
     private string pageheader { get; set; } = "3.1.Order Booking";
-    private string msgAction = "Enter Palletcode";
+
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
     private string palletcode { get; set; }
@@ -144,61 +162,51 @@ else
     private bool fixed_header = true;
     private bool fixed_footer = true;
     private string searchString = "";
-    private string searchString1 = "";
-    private BOOKING_NOTE_ITEMS selectedItem = null;
-    private HashSet<BOOKING_NOTE_ITEMS> selectedItems = new HashSet<BOOKING_NOTE_ITEMS>();
-    private IEnumerable<BOOKING_NOTE_ITEMS> Elements = new List<BOOKING_NOTE_ITEMS>();
+    private Api_ggc selectedItem = null;
+    private HashSet<Api_ggc> selectedItems = new HashSet<Api_ggc>();
+    private IEnumerable<Api_ggc> Elements = new List<Api_ggc>();
+    List<Userroleinfo> Roles = new List<Userroleinfo>();
+
+    List<ggcTag4x4> TagList = new List<ggcTag4x4>();
+
+
+
+    [Inject] private IDialogService DialogService { get; set; }
+
 
     public int elevation = 0;
+
     private ResultReturn resultReturn = null;
 
     string sUsername { get; set; } = "";
     string sRole { get; set; } = "";
     string sGroupID { get; set; } = "";
     string sUserID { get; set; } = "";
-    List<Userroleinfo> Roles = new List<Userroleinfo>();
-    [Inject] private IDialogService DialogService { get; set; }
-
-    private TableGroupDefinition<BOOKING_NOTE_ITEMS> _groupDefinition = new()
-    {
-        GroupName = "PalletNo",
-        Indentation = true,
-        Expandable = true,
-        IsInitiallyExpanded = false,
-        Selector = (e) => e.PALETTE_NO
-        /*
-         ,
-         InnerGroup = new TableGroupDefinition<BOOKING_NOTE_ITEMS>()
-         {
-             GroupName = "PalletNo",
-             Expandable = true,
-             Selector = (e) => e.PALETTE_NO
-         }
-        */
-
-    };
 
     protected override async Task OnInitializedAsync()
     {
-        WgcService objCS = new WgcService();
+        ErpApiService objCS = new ErpApiService();
 
         //////// Intial Menu and Privilege//////
         resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
         resultReturn = await Task.Run(() => OpjUserService.InsertPrivilege(mPagename));
+
         ////////////////////////////////////////
         ///
         await GetUserAthu();
         this.InsertAuditrial("View", pageheader);
+
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-        Elements = await Task.Run(() => objCS.GetAllApiNewBookingnoteWgc());
-
+        Elements = await Task.Run(() => objCS.GetApiOutboundAll());
     }
 
     async Task GetUserAthu()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+
+        sUsername = user.Identity.Name;
 
         sGroupID = user.Claims.FirstOrDefault(
         c => c.Type == ClaimTypes.Role)?.Value;
@@ -212,93 +220,135 @@ else
         bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
     }
 
-    private bool FilterFunc1(BOOKING_NOTE_ITEMS element)
+    private void setstr(string str)
     {
-        //selectedItems.Clear();
-
-        //bool bForce;
-
-        //bForce= FilterFunc(element, searchString1 + " ");
-
-        return FilterFunc(element, searchString1);
-
+        if (mPalletcode.Length <= 0)
+        {
+            mPalletcode = str;
+            msgAction = "Enter Pack ID";
+            elevation = 3;
+        }
+        else
+        {
+            if (str == mPalletcode)
+            {
+                elevation = 2;
+                msgAction = "Mapping successfully";
+                ObjCustomService.UpdateReceivingOrderbypallet(mPalletcode);
+                mPalletcode = "";
+            }
+            else
+            {
+                mPackid = str;
+                ObjCustomService.UpdateReceivingOrderbypack(mPalletcode, mPackid);
+            }
+        }
     }
 
-    private bool FilterFunc(BOOKING_NOTE_ITEMS element, string searchString)
+    private string stxtInput { get; set; }
+
+    private void DoTheThing(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Enter")        // fire on enter
+        {
+            //Console.WriteLine("Done the thing: " + MyValue);
+            //stxtInput = MyValue;
+            setstr(palletcode);
+
+            palletcode = "";
+        }
+    }
+
+    private bool FilterFunc(Api_ggc element)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.SO_NO.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Batch_no.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{element.PALLET_GO} {element.ITEM_CODE} {element.PALETTE_NO}".Contains(searchString))
+        if (element.Doc_ref.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Item_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Create_by} {element.Doc_item_ref}".Contains(searchString))
             return true;
         return false;
     }
 
-    private async void SelectOrder()
+    private string _searchString;
+    private bool _sortNameByLength;
+    // custom sort by name length
+    private Func<Api_ggc, object> _sortBy => x =>
     {
-        bool? result = await CheckRoleAdd();
-        if (result == true)
+        if (_sortNameByLength)
+            return x.Doc_ref.Length;
+        else
+            return x.Doc_ref;
+    };
+
+    // quick filter - filter gobally across multiple columns with the same input
+    private Func<Api_ggc, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Batch_no.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Doc_ref.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Item_code.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Doc_item_ref} {x.Create_by}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+
+
+    public async Task DownloadExcelDocument()
+    {
+        try
         {
-            var serializeOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            // For Sim Test
-            /*
-            string pallet = "WGC-001503";
-            string pack = "289";
-            string mat = "MP1095O";
-            string matDesc = "Organaic Maltodextrin Powder";
-            */
-            //var strRES = selectedItems.OrderBy(x => x.SEQ_NO).Select(x => new { efidx = x.SEQ_NO, quantity = x.DN_QTY, packageid = pack, materialcode = mat, palletno = pallet, sono = x.SO_NO, customer = x.CUSTOMER_CODE, lotno = x.LOT_NO, batchno = x.BATCH_NO, matematerialdescription = matDesc, unit = x.DN_UM, deliverydate = x.REQUEST_DATE }).ToList();
-            //-------------------------
+            bool? result = await CheckRoleReport();
+            //if (result == true)
+            //{
+            //    IbpGRNRptExcel excelReport = new IbpGRNRptExcel();
+            //    List<Api_ggc> listExcelReport = new List<Api_ggc>();
+            //    listExcelReport = Elements.ToList();
+            //    var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+            //    await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(excelReport.Report(listExcelReport)));
+            //    this.InsertAuditrial("Export excel file :" + fileName.ToString(), pageheader);
+            //}
 
-            // For Production
-            var strRES = selectedItems.OrderBy(x => x.SEQ_NO).Select(x => new { efidx = x.SEQ_NO, quantity = x.DN_QTY, packageid = x.DN_SEQ, materialcode = x.ITEM_CODE, palletno = x.PALLET_GO, sono = x.SO_NO, customer = x.CUSTOMER_CODE, lotno = x.LOT_NO, batchno = x.BATCH_NO, matematerialdescription = x.ITEM_NAME, unit = x.DN_UM, deliverydate = x.REQUEST_DATE }).ToList();
-            //-----------------
-
-            var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
-
-            var iReturn = 0;
-            var sReturn = "Call";
-
-
-
-            ObjApiService.SetPickWgc(jsonRES, ref iReturn, ref sReturn);
-            this.InsertAuditrial("Create Order picking ", pageheader);
-            if (selectedItems.Count > 0)
-            {
-                if (iReturn == 0)
-                {
-                    Snackbar.Add(sReturn, Severity.Error);
-                }
-                else
-                {
-
-                    await ObjErpService.UpdateNewBooking_notebylist(selectedItems.ToList());
-
-                    this.InsertAuditrial("Update Order picking to ERP ", pageheader);
-
-                    Snackbar.Add("Order picking created", Severity.Success);
-
-                    this.InsertAuditrial("Order picking Created", pageheader);
-
-                }
-            }
-            else
-            {
-                Snackbar.Add("Please select order picking", Severity.Warning);
-            }
-            selectedItems.Clear();
-
-            searchString1 = null;
-            searchString = null;
-
-            this.StateHasChanged();
         }
+        catch (Exception e)
+        {
+            var exmsg = e.Message.ToString();
+        }
+    }
 
+    public async Task DownloadPdfDocument()
+    {
+        try
+        {
+            bool? result = await CheckRoleReport();
+            //if (result == true)
+            //{
+            //    IbpGRNRprPdf pdfReport = new IbpGRNRprPdf();
+            //    List<Api_ggc> listPdfReport = new List<Api_ggc>();
+            //    listPdfReport = Elements.ToList();
+            //    var fileName = $"{pageheader.ToString()}-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.pdf";
+            //    //await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.Report(listPdfReport)));
+            //    await JSRuntime.InvokeAsync<object>("jsSaveAsFile", fileName, Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport)));
+            //    this.InsertAuditrial("Export pdf file :" + fileName.ToString(), pageheader);
+            //}
+        }
+        catch (Exception e)
+        {
+            var exmsg = e.Message.ToString();
+        }
     }
 
     #region "Role"
@@ -464,4 +514,63 @@ else
     }
     #endregion
 
+
+    public async Task RequestPick(string sku, string batch, decimal needqty, string user, long apiid)
+    {
+
+            string sRet = "Call";
+
+
+            bool bRet = false;
+
+            //bRet = ObjWhService.SetOrderpickErpTest(sku, batch, needqty, user, apiid, ref sRet);
+            bRet=  await Task.Run(() => ObjWhService.SetOrderpickErpTest(sku, batch, needqty, user, apiid, ref sRet));
+
+            if (bRet)
+            {
+                 Snackbar.Add("Create : " + sRet, Severity.Success);
+            }
+            else
+            {
+                 Snackbar.Add("Create : " + sRet, Severity.Error);
+            }
+    }
+
+
+    public async Task TestCreateTag(long apiid)
+    {
+
+        var guid = Guid.NewGuid().ToString();
+
+
+        DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
+        dtTrans.Columns.Add("tyitem", typeof(System.String));
+        dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
+        dtTrans.Columns.Add("tylot", typeof(System.String));
+        dtTrans.Columns.Add("tyexpdate", typeof(System.DateTime));
+        dtTrans.Columns.Add("typallet", typeof(System.String));
+
+        DataRow _ravi = dtTrans.NewRow();
+        _ravi["tyitem"] = "AAA";
+        _ravi["tyqty"] = 10.9;
+        _ravi["tylot"] = "LOT0001";
+        _ravi["tyexpdate"] = DateTime.Now;
+        _ravi["typallet"] = "1";
+        dtTrans.Rows.Add(_ravi);
+
+
+        ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans, guid.ToString());
+
+        //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
+
+        TagList = await Task.Run(() => ObjInboundService.GetTagGGCByIndex(apiid));
+
+        ggcTag4x4Pdf pdfReport = new ggcTag4x4Pdf();
+        List<ggcTag4x4> listPdfReport = new List<ggcTag4x4>();
+        listPdfReport = TagList.ToList();
+
+        await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
+
+
+    }
 }

@@ -750,6 +750,106 @@ namespace GoWMS.Server.Data
         }
 
 
+        public bool CreateTagnoACC(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData, string valuuid)
+        {
+            bool bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mcprotocol(:mccode , :startpos, :stoppos, :unittype, :palletid , :weight, :command);");
+                    sqlQurey.Append("dbo.ssp_createwmstransbydoc_acc");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+
+                    SqlParameter papiref = new SqlParameter("@apiref", SqlDbType.BigInt);
+                    papiref.Direction = ParameterDirection.Input;
+                    papiref.Value = valapiref;
+
+                    SqlParameter ppalletfrom = new SqlParameter("@palletfrom", SqlDbType.Int);
+                    ppalletfrom.Direction = ParameterDirection.Input;
+                    ppalletfrom.Value = valpalletfrom;
+
+                    SqlParameter ppalletto = new SqlParameter("@palletto", SqlDbType.Int);
+                    ppalletto.Direction = ParameterDirection.Input;
+                    ppalletto.Value = valpalletto;
+
+                    SqlParameter ptranref = new SqlParameter("@tranref", SqlDbType.VarChar, 20);
+                    ptranref.Direction = ParameterDirection.Input;
+                    ptranref.Value = valtranref;
+
+                    SqlParameter ptrancreateby = new SqlParameter("@trancreateby", SqlDbType.VarChar, 20);
+                    ptrancreateby.Direction = ParameterDirection.Input;
+                    ptrancreateby.Value = valtrancreateby;
+
+                    SqlParameter pTransData = new SqlParameter("@TransData", SqlDbType.Structured);
+                    pTransData.Direction = ParameterDirection.Input;
+                    pTransData.Value = valTransData;
+
+
+                    cmd.Parameters.Add(papiref);
+                    cmd.Parameters.Add(ppalletfrom);
+                    cmd.Parameters.Add(ppalletto);
+                    cmd.Parameters.Add(ptranref);
+                    cmd.Parameters.Add(ptrancreateby);
+                    cmd.Parameters.Add(pTransData);
+
+                    //cmd.Parameters.AddWithValue(":mccode", NpgsqlDbType.Varchar, mccode);
+                    //cmd.Parameters.AddWithValue(":startpos", NpgsqlDbType.Integer, startpos);
+                    //cmd.Parameters.AddWithValue(":stoppos", NpgsqlDbType.Integer, stoppos);
+                    //cmd.Parameters.AddWithValue(":unittype", NpgsqlDbType.Integer, unittyp);
+                    //cmd.Parameters.AddWithValue(":palletid", NpgsqlDbType.Varchar, palletid);
+                    //cmd.Parameters.AddWithValue(":weight", NpgsqlDbType.Integer, weight);
+                    //cmd.Parameters.AddWithValue(":command", NpgsqlDbType.Integer, command);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+
+
+                    //con.Open();
+                    //NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    //while (rdr.Read())
+                    //{
+                    //    iRet = rdr["_retchk"] == DBNull.Value ? null : (Int32?)rdr["_retchk"];
+                    //    sRet = rdr["_retmsg"].ToString();
+                    //}
+                }
+                catch (SqlException ex)
+                {
+                    //Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+            return bRet;
+        }
+
+
         public IEnumerable<ggcTag4x4> GetTagGGCByIndex(long apiid)
         {
             List<ggcTag4x4> lstobj = new List<ggcTag4x4>();
@@ -790,6 +890,57 @@ namespace GoWMS.Server.Data
                        PackDate = rdr["prod_date"] == DBNull.Value ? null : (DateTime?)rdr["prod_date"],
                        ReservationNo = rdr["doc_num"].ToString(),
                        CreateBy = rdr["createdby"].ToString()
+                    };
+                    lstobj.Add(objrd);
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
+
+
+        public IEnumerable<ggcTag4x4> GetTagGGCByIndexKey(long apiid, string sKey)
+        {
+            List<ggcTag4x4> lstobj = new List<ggcTag4x4>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("select t1.item_bc, t1.lot, t1.item, t2.item_name, t1.qty, t2.pack_uom, t1.prod_date, t1.doc_num, t1.createdby, RIGHT(t1.site, LEN(t1.site)-4) as palletnote ");
+                sql.AppendLine("from dbo.wms_trans t1");
+                sql.AppendLine("left join dbo.set_itemmaster t2");
+                sql.AppendLine("on t1.item = t2.item_code");
+                sql.AppendLine("where t1.ref_item =  @ref_item");
+                sql.AppendLine("and t1.unit_key =  @unit_key");
+                sql.AppendLine("and t1.whse =  @whse");
+                sql.AppendLine("order by t1.trans_num");
+                sql.AppendLine(";");
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+                con.Open();
+
+                cmd.Parameters.AddWithValue("@ref_item", apiid.ToString());
+                cmd.Parameters.AddWithValue("@unit_key", "01");
+                cmd.Parameters.AddWithValue("@whse", sKey.ToString());
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    ggcTag4x4 objrd = new ggcTag4x4
+                    {
+                        PalletNo = rdr["palletnote"].ToString(),
+                        TagNo = rdr["item_bc"].ToString(),
+                        BatchNo = rdr["lot"].ToString(),
+                        ProductNo = rdr["item"].ToString(),
+                        ProductName = rdr["item_name"].ToString(),
+                        QtyPerPallet = rdr["qty"].ToString(),
+                        Packaging = rdr["pack_uom"].ToString(),
+                        PackDate = rdr["prod_date"] == DBNull.Value ? null : (DateTime?)rdr["prod_date"],
+                        ReservationNo = rdr["doc_num"].ToString(),
+                        CreateBy = rdr["createdby"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

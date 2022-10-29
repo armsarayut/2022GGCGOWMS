@@ -9,6 +9,8 @@
 @using System.Security.Claims
 @using Microsoft.Extensions.Configuration
 @using GoWMS.Server.Models;
+@using System.DirectoryServices
+
 @inject IConfiguration Configuration
 @inject UserServices ObjUserService
 @inject ReportService UserlogService
@@ -35,6 +37,7 @@
     string Password { get; set; } = "";
     string Userword { get; set; } = "";
     private IEnumerable<Userinfo> UserElements = new List<Userinfo>();
+    private IEnumerable<Userinfo> UserAdElements = new List<Userinfo>();
 
     bool PasswordVisibility;
     InputType PasswordInput = InputType.Password;
@@ -44,10 +47,14 @@
     string sRole { get; set; } = "";
     string sGroupID { get; set; } = "";
     string sUserID { get; set; } = "";
+    string sUser { get; set; } = "";
     public string mPagedesc { get; set; } = "Gowms";
     private string mPagename { get; set; } = "/Login";
 
     private string pageheader = "Gowms";
+
+     private ResultReturn resultReturn = null;
+
 
     void TogglePasswordVisibility()
     {
@@ -87,22 +94,58 @@
 
                 if (UserElements.Count() > 0)
                 {
-
                     var grouid = UserElements.Select(x => x.Usgid).FirstOrDefault();
-
                     var result1 = UserElements.Where(i => i.Usgid == grouid.Value).FirstOrDefault(); // = 0
-
                     sUserID = result1.Usid.ToString();
-
-                    this.InsertAuditrial("SignIn User : " + Userword, pageheader);
-
+                    sUser = result1.UserId.ToString();
+                    this.InsertAuditrial("SignIn User : " + sUser, pageheader);
                     var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
-                    await authModule.InvokeVoidAsync("SignIn", Userword, encrypted, grouid.ToString(), sUserID, "/gowms");
+                    await authModule.InvokeVoidAsync("SignIn", sUser, encrypted, grouid.ToString(), sUserID, "/gowms");
                     var authModules = authModule;
                 }
                 else
                 {
-                    Snackbar.Add("The " + Userword + " user was not found in the system.", Severity.Error);
+
+                    if (HandleValidSubmit(Userword, Password)) // Check User On Ad
+                    {
+
+                        resultReturn = ObjUserService.UpsertRegisterAD(5, Userword, encrypted, Userword);
+
+                        if (resultReturn.Bret == true)
+                        {
+                            UserAdElements = await Task.Run(() => ObjUserService.GetUserAD(Userword, encrypted));
+                            if (UserAdElements.Count() > 0)
+                            {
+                                var grouid = UserAdElements.Select(x => x.Usgid).FirstOrDefault();
+
+                                var result1 = UserAdElements.Where(i => i.Usgid == grouid.Value).FirstOrDefault(); // = 0
+
+                                sUserID = result1.Usid.ToString();
+                                sUser = result1.UserId.ToString();
+
+                                this.InsertAuditrial("SignIn User : " + sUser, pageheader);
+
+                                var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+                                await authModule.InvokeVoidAsync("SignIn", sUser, encrypted, grouid.ToString(), sUserID, "/gowms");
+                                var authModules = authModule;
+                            }
+                            else
+                            {
+                                Snackbar.Add("GetUserAD Fail", Severity.Error);
+                            }
+                        }
+                        else
+                        {
+                            Snackbar.Add(resultReturn.Sret, Severity.Error);
+                        }
+
+
+
+                    }else{
+                        Snackbar.Add("The " + Userword + " user was not found in the system.", Severity.Error);
+                    }
+
+
                 }
             }
             else
@@ -138,7 +181,7 @@
 
         /*
         Action<VarGlobals> mduOptions = (opt =>
-        {
+            {
             opt.CurrentUserName = Userword;
         });
         */
@@ -173,4 +216,57 @@
             await Task.Run(() => btnLogin_Click());
         }
     }
+
+    private bool HandleValidSubmit(string userName, string passWord)
+    {
+        bool bRet = false;
+
+        string sIPServer = Configuration.GetSection("ADHost")["IP"].ToString() + ":" + Configuration.GetSection("ADHost")["Port"].ToString();
+        string sDomain = Configuration.GetSection("ADHost")["Domain"].ToString();
+        string sLdapPath = Configuration.GetSection("ADHost")["LdapPath"].ToString();
+        string sFilter = Configuration.GetSection("ADHost")["Filter"].ToString();
+
+        string strCommu = "LDAP://" + sIPServer + Convert.ToString(Convert.ToString("/") + sLdapPath);
+
+        var entry = new DirectoryEntry(strCommu);
+        entry.Username = Convert.ToString(sDomain + Convert.ToString(@"\")) + userName;
+        entry.Password = passWord;
+
+        object obj;
+        try
+        {
+            obj = entry.NativeObject;
+            var search = new DirectorySearcher(entry);
+
+            SearchResult result;
+            search.Filter = "(objectclass=user)";
+
+            result = search.FindOne();
+            if (result is null)
+            {
+
+                bRet = false;
+                //Snackbar.Add("AD Login Fail", Severity.Warning);
+            }
+
+            else
+            {
+                bRet = true;
+                 //Snackbar.Add("AD Login OK", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+
+            bRet = false;
+            //Snackbar.Add("AD " + ex.Message.ToString() , Severity.Error);
+        }
+
+        return bRet;
+    }
+
+
 }
+
+
+
