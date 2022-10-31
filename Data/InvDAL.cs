@@ -18,37 +18,47 @@ namespace GoWMS.Server.Data
     {
         readonly private string connectionString = ConnGlobals.GetConnLocalDBPG();
         readonly private string connectionStringSQL = ConnGlobals.GetConnDBSQL();
-        public async Task<IEnumerable<InvStockList>> GetStockList()
+        public  IEnumerable<InvStockList> GetStockList()
         {
     
             List<InvStockList> lstobj = new List<InvStockList>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 StringBuilder Sql = new StringBuilder();
-                Sql.AppendLine("select row_number() over(order by  itemcode asc) AS rn,");
-                Sql.AppendLine("itemcode, itemname, quantity, pallettag, pallteno, storagearea, storagebin");
-                Sql.AppendLine("from wms.inv_stock_go ");
-                Sql.AppendLine("order by itemcode");
+                //Sql.AppendLine("select row_number() over(order by  itemcode asc) AS rn,");
+                //Sql.AppendLine("itemcode, itemname, quantity, pallettag, pallteno, storagearea, storagebin");
+                //Sql.AppendLine("from wms.inv_stock_go ");
+                //Sql.AppendLine("order by itemcode");
 
-                NpgsqlCommand cmd = new NpgsqlCommand(Sql.ToString(), con)
+
+                Sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
+                Sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
+                Sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
+                Sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date, cast(is_hold as int) as efstatus");
+                Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
+                Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
+
+
+                SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
 
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-                while (await rdr.ReadAsync())
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
                 {
                     InvStockList objrd = new InvStockList
                     {
-                        Rn= rdr["rn"] == DBNull.Value ? null : (Int64?)rdr["rn"],
-                        Item_code = rdr["itemcode"].ToString(),
-                        Item_name = rdr["itemname"].ToString(),
-                        Qty = rdr["quantity"] == DBNull.Value ? null : (decimal?)rdr["quantity"],
-                        Su_no = rdr["pallettag"].ToString(),
-                        Palletcode = rdr["pallteno"].ToString(),
-                        Shelfname = rdr["storagebin"].ToString(),
-                        StorageArae = rdr["storagearea"].ToString()
+                        Rn= rdr["trans_num"] == DBNull.Value ? null : (Int64?)rdr["trans_num"],
+                        Item_code = rdr["item"].ToString(),
+                        Item_name = rdr["itemdesc"].ToString(),
+                        Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Su_no = rdr["item_bc"].ToString(),
+                        Palletcode = rdr["pallet_bc"].ToString(),
+                        Shelfname = rdr["loc"].ToString(),
+                        StorageArae = rdr["whse"].ToString(),
+                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"]
                     };
                     lstobj.Add(objrd);
                 }
@@ -83,8 +93,6 @@ namespace GoWMS.Server.Data
                 Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
                 //Sql.AppendLine("WHERE allocatequantity < quantity");
                 Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
-
-
 
                 SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
@@ -279,8 +287,6 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
-
-
         public IEnumerable<InvStockSumByCus> GetStockSumByCustomer()
         {
             List<InvStockSumByCus> lstobj = new List<InvStockSumByCus>();
@@ -332,8 +338,100 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
+        public async Task UpdateHoldStock(List<InvStockList> liststock)
+        {
+            using SqlConnection con = new SqlConnection(connectionString);
+            try
+            {
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("Update dbo.wms_trans");
+                sql.AppendLine("Set is_hold = @efstatus");
+                sql.AppendLine("Where trans_num in (");
 
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
 
+                int iState = 1;
+                string sParamState = "@efstatus";
+
+                //cmd.Parameters.Add(new SqlParameter<int>(sParamState, iState));
+                cmd.Parameters.AddWithValue(sParamState, iState);
+
+                var i = 0;
+                foreach (var s in liststock)
+                {
+                    if (i != 0) sql.Append(",");
+                    var pallettag = "trans_num" + i.ToString();
+
+                    sql.Append("@").Append(pallettag);
+
+                    cmd.Parameters.AddWithValue(pallettag, s.Su_no);
+
+                    //cmd.Parameters.Add(new NpgsqlParameter<string>(pallettag, s.Su_no));
+
+                    i++;
+                }
+                sql.AppendLine(")");
+
+                con.Open();
+                cmd.CommandText = sql.ToString();
+                await cmd.ExecuteNonQueryAsync();
+
+            }
+            catch (SqlException ex)
+            {
+                //Log.Error(ex.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public async Task UpdateReleaseStock(List<InvStockList> liststock)
+        {
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
+            try
+            {
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("Update dbo.wms_trans");
+                sql.AppendLine("Set is_hold = @efstatus");
+                sql.AppendLine("Where trans_num in (");
+
+                using var cmd = new SqlCommand(connection: con, cmdText: null);
+
+                int iState = 0;
+                string sParamState = "@efstatus";
+
+                cmd.Parameters.AddWithValue(sParamState, iState);
+
+                var i = 0;
+                foreach (var s in liststock)
+                {
+                    if (i != 0) sql.Append(",");
+                    var pallettag = "trans_num" + i.ToString();
+
+                    sql.Append("@").Append(pallettag);
+
+                    cmd.Parameters.AddWithValue(pallettag, s.Rn);
+
+                    i++;
+                }
+                sql.AppendLine(")");
+
+                con.Open();
+                cmd.CommandText = sql.ToString();
+                await cmd.ExecuteNonQueryAsync();
+
+            }
+            catch (SqlException ex)
+            {
+                //Log.Error(ex.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
 
     }
 }

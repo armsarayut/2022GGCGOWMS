@@ -151,7 +151,7 @@
     <value>PRINTTAG</value>
   </data>
   <data name="Qty" xml:space="preserve">
-    <value>Qty</value>
+    <value>Q'ty</value>
   </data>
   <data name="ReceivingOrder" xml:space="preserve">
     <value>ReceivingOrder</value>
@@ -163,7 +163,7 @@
     <value>Search</value>
   </data>
   <data name="Unit" xml:space="preserve">
-    <value>Unit</value>
+    <value>UNIT</value>
   </data>
   <data name="Weight" xml:space="preserve">
     <value>Weight</value>

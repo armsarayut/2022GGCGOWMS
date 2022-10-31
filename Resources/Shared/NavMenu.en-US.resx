@@ -300,6 +300,9 @@
   <data name="HlpHelpdesk" xml:space="preserve">
     <value>8.2.Helpdesk</value>
   </data>
+  <data name="HlpLayout" xml:space="preserve">
+    <value>8.3.LAYOUT</value>
+  </data>
   <data name="HlpMachine" xml:space="preserve">
     <value>8.1.3 Control Manual</value>
   </data>
@@ -317,6 +320,12 @@
   </data>
   <data name="Inbound" xml:space="preserve">
     <value>Inbound</value>
+  </data>
+  <data name="InboundACC" xml:space="preserve">
+    <value>Accessories</value>
+  </data>
+  <data name="InboundFG" xml:space="preserve">
+    <value>Finish Product &amp; Pagaking</value>
   </data>
   <data name="Inventory" xml:space="preserve">
     <value>Inventory</value>
@@ -352,7 +361,7 @@
     <value>3.3.Queue Picking</value>
   </data>
   <data name="ReceivingOrder" xml:space="preserve">
-    <value>1.1.Receiving Plan</value>
+    <value>1.1.Order Receiving </value>
   </data>
   <data name="ReleaseStock" xml:space="preserve">
     <value>Release Stock</value>

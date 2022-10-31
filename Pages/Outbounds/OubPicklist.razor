@@ -40,7 +40,15 @@ else
         </MudTooltip>
     </MudAppBar>
 
-    <MudTable Items="@Elements" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Sap_Storeout,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+    <MudTable Items="@Elements" 
+        FixedHeader="@fixed_header" 
+        FixedFooter="@fixed_footer" 
+        Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")" 
+        Dense="@dense" 
+        Hover="@hover" 
+        Bordered="@bordered" 
+        Striped="@striped" 
+        Filter="new Func<Sap_Storeout,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
         <ToolBarContent>
             <MudSpacer />
             <MudTextField @bind-Value="searchString"

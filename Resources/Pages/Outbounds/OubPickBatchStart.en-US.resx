@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DNSEQ" xml:space="preserve">
-    <value>DNSEQ</value>
+    <value>TAG</value>
   </data>
   <data name="ITEMCODE" xml:space="preserve">
-    <value>ITEMCODE</value>
+    <value>SKU</value>
   </data>
   <data name="ITEMNAME" xml:space="preserve">
-    <value>ITEMNAME</value>
+    <value>NAME</value>
   </data>
   <data name="LOT" xml:space="preserve">
     <value>BATCH</value>
@@ -139,7 +139,7 @@
     <value>PALLET</value>
   </data>
   <data name="QTY" xml:space="preserve">
-    <value>QTY</value>
+    <value>Q'ty</value>
   </data>
   <data name="REQUESTDATE" xml:space="preserve">
     <value>REQUESTDATE</value>

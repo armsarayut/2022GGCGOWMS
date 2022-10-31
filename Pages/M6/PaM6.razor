@@ -73,7 +73,7 @@ else
     <MudTable Items="@Elements"
               FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
-              Height="@(fixed_header || fixed_footer ?"500px":"")"
+          Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
               Dense="@dense"
               Hover="@hover"
               Bordered="@bordered"
@@ -133,8 +133,8 @@ else
     private ResultReturn resultReturn = null;
 
 
-    DateTime? fromDate = DateTime.Today.AddDays(-1);
-    TimeSpan? fromTime = DateTime.Now.TimeOfDay;
+    DateTime? fromDate = DateTime.Today;
+    TimeSpan? fromTime = DateTime.Now.AddHours(-1).TimeOfDay;
     DateTime? toDate = DateTime.Today;
     TimeSpan? toTime = DateTime.Now.TimeOfDay;
 

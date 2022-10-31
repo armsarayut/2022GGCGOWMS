@@ -121,7 +121,7 @@
     <value>Adjust</value>
   </data>
   <data name="BatchNo" xml:space="preserve">
-    <value>TAGNO</value>
+    <value>BATCH</value>
   </data>
   <data name="DNDate" xml:space="preserve">
     <value>DATE</value>
@@ -151,7 +151,7 @@
     <value>PDF</value>
   </data>
   <data name="Qty" xml:space="preserve">
-    <value>Qty</value>
+    <value>Q'ty</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>

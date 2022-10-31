@@ -104,7 +104,7 @@ else
              Hideable="true"
              FixedHeader="@fixed_header"
              FixedFooter="@fixed_footer"
-             Height="@(fixed_header || fixed_footer ?"500px":"")"
+             Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
              Dense="@dense">
         <ToolBarContent>
             <MudSpacer />
@@ -125,8 +125,8 @@ else
                     @string.Format(VarGlobals.FormatN3, context.Item.Total_qty)
                 </CellTemplate>
             </Column>
-            <Column T="Api_ggc" Field="Remark" Title="REMARK" />
-            <Column T="Api_ggc" Title="PICK" Filterable="false">
+            <Column T="Api_ggc" Field="Remark" Title="@L["REMARK"]"/>
+            <Column T="Api_ggc" Title="@L["PICK"]" Filterable="false">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.RequestQuote" Color="Color.Primary" OnClick="@(()=>RequestPick(context.Item.Item_code , context.Item.Batch_no, context.Item.Total_qty.Value, sUsername, context.Item.Idx.Value))" />
                 </CellTemplate>

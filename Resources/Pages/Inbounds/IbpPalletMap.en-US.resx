@@ -127,21 +127,21 @@
     <value>NAME</value>
   </data>
   <data name="MasterPallet" xml:space="preserve">
-    <value>TAG No</value>
+    <value>PALLET</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
     <value>Master Mapping</value>
   </data>
   <data name="PalletGo" xml:space="preserve">
-    <value>PalletGo</value>
+    <value>PALLET</value>
   </data>
   <data name="Qty" xml:space="preserve">
-    <value>Qty</value>
+    <value>Q'ty</value>
   </data>
   <data name="SeqNo" xml:space="preserve">
     <value>TAG No.</value>
   </data>
   <data name="Unit" xml:space="preserve">
-    <value>Unit</value>
+    <value>UNIT</value>
   </data>
 </root>

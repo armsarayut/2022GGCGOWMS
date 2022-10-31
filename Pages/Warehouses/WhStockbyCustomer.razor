@@ -52,7 +52,7 @@ else
         </MudTooltip>
     </MudAppBar>
 
-    <MudTable Hover="@hover" Breakpoint="Breakpoint.Sm" Height="@(fixed_header || fixed_footer ?"500px":"")" FixedHeader="@fixed_header"
+    <MudTable Hover="@hover" Breakpoint="Breakpoint.Sm" Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")" FixedHeader="@fixed_header"
               Items="@Elements.OrderBy(s => s.Itemcode).OrderBy(x => x.Cuscode)"
               GroupBy="@_groupDefinition"
               GroupHeaderStyle="background-color:var(--mud-palette-background-white)"

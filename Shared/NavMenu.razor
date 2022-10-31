@@ -8,7 +8,13 @@
     <MudNavLink Href="/gowms" IconColor="Color.Primary" Icon="@Icons.Material.Filled.Dashboard">@L["Dashboard"]</MudNavLink>
 
     <MudNavGroup Title=@L["1.Inbound"] IconColor="Color.Primary" Icon="@Icons.Material.Filled.Inbox">
-        <MudNavLink Href="/1/1_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["ReceivingOrder"] </MudNavLink>
+         <MudNavGroup Title="@L["InboundFG"]" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Inbox">
+             <MudNavLink Href="/1/1_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["ReceivingOrder"] </MudNavLink>
+          </MudNavGroup>
+          <MudNavGroup Title="@L["InboundFG"]" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Inbox">
+            <MudNavLink Href="/1/1_x" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["ReceivingOrder"] </MudNavLink>
+          </MudNavGroup>
+        
         <MudNavLink Href="/1/1_2" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["GoodReceive"]</MudNavLink>
         <MudNavLink Href="/1/1_3" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["MasterMapping"]</MudNavLink>
         <MudNavLink Href="/1/1_4" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Input">@L["Return"]</MudNavLink>
@@ -82,7 +88,7 @@
         <MudNavLink Href="/6/6_2" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Settings">@L["SetWorktype"]</MudNavLink>
         <MudNavLink Href="/6/6_3" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Settings">@L["SetStatus"]</MudNavLink>
         <MudNavLink Href="/6/6_4" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Settings">@L["SetPallet"]</MudNavLink>
-        <MudNavLink Href="/6/6_5" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Settings">@L["SetStore"]</MudNavLink>
+       @* <MudNavLink Href="/6/6_5" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Settings">@L["SetStore"]</MudNavLink>*@
     </MudNavGroup>
 
     <MudNavGroup Title=@L["7.Admin"] IconColor="Color.Primary" Icon="@Icons.Material.Filled.AdminPanelSettings">
@@ -100,8 +106,9 @@
         </MudNavGroup>
        
         <MudNavLink Href="/8/8_2" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Help">@L["HlpHelpdesk"]</MudNavLink>
+        <MudNavLink Href="/8/8_3" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Help">@L["HlpLayout"]</MudNavLink>
     </MudNavGroup>
-
+@*
     <MudNavGroup Title="Maintenance" IconColor="Color.Primary" Icon="@Icons.Material.Filled.Assessment">
              <MudNavLink Href="/6/6_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Assessment">Asset Register</MudNavLink>
              <MudNavLink Href="/6/6_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Assessment">Preventative Maintenance</MudNavLink>
@@ -110,7 +117,7 @@
              <MudNavLink Href="/6/6_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Assessment">Reports</MudNavLink>
              <MudNavLink Href="/6/6_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Assessment">Equipment Readings</MudNavLink>
              <MudNavLink Href="/6/6_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.Assessment">Work Orders</MudNavLink>
-    </MudNavGroup>
+    </MudNavGroup>*@
 
   @*  <MudNavGroup Title=@L["9.ERP"] IconColor="Color.Secondary" Icon="@Icons.Material.Filled.GroupWork">
         <MudNavLink Href="/9/9_1" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.GroupWork">@L["ErpBookingNote"]</MudNavLink>
@@ -119,6 +126,7 @@
         <MudNavLink Href="/9/9_4" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.GroupWork">@L["ErpCustomers"]</MudNavLink>
         <MudNavLink Href="/9/9_5" Match="NavLinkMatch.Prefix" IconColor="Color.Secondary" Icon="@Icons.Material.Filled.GroupWork">@L["ErpPackeing"]</MudNavLink>
     </MudNavGroup>*@
+
 </MudNavMenu>
 
 @code { string AlertAssignmentIcon { get; set; } = "<path d=\"M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H9.18C9.6,1.84 10.7,1 12,1C13.3,1 14.4,1.84 14.82,3H19M12,3A1,1 0 0,0 11,4A1,1 0 0,0 12,5A1,1 0 0,0 13,4A1,1 0 0,0 12,3M7,7V5H5V19H19V5H17V7H7M11,9H13V13.5H11V9M11,15H13V17H11V15Z\" />"; } 

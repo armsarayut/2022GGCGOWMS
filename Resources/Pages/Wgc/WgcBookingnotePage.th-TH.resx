@@ -123,6 +123,12 @@
   <data name="Customer" xml:space="preserve">
     <value>ลูกค้า</value>
   </data>
+  <data name="DNDate" xml:space="preserve">
+    <value>วันที่</value>
+  </data>
+  <data name="DNNo" xml:space="preserve">
+    <value>เลขเอกสาร</value>
+  </data>
   <data name="ItemCode" xml:space="preserve">
     <value>รหัสสินค้า</value>
   </data>
@@ -141,8 +147,14 @@
   <data name="PalletNo" xml:space="preserve">
     <value>เลขพาเลท</value>
   </data>
+  <data name="PICK" xml:space="preserve">
+    <value>เบิก</value>
+  </data>
   <data name="Qty" xml:space="preserve">
     <value>จำนวน</value>
+  </data>
+  <data name="REMARK" xml:space="preserve">
+    <value>หมายเหตุ</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>ค้นหา</value>

@@ -67,7 +67,7 @@
     <MudTable Items="@Elements"
               FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
-              Height="@(fixed_header || fixed_footer ? "500px" : "")"
+              Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
               Dense="@dense"
               Hover="@hover"
               Bordered="@bordered" Striped="@striped" Filter="new Func<AsrsLoadtime, bool>(FilterFunc)" Style="width:100%;">
@@ -115,7 +115,7 @@
     private IEnumerable<AsrsLoadtime> Elements = new List<AsrsLoadtime>();
 
     DateTime? fromDate = DateTime.Today;
-    TimeSpan? fromTime = DateTime.Now.TimeOfDay;
+    TimeSpan? fromTime = DateTime.Now.AddHours(-1).TimeOfDay;
     DateTime? toDate = DateTime.Today;
     TimeSpan? toTime = DateTime.Now.TimeOfDay;
 

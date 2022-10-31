@@ -145,9 +145,9 @@
     <value>START</value>
   </data>
   <data name="Stock" xml:space="preserve">
-    <value>Stock</value>
+    <value>STOCK</value>
   </data>
   <data name="Total" xml:space="preserve">
-    <value>Total</value>
+    <value>TOTAL</value>
   </data>
 </root>

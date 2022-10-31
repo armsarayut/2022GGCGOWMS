@@ -16,7 +16,14 @@
 else
 {
     <MudText Typo="Typo.h6" Color="Color.Primary">@mMenudesc</MudText>
-    <MudTable Items="@Elements" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Class6_3_D,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+    <MudTable Items="@Elements" 
+        FixedHeader="@fixed_header" 
+        FixedFooter="@fixed_footer" 
+        Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")" 
+        Dense="@dense" Hover="@hover" 
+        Bordered="@bordered" 
+        Striped="@striped" 
+        Filter="new Func<Class6_3_D,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
         <ToolBarContent>
             <MudTooltip Text="Export" Color="Color.Secondary" Placement="Placement.Top">
                 <MudMenu Icon="@Icons.Filled.Download" Color="Color.Primary">

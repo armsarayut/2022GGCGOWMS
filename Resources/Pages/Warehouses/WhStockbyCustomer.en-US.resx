@@ -133,10 +133,10 @@
     <value>Excel</value>
   </data>
   <data name="ItemCode" xml:space="preserve">
-    <value>ItemCode</value>
+    <value>SKU</value>
   </data>
   <data name="ItemName" xml:space="preserve">
-    <value>ItemName</value>
+    <value>NAME</value>
   </data>
   <data name="Lane" xml:space="preserve">
     <value>Lane</value>

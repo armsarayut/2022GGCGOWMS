@@ -15,6 +15,8 @@ namespace GoWMS.Server.Models.Inv
         public string Palletcode { get; set; }
         public string Shelfname { get; set; }
 
+        public Int32? Efstatus { get; set; }
+
         public string StorageArae { get; set; }
 
     }

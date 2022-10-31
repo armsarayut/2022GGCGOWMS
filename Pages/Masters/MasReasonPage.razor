@@ -17,7 +17,7 @@ else
 {
     <MudText Typo="Typo.h6" Color="Color.Primary"> @pageheader </MudText>
 
-    <MudTable Items="@Elements" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"500px":"")" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Mas_Reason_Go,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" SortLabel="Sort By">
+    <MudTable Items="@Elements" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Mas_Reason_Go,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" SortLabel="Sort By">
         <ToolBarContent>
             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Custom.FileFormats.FileExcel" Style="background-color: mediumseagreen; color: white; width: 80px; height: 30px;">
                 Excel

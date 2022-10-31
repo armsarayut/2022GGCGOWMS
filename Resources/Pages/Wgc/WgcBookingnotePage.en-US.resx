@@ -118,16 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BatchNo" xml:space="preserve">
-    <value>BatchNo</value>
+    <value>BATCH</value>
   </data>
   <data name="Customer" xml:space="preserve">
     <value>Customer</value>
   </data>
+  <data name="DNDate" xml:space="preserve">
+    <value>DATE</value>
+  </data>
+  <data name="DNNo" xml:space="preserve">
+    <value>RESERVATION</value>
+  </data>
   <data name="ItemCode" xml:space="preserve">
-    <value>ItemCode</value>
+    <value>SKU</value>
   </data>
   <data name="LotNo" xml:space="preserve">
-    <value>LotNo</value>
+    <value>BATCH</value>
   </data>
   <data name="Packeting" xml:space="preserve">
     <value>Packeting</value>
@@ -136,13 +142,19 @@
     <value>Order Booking</value>
   </data>
   <data name="PalletGo" xml:space="preserve">
-    <value>PalletGo</value>
+    <value>PALLET</value>
   </data>
   <data name="PalletNo" xml:space="preserve">
-    <value>PalletNo</value>
+    <value>PALLET</value>
+  </data>
+  <data name="PICK" xml:space="preserve">
+    <value>PICK</value>
   </data>
   <data name="Qty" xml:space="preserve">
-    <value>Qty</value>
+    <value>Q'ty</value>
+  </data>
+  <data name="REMARK" xml:space="preserve">
+    <value>REMARK</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
@@ -160,6 +172,6 @@
     <value>Total Quantity</value>
   </data>
   <data name="Unit" xml:space="preserve">
-    <value>Unit</value>
+    <value>UNIT</value>
   </data>
 </root>

@@ -68,7 +68,7 @@ else
     <MudTable Items="@Elements"
               FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
-              Height="@(fixed_header || fixed_footer ?"500px":"")"
+          Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
               Dense="@dense"
               Hover="@hover"
               Bordered="@bordered"

@@ -1,0 +1,239 @@
+﻿@page "/2/2_6"
+@using GoWMS.Server.Data
+@using GoWMS.Server.Controllers
+@using GoWMS.Server.Models
+@using GoWMS.Server.Models.Inv
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
+
+@inject InvService ObjService
+@inject UserServices OpjUserService
+
+<style>
+    .mud-table-cell-custom-group {
+        font-weight: 500;
+    }
+
+    .mud-table-cell-custom-group-footer {
+        padding-bottom: 50px;
+        text-align: right;
+    }
+</style>
+
+@if (Elements == null)
+{
+    // <p><em>Loading...</em></p>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="4">
+            <MudText Typo="Typo.h6" Color="Color.Primary"> @pageheader</MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="4">
+            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Save" Style="background-color: limegreen; color: white; width: 300px; height: 30px;" OnClick=@OnButtonOrderSelected>
+                Set Holdstock
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+
+    <MudTable Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          FixedHeader="@fixed_header"
+          FixedFooter="@fixed_footer"
+          Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
+          Items="@Elements"
+          GroupBy="@_groupDefinition"
+          GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
+          GroupFooterClass="mb-4"
+          Dense="@dense"
+          SelectedItems="@selectedItems"
+          MultiSelection="_multiSelect">
+        <HeaderContent>
+            <MudTh>PACKID</MudTh>
+            <MudTh>AREA</MudTh>
+            <MudTh>STROAGEBIN</MudTh>
+            <MudTh>PALLET</MudTh>
+            <MudTh>STOCK</MudTh>
+        </HeaderContent>
+        <GroupHeaderTemplate>
+            <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName}: {context.Key}")</MudTh>
+            </GroupHeaderTemplate>
+            <RowTemplate>
+                <MudTd DataLabel="PACKID">@context.Su_no</MudTd>
+                <MudTd DataLabel="AREA">@context.StorageArae</MudTd>
+                <MudTd DataLabel="STROAGEBIN">@context.Shelfname</MudTd>
+                <MudTd DataLabel="PALLET">@context.Palletcode</MudTd>
+                <MudTd Style="text-align: right" DataLabel="STOCK">@string.Format(VarGlobals.FormatN2, context.Qty)</MudTd>
+            </RowTemplate>
+            <GroupFooterTemplate>
+                <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="6">Total : @string.Format(VarGlobals.FormatN2, context.Items.Sum((e) => e.Qty))</MudTh>
+            </GroupFooterTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
+            </PagerContent>
+        </MudTable>
+
+
+    <MudMessageBox @ref="mbox" Title="@mboxheader" CancelText="Cancel">
+        <MessageContent>
+            @foreach (var item in References)
+            {
+                <br />
+                @item
+            }
+        </MessageContent>
+        <YesButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.DataSaverOn">Confirm!</MudButton>
+        </YesButton>
+    </MudMessageBox>
+
+
+}
+
+@code {
+
+    private string pageheader = "2.6-Hold Stock";
+    private string mPagedesc { get; set; } = "2.6-Hold Stock";
+    private string mPagename { get; set; } = "/2/2_6";
+    private string msgAction = "Enter Palletcode";
+    private string mPalletcode { get; set; } = "";
+    private string mPackid { get; set; } = "";
+    private string palletcode { get; set; }
+    private bool dense = true;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+    private bool fixed_header = true;
+    private bool fixed_footer = true;
+    private string searchString = "";
+    private InvStockList selectedItem = null;
+    private HashSet<InvStockList> selectedItems = new HashSet<InvStockList>();
+    private IEnumerable<InvStockList> Elements = new List<InvStockList>();
+
+
+    public int elevation = 0;
+
+    public bool StkGroup { get; set; }
+    private bool _multiSelect = true;
+
+    private Int32 iState { get; set; } = 0;
+
+    protected List<string> References { get; set; } = new List<string>();
+    string mboxheader { get; set; } = "HOLD LIST";
+    string mboxcontent { get; set; } = "";
+    string mboxmessage { get; set; } = "";
+    string state = "Message box hasn't been opened yet";
+    MudMessageBox mbox { get; set; }
+    /*
+    private TableGroupDefinition<InvStockList> _groupDefinition = new TableGroupDefinition<InvStockList>()
+    {
+        GroupName = "MATERIAL",
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        Selector = (e) => e.Item_code
+    };
+    */
+
+    private TableGroupDefinition<InvStockList> _groupDefinition = new TableGroupDefinition<InvStockList>()
+        {
+            GroupName = "MATERIAL",
+            Indentation = true,
+            Expandable = true,
+            IsInitiallyExpanded = false,
+            Selector = (e) => e.Item_code,
+            InnerGroup = new TableGroupDefinition<InvStockList>()
+            {
+                GroupName = "PALLET",
+                Expandable = true,
+                IsInitiallyExpanded = false,
+                Selector = (e) => e.Palletcode
+            }
+
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        InvService objCS = new InvService();
+        Elements = await Task.Run(() => objCS.GetStckList().Where(x => x.Efstatus == iState));
+    }
+
+    private bool FilterFunc(InvStockList element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Item_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Palletcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Su_no.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Item_name} {element.Shelfname}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    private async void OnButtonOrderSelected()
+    {
+        var resultlist = selectedItems.GroupBy(t => t.Item_code)
+                 .Select(t => new
+                 {
+                     Itemcode = t.Key,
+                     Qty = t.Sum(ta => ta.Qty),
+                 }).ToList();
+
+        System.Text.StringBuilder strPopup = new System.Text.StringBuilder();
+        Int16 i = 0;
+        mboxcontent = "";
+
+        References.Clear();
+
+        if (resultlist.Count > 0)
+        {
+            foreach (var rec in resultlist)
+            {
+                i++;
+                strPopup.Clear();
+                strPopup.Append(i.ToString() + ". No. : ");
+                strPopup.Append(rec.Itemcode.ToString());
+                strPopup.Append(" Qty : ");
+                strPopup.AppendLine(rec.Qty.ToString());
+
+                References.Add(strPopup.ToString());
+            }
+            bool? result = await mbox.Show();
+            state = result == null ? "Cancelled" : "Confirmed";
+
+            if (state == "Confirmed")
+            {
+                SelectOrderPick();
+            }
+
+            StateHasChanged();
+        }
+
+    }
+
+    private void SelectOrderPick()
+    {
+
+        if (selectedItems.Count > 0)
+        {
+            // var strRES = selectedItems.OrderBy(x => x.Su_no).Select(x => new { suno = x.Su_no, palletcode = x.Palletcode, state = -1, material = x.Item_code }).ToList();
+
+            var ListHold = selectedItems.ToList();
+
+            //ObjService.UpdateHoldStock(ListHold.ToList());
+
+        }
+
+    }
+
+}

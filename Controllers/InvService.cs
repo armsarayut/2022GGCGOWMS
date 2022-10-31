@@ -13,17 +13,17 @@ namespace GoWMS.Server.Controllers
     {
         readonly InvDAL objDAL = new InvDAL();
 
-        public Task<IEnumerable<InvStockList>> GetStckList()
-        {
-            return objDAL.GetStockList();
-        }
-        /*
+        //public Task<IEnumerable<InvStockList>> GetStckList()
+        //{
+        //    return objDAL.GetStockList();
+        //}
+        
         public List<InvStockList> GetStckList()
         {
             List<InvStockList> ListRet = objDAL.GetStockList().ToList();
             return ListRet;
         }
-        */
+        
         public List<InvStockSum> GetStockSum()
         {
             List<InvStockSum> ListRet = objDAL.GetStockSum().ToList();
@@ -50,6 +50,16 @@ namespace GoWMS.Server.Controllers
         {
             List<InvStockSumByCus> ListRet = objDAL.GetStockSumByCustomer().ToList();
             return ListRet;
+        }
+
+        public async Task UpdateHoldStock(List<InvStockList> liststock)
+        {
+            await objDAL.UpdateHoldStock(liststock);
+        }
+
+        public async Task UpdateReleaseStock(List<InvStockList> liststock)
+        {
+            await objDAL.UpdateReleaseStock(liststock);
         }
     }
 }

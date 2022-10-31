@@ -124,10 +124,10 @@
     <value>Excel</value>
   </data>
   <data name="ITEMCODE" xml:space="preserve">
-    <value>ITEMCODE</value>
+    <value>SKU</value>
   </data>
   <data name="ITEMNAME" xml:space="preserve">
-    <value>ITEMNAME</value>
+    <value>NAME</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
     <value>Queue Picking</value>
@@ -139,7 +139,7 @@
     <value>PDF</value>
   </data>
   <data name="QTY" xml:space="preserve">
-    <value>QTY</value>
+    <value>Q'ty</value>
   </data>
   <data name="QUEUEDATE" xml:space="preserve">
     <value>QUEUEDATETIME</value>

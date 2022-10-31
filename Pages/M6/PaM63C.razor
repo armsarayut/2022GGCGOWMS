@@ -33,7 +33,7 @@ else
     </MudAppBar>
     <MudTable Items="@Elements" FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
-              Height="@(fixed_header || fixed_footer ?"500px":"")"
+          Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
               Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
               Filter="new Func<Class6_3_C,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
         <ToolBarContent>
