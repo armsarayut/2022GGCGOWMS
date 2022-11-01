@@ -309,6 +309,9 @@
   <data name="HlpMaintan" xml:space="preserve">
     <value>8.1.4 คู่มือเครื่องจักร</value>
   </data>
+  <data name="HlpPM" xml:space="preserve">
+    <value>8.1.5.งานบำรุงรักษาเชิงป้องกัน</value>
+  </data>
   <data name="HlpUser" xml:space="preserve">
     <value>8.1.1 คู่มือผู้ใช้</value>
   </data>

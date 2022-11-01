@@ -237,6 +237,9 @@
   <data name="9.ERP" xml:space="preserve">
     <value>9.ERP</value>
   </data>
+  <data name="Acc" xml:space="preserve">
+    <value />
+  </data>
   <data name="AdmGroup" xml:space="preserve">
     <value>7.3.Group</value>
   </data>
@@ -308,6 +311,9 @@
   </data>
   <data name="HlpMaintan" xml:space="preserve">
     <value>8.1.4 Machine Manual</value>
+  </data>
+  <data name="HlpPM" xml:space="preserve">
+    <value>8.1.5.PM</value>
   </data>
   <data name="HlpUser" xml:space="preserve">
     <value>8.1.1 User Manual</value>
