@@ -1,4 +1,4 @@
-﻿@page "/2/2_4"
+﻿@page "/2/2_8"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -17,29 +17,29 @@
 @inject ErpApiService ObjApiService
 @inject UserServices OpjUserService
 @inject WhService ObjWhService
-@inject IStringLocalizer<WhCyclecount> L
+@inject IStringLocalizer<WhPreparePage> L
 @attribute [Authorize]
 
 
 @if (Elements == null)
 {
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
-    <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
-    <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
+        <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
+        <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
+            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
                    Color="Color.Success"
                    OnClick=@OnButtonOrderSelected>@L["START"]</MudButton>
-                <MudSpacer />
-            </MudAppBar>
+                    <MudSpacer />
+                </MudAppBar>
 
-            @if (StkGroup)
-            {
+    @if (StkGroup)
+    {
 
 
-                <MudTable Items="@Elements"
+                        <MudTable Items="@Elements"
                           FixedHeader="@fixed_header"
                           FixedFooter="@fixed_footer"
           Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
@@ -50,59 +50,59 @@ else
                           Striped="@striped"
                           Filter="new Func<Inv_Stock_GoInfo,bool>(FilterFunc)"
                           @bind-SelectedItems="selectedItems">
-                    <ToolBarContent>
+                            <ToolBarContent>
 
-                        <MudSpacer />
-                        <MudTextField @bind-Value="searchString"
+                                <MudSpacer />
+                                <MudTextField @bind-Value="searchString"
                                       Placeholder=@L["Search"]
                                       Adornment="Adornment.Start"
                                       AdornmentIcon="@Icons.Material.Filled.Search"
                                       IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </ToolBarContent>
+                            </ToolBarContent>
 
-                    <HeaderContent>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"] </MudTableSortLabel></MudTh>
-                        <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PalletGo"] </MudTableSortLabel></MudTh>
-                       @* <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PalletErp"] </MudTableSortLabel></MudTh>*@
-                    </HeaderContent>
+                            <HeaderContent>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"] </MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"] </MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"] </MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"] </MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"] </MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PalletGo"] </MudTableSortLabel></MudTh>
+                @* <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PalletErp"] </MudTableSortLabel></MudTh>*@
+                            </HeaderContent>
 
 
-                    <RowTemplate>
-                        <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
-                        <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
-                        <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
+                            <RowTemplate>
+                                <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
+                                <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
+                                <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
                         <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
-                        <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
-                        <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
-                       @* <MudTd DataLabel=@L["PalletErp"]>@context.Itembar</MudTd>*@
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
-                    </PagerContent>
-                </MudTable>
-            }
-            else
+                                <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
+                                <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
+                @* <MudTd DataLabel=@L["PalletErp"]>@context.Itembar</MudTd>*@
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
+                            </PagerContent>
+                        </MudTable>
+    }
+    else
+    {
+
+    }
+
+                <MudMessageBox @ref="mbox" Title="@mboxheader" CancelText="Cancel">
+                    <MessageContent>
+            @foreach (var item in References)
             {
-
+                                <br />
+                @item
             }
-
-            <MudMessageBox @ref="mbox" Title="@mboxheader" CancelText="Cancel">
-                <MessageContent>
-                    @foreach (var item in References)
-                    {
-                        <br />
-                        @item
-                    }
-                </MessageContent>
-                <YesButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.DataSaverOn">Confirm!</MudButton>
-                </YesButton>
-            </MudMessageBox>
-        }
+                    </MessageContent>
+                    <YesButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.DataSaverOn">Confirm!</MudButton>
+                    </YesButton>
+                </MudMessageBox>
+}
 
 @code {
 
@@ -111,10 +111,10 @@ else
     private bool _dense = false;
     private bool _multiSelect = true;
 
-    public string mPagedesc { get; set; } = "2.4.Audit";
-    private string mPagename { get; set; } = "/2/2_4";
+    public string mPagedesc { get; set; } = "2.8.Preparing";
+    private string mPagename { get; set; } = "/2/2_8";
 
-    private string pageheader = "2.4.Audit";
+    private string pageheader = "2.8.Preparing";
     private string msgAction = "Enter Palletcode";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
@@ -132,7 +132,7 @@ else
 
     string state = "Message box hasn't been opened yet";
 
-    string mboxheader { get; set; } = "รายการที่ขอตรวจสอบ";
+    string mboxheader { get; set; } = "รายการที่ขอเตรียม";
     string mboxcontent { get; set; } = "";
     string mboxmessage { get; set; } = "";
 
@@ -221,10 +221,10 @@ else
 
     async Task SelectOrder()
     {
-        var result = selectedItems.GroupBy(t => new { t.Itemcode , t.Lotno} )
+        var result = selectedItems.GroupBy(t => new { t.Itemcode, t.Lotno })
                    .Select(t => new
                    {
-                       Itemcode = t.Key.Itemcode ,
+                       Itemcode = t.Key.Itemcode,
                        Lot = t.Key.Lotno,
                        Qty = t.Sum(ta => ta.Quantity),
                    }).ToList();
@@ -244,7 +244,7 @@ else
         }
 
         System.Text.StringBuilder popup = new System.Text.StringBuilder();
-        popup.AppendLine("รายการที่ขอตรวจสอบ");
+        popup.AppendLine("รายการที่ขอเตรียม");
         popup.Append(strPopup.ToString());
 
         string sContentText = popup.ToString();
@@ -307,9 +307,9 @@ else
                             WriteIndented = true
                         };
 
-                    this.InsertAuditrial("Set Cycle count List : " + strPopup.ToString(), pageheader);
+                    this.InsertAuditrial("Set Prepare List : " + strPopup.ToString(), pageheader);
 
-                    var strRES = resultlist.OrderBy(x => x.Itemcode).Select(x => new { sku = x.Itemcode, quantity = x.Qty, lot = x.Lot}).ToList();
+                    var strRES = resultlist.OrderBy(x => x.Itemcode).Select(x => new { sku = x.Itemcode, quantity = x.Qty, lot = x.Lot }).ToList();
 
                     var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
 
@@ -340,14 +340,14 @@ else
     private void SelectOrderPick()
     {
         var serializeOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
 
         string cus = "MANUAL";
         //string so = "CY-" + DateTime.Now.ToString("yyMMddHHmmssffff");
-        string so = "CY-" + ObjFunService.GetRunning("sq002", 4);
+        string so = "PP-" + ObjFunService.GetRunning("sq002", 4);
 
         string lot = "-";
         string batch = "-";
@@ -377,7 +377,7 @@ else
             }
             else
             {
-                this.InsertAuditrial("Start Cycel count : " + so.ToString(), pageheader);
+                this.InsertAuditrial("Start Prepare : " + so.ToString(), pageheader);
 
                 Snackbar.Add("Order picking created", Severity.Success);
             }

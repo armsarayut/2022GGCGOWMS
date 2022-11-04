@@ -237,9 +237,6 @@
   <data name="9.ERP" xml:space="preserve">
     <value>9.ERP</value>
   </data>
-  <data name="Acc" xml:space="preserve">
-    <value />
-  </data>
   <data name="AdmGroup" xml:space="preserve">
     <value>7.3.Group</value>
   </data>
@@ -322,7 +319,7 @@
     <value>8.1.User'guide</value>
   </data>
   <data name="HoldStock" xml:space="preserve">
-    <value>Hold Stock</value>
+    <value>2.6.Hold Stock</value>
   </data>
   <data name="Inbound" xml:space="preserve">
     <value>Inbound</value>
@@ -363,6 +360,9 @@
   <data name="Picking" xml:space="preserve">
     <value>Picking</value>
   </data>
+  <data name="Prepare" xml:space="preserve">
+    <value>2.8.Prepare</value>
+  </data>
   <data name="QueuePicking" xml:space="preserve">
     <value>3.3.Queue Picking</value>
   </data>
@@ -370,7 +370,7 @@
     <value>1.1.Order Receiving </value>
   </data>
   <data name="ReleaseStock" xml:space="preserve">
-    <value>Release Stock</value>
+    <value>2.7.Release Stock</value>
   </data>
   <data name="Return" xml:space="preserve">
     <value>1.4. Stacking</value>

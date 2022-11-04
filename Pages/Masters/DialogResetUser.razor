@@ -38,20 +38,10 @@
 
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public string MPassword { get; set; }
-
-        [Parameter] public string MUsername { get; set; }
-
-        [Parameter] public string MEmail { get; set; }
-    
-
-    /*
-            string MPassword { get; set; }
-            string MUsername { get; set; }
-            string MEmail { get; set; }
-    */
+[CascadingParameter] MudDialogInstance MudDialog { get; set; }
+[Parameter] public string MPassword { get; set; }
+[Parameter] public string MUsername { get; set; }
+[Parameter] public string MEmail { get; set; }
 
     private IEnumerable<Usergroups> selectedItems = new HashSet<Usergroups>();
     private IEnumerable<Usergroups> Elements = new List<Usergroups>();
@@ -93,15 +83,12 @@
         MPassword = encrypted;
         await GetUserAthu();
         Elements = await Task.Run(() => ObjUserService.GetUsergroups());
-
     }
 
     private async Task Submit()
     {
-
         if (selectedItems != null)
         {
-
             long iCmd = 0;
             string sGroup = "";
             foreach (var item in selectedItems)
@@ -114,7 +101,6 @@
             //var encrypted = Security.EncryptString(Password, key);
             var encrypted = EncryptProvider.DESEncrypt(MPassword, key);
 
-
             resultReturn = await Task.Run(() => ObjUserService.UpsertRegister(iCmd, MEmail, encrypted, MUsername));
 
             if (resultReturn.Bret == true)
@@ -123,11 +109,7 @@
 
                 MudDialog.Close(DialogResult.Ok(true));
             }
-
         }
-
-
-
     }
 
     void Cancel() => MudDialog.Cancel();

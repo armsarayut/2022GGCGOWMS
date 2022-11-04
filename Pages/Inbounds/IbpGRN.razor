@@ -497,7 +497,7 @@ else
     #endregion
 
 
-    public async Task TestCreateTag(long apiid)
+    public void TestCreateTag(long apiid)
     {
 
         var guid = Guid.NewGuid().ToString();
@@ -517,19 +517,23 @@ else
         _ravi["tyexpdate"] = DateTime.Now;
         _ravi["typallet"] = "1";
         dtTrans.Rows.Add(_ravi);
+        
+        string sRet ="";
 
 
-        ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans, guid.ToString());
+        //ObjInboundService.CreateTagno(apiid, 1, 5, "A0001", sUsername, dtTrans, guid.ToString(), ref sRet);
 
-        //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
 
-        TagList = await Task.Run(() => ObjInboundService.GetTagGGCByIndex(apiid));
 
-        ggcTag4x4Pdf pdfReport = new ggcTag4x4Pdf();
-        List<ggcTag4x4> listPdfReport = new List<ggcTag4x4>();
-        listPdfReport = TagList.ToList();
+        //TagList = await Task.Run(() => ObjInboundService.GetTagGGCByIndex(apiid));
 
-        await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
+          //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
+
+        //ggcTag4x4Pdf pdfReport = new ggcTag4x4Pdf();
+        //List<ggcTag4x4> listPdfReport = new List<ggcTag4x4>();
+        //listPdfReport = TagList.ToList();
+
+        //await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
 
 
     }

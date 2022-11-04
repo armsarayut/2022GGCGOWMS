@@ -81,6 +81,15 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
+        public bool CancelReceivingOrdersBypackId(long transId, decimal tramsQty, string tranDoc, string tranItem , string tranTag)
+        {
+            bool bret = objDAL.CancelReceivingOrdersBypackId(transId, tramsQty, tranDoc, tranItem, tranTag);
+
+            return bret;
+        }
+
+
+
         public bool CancelReceivingOrdersByPallet(string pallet)
         {
             bool bret = objDAL.CancelReceivingOrdersByPallet(pallet);
@@ -94,6 +103,16 @@ namespace GoWMS.Server.Controllers
 
             return bret;
         }
+
+        public bool CreateTagnodup(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData, string valuuid, ref string strReturn)
+        {
+            bool bret = objDAL.CreateTagnodup(valapiref, valpalletfrom, valpalletto, valtranref, valtrancreateby, valTransData, valuuid, ref strReturn);
+
+            return bret;
+        }
+
+
+        
 
         public bool CreateTagnoACC(Int64 valapiref, Int32 valpalletfrom, Int32 valpalletto, string valtranref, string valtrancreateby, DataTable valTransData, string valuuid)
         {

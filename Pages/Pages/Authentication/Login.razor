@@ -237,7 +237,8 @@
         {
             obj = entry.NativeObject;
             var search = new DirectorySearcher(entry);
-
+       
+            //search.ClientTimeout = TimeSpan.FromSeconds(10);
             SearchResult result;
             search.Filter = "(objectclass=user)";
 
@@ -264,8 +265,6 @@
 
         return bRet;
     }
-
-
 }
 
 

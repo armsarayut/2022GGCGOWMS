@@ -139,8 +139,8 @@ else
               <CellTemplate>
                     <MudIconButton Size="@Size.Small" 
                         Icon="@Icons.Outlined.Delete" 
-                        Color="Color.Primary" 
-                        OnClick="@(()=>DeleteMap(@context.Item.Pallteno, @context.Item.Pallettag))"/>
+                        Color="Color.Primary"
+                               OnClick="@(()=>DeleteMapTran(context.Item.Efidx.Value, context.Item.Quantity.Value ,context.Item.Docno,context.Item.Itemcode, context.Item.Itembar ))" />
               </CellTemplate>
         </Column>
     </Columns>
@@ -301,6 +301,22 @@ else
         }
     }
 
+        private async Task DeleteMapTran(long tranId, decimal tranQty, string tranDoc, string tranItem, string tranTag)
+    {
+        bool? result = await CheckRoleApprove();
+
+        if (result == true)
+        {
+            ObjInboundService.CancelReceivingOrdersBypackId(tranId, tranQty, tranDoc,tranItem, tranTag);
+
+            this.InsertAuditrial("Cancel ReceivingOrder SKU : " + tranItem + " Qty : " + tranQty.ToString() +  " From Doc : " + tranDoc, pageheader);
+
+            Elements = ObjInboundService.GetAllInbGoodreceiveGos();
+        }
+
+        this.StateHasChanged();
+
+    }
 
     private async Task DeleteMap(string pallet, string pack)
     {

@@ -23,7 +23,7 @@ namespace GoWMS.Server.Data
         private static readonly string SqlUser = "sa";
         private static readonly string SqlPass = "@ei0u2020";
         //private static readonly string NpgPass = "@ei0u";
-        private static readonly string SqlContime = "120";
+        private static readonly string SqlContime = "30";
 
 
 

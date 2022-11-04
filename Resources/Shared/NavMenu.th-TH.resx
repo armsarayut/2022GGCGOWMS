@@ -319,7 +319,7 @@
     <value>8.1.คู่มือ</value>
   </data>
   <data name="HoldStock" xml:space="preserve">
-    <value>กักสินค้า</value>
+    <value>2.6.กักสินค้า</value>
   </data>
   <data name="Inbound" xml:space="preserve">
     <value>ขาเข้า</value>
@@ -360,6 +360,9 @@
   <data name="Picking" xml:space="preserve">
     <value>หยิบ</value>
   </data>
+  <data name="Prepare" xml:space="preserve">
+    <value>2.8.เตรียมสินค้า</value>
+  </data>
   <data name="QueuePicking" xml:space="preserve">
     <value>3.3.การเลือกคิว</value>
   </data>
@@ -367,7 +370,7 @@
     <value>1.1.รับออเดอร์</value>
   </data>
   <data name="ReleaseStock" xml:space="preserve">
-    <value>ปล่อยสินค้า</value>
+    <value>2.7.ปล่อยสินค้า</value>
   </data>
   <data name="Return" xml:space="preserve">
     <value>1.4.จัดเก็บพาเลทเปล่า</value>

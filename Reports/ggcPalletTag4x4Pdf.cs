@@ -64,7 +64,6 @@ namespace GoWMS.Server.Reports
                     //ctPallet.AddElement(phrasePallet);
                     //ctPallet.Go();
 
-
                     i++;
                 }
             }

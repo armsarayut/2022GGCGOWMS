@@ -117,34 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ItemCode" xml:space="preserve">
+  <data name="AREA" xml:space="preserve">
+    <value>AREA</value>
+  </data>
+  <data name="ITEMCODE" xml:space="preserve">
     <value>SKU</value>
   </data>
-  <data name="ItemName" xml:space="preserve">
+  <data name="ITEMNAME" xml:space="preserve">
     <value>NAME</value>
   </data>
-  <data name="Lot" xml:space="preserve">
-    <value>BATCH</value>
-  </data>
-  <data name="pageHeader" xml:space="preserve">
-    <value>Audit</value>
-  </data>
-  <data name="PalletErp" xml:space="preserve">
-    <value>PALLET</value>
-  </data>
-  <data name="PalletGo" xml:space="preserve">
-    <value>PALLET</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="SEQ" xml:space="preserve">
+  <data name="PACKID" xml:space="preserve">
     <value>TAG</value>
   </data>
-  <data name="START" xml:space="preserve">
-    <value>START</value>
+  <data name="PALLET" xml:space="preserve">
+    <value>PALLET</value>
   </data>
-  <data name="Stock" xml:space="preserve">
+  <data name="QTY" xml:space="preserve">
+    <value>Qty</value>
+  </data>
+  <data name="STOCK" xml:space="preserve">
     <value>STOCK</value>
+  </data>
+  <data name="STROAGEBIN" xml:space="preserve">
+    <value>LOCATION</value>
   </data>
 </root>

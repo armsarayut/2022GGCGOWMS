@@ -11,13 +11,14 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject InboundService ObjInboundService
 @inject ReportService UserlogService
+@inject IDialogService DialogService
+
 <MudDialog>
     <DialogContent>
 
         <MudNumericField Immediate="false" Label="From" Format="N0" T="int?" @bind-Value="_valuePalletfrom" HelperText="@_valuePalletfrom.ToString()" />
 
         <MudNumericField Immediate="false" Label="To" Format="N0" T="int?" @bind-Value="_valuePalletto" HelperText="@_valuePalletto.ToString()" />
-
 
     </DialogContent>
     <DialogActions>
@@ -34,8 +35,6 @@
     [Parameter] public string pUsername{ get; set; }
     [Parameter] public string pRef { get; set; }
 
-
-
     public int? _valuePalletfrom = 0;
 
     public int? _valuePalletto = 0;
@@ -46,7 +45,7 @@
     string sGroupID { get; set; } = "";
     string sUserID { get; set; } = "";
 
-     protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         await GetUserAthu();
     }
@@ -59,7 +58,6 @@
 
         if (_valuePalletto != null && _valuePalletfrom != null)
         {
-
 
             DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
             dtTrans.Columns.Add("tyitem", typeof(System.String));
@@ -77,9 +75,10 @@
             dtTrans.Rows.Add(_ravi);
 
             bool bRet ;
+            string sRet = "" ;
 
-            bRet = await Task.Run(() => ObjInboundService.CreateTagno(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid));
-
+            //bRet = await Task.Run(() => ObjInboundService.CreateTagno(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid));
+            bRet = ObjInboundService.CreateTagnodup(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid, ref sRet);
             //bRet = ObjInboundService.CreateTagno(pApiid, 1, 5, "A0001", pUsername, dtTrans, pGuid);
 
             if (bRet == true)
@@ -87,6 +86,12 @@
                 this.InsertAuditrial("Create Tag Pallet From : " + _valuePalletfrom.ToString() + " To: " + _valuePalletto.ToString(), pageheader);
 
                 MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                bool? result = await DialogService.ShowMessageBox("Warning", sRet, yesText: "OK");
+                
+                MudDialog.Cancel();
             }
 
         }

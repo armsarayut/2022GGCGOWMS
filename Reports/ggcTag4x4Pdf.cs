@@ -37,7 +37,7 @@ namespace GoWMS.Server.Reports
 
             iTextSharp.text.Font fonheader = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.BOLD);
             iTextSharp.text.Font fondata = new iTextSharp.text.Font(baseFont, 10, iTextSharp.text.Font.NORMAL);
-            iTextSharp.text.Font fondataProduct = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.NORMAL);
+            iTextSharp.text.Font fondataProduct = new iTextSharp.text.Font(baseFont, 18, iTextSharp.text.Font.NORMAL);
 
             ////                    Set paper                        (4" , 4") Note 1" = 2.54 cm = 72
             Document doc = new Document(new iTextSharp.text.Rectangle(288f, 288f), 5, 5, 1, 1);

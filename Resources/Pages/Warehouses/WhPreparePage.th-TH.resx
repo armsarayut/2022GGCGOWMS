@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ItemCode" xml:space="preserve">
-    <value>SKU</value>
+    <value>รหัสสินค้า</value>
   </data>
   <data name="ItemName" xml:space="preserve">
-    <value>NAME</value>
+    <value>ชื่อสินค้า</value>
   </data>
   <data name="Lot" xml:space="preserve">
-    <value>BATCH</value>
+    <value>ลอท</value>
   </data>
   <data name="pageHeader" xml:space="preserve">
-    <value>Audit</value>
+    <value>รอบนับ</value>
   </data>
   <data name="PalletErp" xml:space="preserve">
-    <value>PALLET</value>
+    <value>พาเลทอ้างอิง</value>
   </data>
   <data name="PalletGo" xml:space="preserve">
-    <value>PALLET</value>
+    <value>พาเลทหลัก</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>ค้นหา</value>
   </data>
   <data name="SEQ" xml:space="preserve">
-    <value>TAG</value>
+    <value>ลำดับที่</value>
   </data>
   <data name="START" xml:space="preserve">
-    <value>START</value>
+    <value>เริ่ม</value>
   </data>
   <data name="Stock" xml:space="preserve">
-    <value>STOCK</value>
+    <value>คงคลัง</value>
   </data>
 </root>
