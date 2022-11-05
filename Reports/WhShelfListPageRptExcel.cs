@@ -28,7 +28,7 @@ namespace GoWMS.Server.Reports
                 image.ScaleHeight(.25);
                 worksheet.Cell("B1").Value = "2.3.Location" + " - Report";
                 worksheet.Cell("B1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
+                worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString(VarGlobals.FormatDT)}";
                 #endregion Excel
 
                 #region Excel Report Data
@@ -38,21 +38,23 @@ namespace GoWMS.Server.Reports
                 worksheet.Cell(rptRows, 3).Value = "BANK";
                 worksheet.Cell(rptRows, 4).Value = "BAY";
                 worksheet.Cell(rptRows, 5).Value = "LEVEL";
-                worksheet.Cell(rptRows, 6).Value = "PALLET";
-                worksheet.Cell(rptRows, 7).Value = "STATUS";
-                worksheet.Cell(rptRows, 8).Value = "LASTUPDATE";
+                worksheet.Cell(rptRows, 6).Value = "DEEP";
+                worksheet.Cell(rptRows, 7).Value = "PALLET";
+                worksheet.Cell(rptRows, 8).Value = "STATUS";
+                worksheet.Cell(rptRows, 9).Value = "LASTUPDATE";
 
                 foreach (var rpt in ListRpt)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Shelfcode;
+                    worksheet.Cell(rptRows, 1).Value = rpt.Shelfname;
                     worksheet.Cell(rptRows, 2).Value = rpt.Srm_no;
                     worksheet.Cell(rptRows, 3).Value = rpt.Shelfbank;
                     worksheet.Cell(rptRows, 4).Value = rpt.Shelfbay;
                     worksheet.Cell(rptRows, 5).Value = rpt.Shelflevel;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Lpncode;
-                    worksheet.Cell(rptRows, 7).Value = rpt.St_desc;
-                    worksheet.Cell(rptRows, 8).Value = rpt.Modified;
+                    worksheet.Cell(rptRows, 6).Value = rpt.Shelfdeep;
+                    worksheet.Cell(rptRows, 7).Value = rpt.Lpncode;
+                    worksheet.Cell(rptRows, 8).Value = rpt.St_desc;
+                    worksheet.Cell(rptRows, 9).Value = rpt.Modified;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

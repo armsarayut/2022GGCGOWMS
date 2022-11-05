@@ -77,9 +77,7 @@
             bool bRet ;
             string sRet = "" ;
 
-            //bRet = await Task.Run(() => ObjInboundService.CreateTagno(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid));
             bRet = ObjInboundService.CreateTagnodup(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid, ref sRet);
-            //bRet = ObjInboundService.CreateTagno(pApiid, 1, 5, "A0001", pUsername, dtTrans, pGuid);
 
             if (bRet == true)
             {
@@ -93,9 +91,7 @@
                 
                 MudDialog.Cancel();
             }
-
         }
-
     }
 
     private void InsertAuditrial(String actdesc, String munname)

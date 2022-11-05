@@ -27,7 +27,7 @@ namespace GoWMS.Server.Reports
                 image.ScaleHeight(.25);
                 worksheet.Cell("B1").Value = "2.1.Stock Summary" + " - Report";
                 worksheet.Cell("B1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
+                worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString(VarGlobals.FormatDT)}";
                 #endregion Excel
 
                 #region Excel Report Data

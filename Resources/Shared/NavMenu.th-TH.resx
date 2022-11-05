@@ -156,6 +156,9 @@
   <data name="4.5.2.SRM-INOUT" xml:space="preserve">
     <value>4.5.2.SRM-เข้าออก</value>
   </data>
+  <data name="4.5.3.SRM-CONST" xml:space="preserve">
+    <value>4.5.3.ย้ายตำแหน่ง</value>
+  </data>
   <data name="4.Automation" xml:space="preserve">
     <value>4.ระบบอัตโนมัติ</value>
   </data>
@@ -289,7 +292,7 @@
     <value>9.5.การบรรจุ</value>
   </data>
   <data name="GoodReceive" xml:space="preserve">
-    <value>1.2.การรับ</value>
+    <value>1.3.การรับ</value>
   </data>
   <data name="History" xml:space="preserve">
     <value>ประวัติ</value>
@@ -328,7 +331,7 @@
     <value>อุปกรณ์เสริม</value>
   </data>
   <data name="InboundFG" xml:space="preserve">
-    <value>สินคาสำเร็จรูปและบรรจุภัณฑ์</value>
+    <value>สินค้าและบรรจุภัณฑ์</value>
   </data>
   <data name="Inventory" xml:space="preserve">
     <value>คงคลัง</value>
@@ -343,7 +346,7 @@
     <value>การทำแพลน</value>
   </data>
   <data name="MasterQueuing" xml:space="preserve">
-    <value>1.5.มาสเตอร์คิว</value>
+    <value>1.6.มาสเตอร์คิว</value>
   </data>
   <data name="OrderBooking" xml:space="preserve">
     <value>3.1.รายการจองสินค้า</value>
@@ -373,7 +376,7 @@
     <value>2.7.ปล่อยสินค้า</value>
   </data>
   <data name="Return" xml:space="preserve">
-    <value>1.4.จัดเก็บพาเลทเปล่า</value>
+    <value>1.5.จัดเก็บพาเลทเปล่า</value>
   </data>
   <data name="RGV" xml:space="preserve">
     <value>รถขนส่ง</value>

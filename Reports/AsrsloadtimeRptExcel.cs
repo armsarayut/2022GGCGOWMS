@@ -30,7 +30,7 @@ namespace GoWMS.Server.Reports
 
                 worksheet.Cell("B1").Value = "5.5.6.ASRS-Loadtime" + " Report";
                 worksheet.Cell("B1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
+                worksheet.Cell("B2").Value = $"PrintDate : {DateTime.Now.ToString(VarGlobals.FormatDT)}";
                 #endregion Excel
 
                 #region Excel Report Data

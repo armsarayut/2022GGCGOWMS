@@ -1,4 +1,4 @@
-﻿@page "/4/4_5_x"
+﻿@page "/4/4_5_3"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -65,10 +65,10 @@ else
 
     IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
 
-    private string pageheader { get; set; } = "4.5.x.ASRS-CONSTANCE";
+    private string pageheader { get; set; } = "4.5.3.SRM-RELOCATION";
 
-    public string mPagedesc { get; set; } = "4.5.x.ASRS-CONSTANCE";
-    private string mPagename { get; set; } = "/4/4_5_1";
+    public string mPagedesc { get; set; } = "4.5.3.SRM-RELOCATION";
+    private string mPagename { get; set; } = "/4/4_5_3";
 
     private string msgAction = "Enter Palletcode";
     private string mPalletcode { get; set; } = "";
@@ -106,7 +106,7 @@ else
         resultReturn = await Task.Run(() => OpjUserService.InsertMenu(mPagename, mPagedesc));
         resultReturn = await Task.Run(() => OpjUserService.InsertPrivilege(mPagename));
         ////////////////////////////////////////
-        Elements = await Task.Run(() => objCS.GetConstance());
+        Elements = await Task.Run(() => objCS.GetConstance().Where(x => x.Set_code == "CONS000100"));
 
         await GetUserAthu();
         this.InsertAuditrial("View", pageheader);

@@ -11,12 +11,12 @@ namespace GoWMS.Server.Data
     {
         public static string GetConnLocalDB()
         {
-            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL-SIT27;Trusted_Connection=True;";
+            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL;Trusted_Connection=True;";
         }
 
         #region SQL Database
 
-    
+        //DESKTOP-NQ62BHU\MSSQL
         private static readonly string SqlServer = " 10.251.11.3"; // Develop ,Local : DESKTOP-NQ62BHU\MSSQL , Host : 203.159.93.86, GGC QAS : 10.251.11.3
         private static readonly string SqlDB = "GOSQL"; // Develop , Local : GOSQLGGC , Host : GOSQL
         private static readonly string SqlPort = "1433";

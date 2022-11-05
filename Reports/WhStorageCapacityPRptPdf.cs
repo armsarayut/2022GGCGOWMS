@@ -56,7 +56,7 @@ namespace GoWMS.Server.Reports
             header.AddCell(cell);
 
             cell = GenerateOnlyBottomBorderCell(2, iTextSharp.text.Element.ALIGN_LEFT);
-            cell.Phrase = new Paragraph(DateTime.UtcNow.ToString("g"), font_headerContent);
+            cell.Phrase = new Paragraph(DateTime.Now.ToString(VarGlobals.FormatDT), font_headerContent);
             header.AddCell(cell);
 
             cell = GenerateOnlyBottomBorderCell(2, iTextSharp.text.Element.ALIGN_RIGHT);
