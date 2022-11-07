@@ -10,14 +10,97 @@
 @inject IConfiguration Configuration
 @inject UserServices ObjUserService
 @inject ReportService UserlogService
+@inject MasService ObjMasService
 @inject NavigationManager navigationManager
+@inject IStringLocalizer<MasItemPage> L
 
+<MudDialog>
+    <DialogContent>
 
+        <MudTextField @bind-Value="pItemcode" Counter="20" MaxLength="20" Label="@L["ITEMCODE"]" Variant="Variant.Outlined" />
+        <MudTextField @bind-Value="pItemname" Counter="255" MaxLength="255" Label="@L["ITEMNAME"]" Variant="Variant.Outlined" />
+        <MudNumericField @bind-Value="pPackqty" Label="@L["QTYPERPAL"]" Format="F3" Variant="Variant.Outlined" Min="0.000" Max="1300.000" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info" />
+        @*<MudTextField @bind-Value="pPackuon" Label="PACKUOM" Variant="Variant.Outlined" />*@
+        <MudTextField @bind-Value="pUom" Counter="20" MaxLength="20" Label="@L["UNIT"]" Variant="Variant.Outlined" />
+        <MudNumericField @bind-Value="pGosweight" Label="@L["GROSSWEIGHT"]" Format="F3" Variant="Variant.Outlined" Min="0.000" Max="1300.000" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info" />
+        <MudNumericField @bind-Value="pNetweight" Label="@L["NETWEIGHT"]" Format="F3" Variant="Variant.Outlined" Min="0.000" Max="1300.000" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info" />
+        <MudSwitch @bind-Checked="@pBatchmanage" Label="@L["BATCH"]" Color="Color.Primary" />
 
+    </DialogContent>
+    <DialogActions>
+    <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
 
 
 
 
 @code {
-    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public long pIdx { get; set; }
+    [Parameter] public string pItemcode { get; set; }
+    [Parameter] public string pItemname { get; set; }
+    [Parameter] public double pPackqty { get; set; }
+    [Parameter] public string pPackuon { get; set; }
+    [Parameter] public string pUom { get; set; }
+    [Parameter] public double pGosweight { get; set; }
+    [Parameter] public double pNetweight { get; set; }
+    [Parameter] public bool pBatchmanage { get; set; }
+    [Parameter] public Int32 pManagecase { get; set; }
+
+   private readonly string pageheader = "6.1.Item";
+    string sUsername { get; set; } = "";
+    string sRole { get; set; } = "";
+    string sGroupID { get; set; } = "";
+    string sUserID { get; set; } = "";
+   
+      protected override async Task OnInitializedAsync()
+    {
+        await GetUserAthu();
+    }
+
+     async Task GetUserAthu()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        sGroupID = user.Claims.FirstOrDefault(
+        c => c.Type == ClaimTypes.Role)?.Value;
+
+        sUserID = user.Claims.FirstOrDefault(
+            c => c.Type == ClaimTypes.Actor)?.Value;
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        bool resultReturn;
+        string msgReturn = "";
+
+        resultReturn = await Task.Run(() => ObjMasService.ManageMasterAccessory(pIdx, pItemcode, pItemname, pPackqty, pPackuon, pUom, pGosweight, pNetweight, pBatchmanage, pManagecase, ref msgReturn));
+        if (resultReturn == true)
+        {
+            if (pManagecase==0)
+            {
+                this.InsertAuditrial("Master Item : Add SKU " + pItemcode, pageheader);
+            }
+            else if (pManagecase==1){
+                this.InsertAuditrial("Master Item : Edit SKU " + pItemcode, pageheader);
+            }
+            
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+
+
+    }
+
+    private void InsertAuditrial(String actdesc, String munname)
+    {
+        bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
+    }
+
+
 }

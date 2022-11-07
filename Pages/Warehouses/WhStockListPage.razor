@@ -62,23 +62,23 @@ else
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
+                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PalletGo"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Storagearea)">@L["Area"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Storagebin)">@L["Location"]</MudTableSortLabel></MudTh>
             </HeaderContent>
             <RowTemplate>
+                 <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
                 <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
                 <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
                 <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
-                <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
+                <MudTd DataLabel=@L["Unit"]>@context.Unit</MudTd>
                 <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
                 <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
-                <MudTd DataLabel=@L["Area"]>@context.Storagearea</MudTd>
                 <MudTd DataLabel=@L["Location"]>@context.Storagebin</MudTd>
             </RowTemplate>
             <PagerContent>
@@ -103,16 +103,18 @@ else
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Lot)">@L["Lot"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Item_code)">@L["ItemCode"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Item_name)">@L["ItemName"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Lot)">@L["Lot"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Totalstock)">@L["TotalStock"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<InvStockSumByLot, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="ItemCode">@context.Item_code</MudTd>
-                <MudTd DataLabel="ItemName">@context.Item_name</MudTd>
-                <MudTd DataLabel="ItemName">@context.Lot</MudTd>
-                <MudTd DataLabel="TotalStock">@string.Format(VarGlobals.FormatN3, @context.Totalstock) </MudTd>
+                <MudTd DataLabel="@L["Lot"]">@context.Lot</MudTd>
+                <MudTd DataLabel="@L["ItemCode"]">@context.Item_code</MudTd>
+                <MudTd DataLabel="@L["ItemName"]">@context.Item_name</MudTd>
+                <MudTd DataLabel="@L["TotalStock"]">@string.Format(VarGlobals.FormatN3, @context.Totalstock) </MudTd>
+                <MudTd DataLabel="@L["Unit"]">@context.Item_name</MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />

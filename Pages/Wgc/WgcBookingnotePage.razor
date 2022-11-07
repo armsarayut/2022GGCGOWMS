@@ -120,11 +120,13 @@ else
             <Column T="Api_ggc" Field="Doc_ref" Title="@L["DNNo"]" />
             <Column T="Api_ggc" Field="Batch_no" Title="@L["BatchNo"]" />
             <Column T="Api_ggc" Field="Item_code" Title="@L["ItemCode"]" />
+            <Column T="Api_ggc" Field="Item_name" Title="@L["ItemName"]" />
             <Column T="Api_ggc" Field="Total_qty" Title="@L["Qty"]">
                 <CellTemplate>
                     @string.Format(VarGlobals.FormatN3, context.Item.Total_qty)
                 </CellTemplate>
             </Column>
+            <Column T="Api_ggc" Field="Unit" Title="@L["Unit"]" />
             <Column T="Api_ggc" Field="Remark" Title="@L["REMARK"]"/>
             <Column T="Api_ggc" Title="@L["PICK"]" Filterable="false">
                 <CellTemplate>

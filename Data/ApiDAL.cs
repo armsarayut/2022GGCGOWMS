@@ -11,6 +11,7 @@ using GoWMS.Server.Models;
 using GoWMS.Server.Models.Api;
 using NpgsqlTypes;
 using System.Text;
+using DocumentFormat.OpenXml.Office.Word;
 
 namespace GoWMS.Server.Data
 {
@@ -31,7 +32,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
                 sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
                 sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
-                sql.AppendLine(",t2.uom ");
+                sql.AppendLine(",t2.uom, t2.item_name");
                 sql.AppendLine("FROM dbo.api_ggc t1");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
                 sql.AppendLine("ON t1.item_code=t2.item_code");
@@ -73,7 +74,8 @@ namespace GoWMS.Server.Data
                         Api_name = rdr["api_name"].ToString(),
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
                         Gr_remark = rdr["gr_remark"].ToString(),
-                        Unit = rdr["uom"].ToString()
+                        Unit = rdr["uom"].ToString(),
+                        Item_name = rdr["item_name"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -81,6 +83,83 @@ namespace GoWMS.Server.Data
             }
             return lstobj;
         }
+
+        public async Task<Int64> GetSumGetApiInboundAll()
+        {
+            Int64 lRet = 0;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sql = new StringBuilder();
+
+                    sql.AppendLine("select Count(t1.idx)");
+                    sql.AppendLine("FROM dbo.api_ggc t1");
+                    sql.AppendLine("WHERE t1.flow_type=@flow_type");
+                    sql.AppendLine("AND t1.total_qty > iif(t1.gr_qty is null, 0, t1.gr_qty)");
+                  
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                    {
+                        CommandType = CommandType.Text
+                    };
+
+                    cmd.Parameters.AddWithValue("@flow_type", "01");
+
+                    con.Open();
+                    lRet = Convert.ToInt64(cmd.ExecuteScalar());
+                    cmd.Dispose();
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+        return lRet;
+        }
+
+        public async Task<Int64> GetSumGetApiInboundAllACC()
+        {
+            Int64 lRet = 0;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sql = new StringBuilder();
+
+                    sql.AppendLine("select Count(t1.idx)");
+                    sql.AppendLine("FROM dbo.api_ggc t1");
+                    sql.AppendLine("WHERE t1.flow_type=@flow_type");
+                    sql.AppendLine("AND t1.total_qty > iif(t1.gr_qty is null, 0, t1.gr_qty)");
+
+
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                    {
+                        CommandType = CommandType.Text
+                    };
+
+                    cmd.Parameters.AddWithValue("@flow_type", "I01");
+
+                    con.Open();
+                    lRet = Convert.ToInt64(cmd.ExecuteScalar());
+                    cmd.Dispose();
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+            return lRet;
+        }
+
 
         public IEnumerable<Api_ggc> GetApiInboundAllACC()
         {
@@ -93,7 +172,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
                 sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
                 sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
-                sql.AppendLine(",t2.uom ");
+                sql.AppendLine(",t2.uom, t2.item_name");
                 sql.AppendLine("FROM dbo.api_ggc t1");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
                 sql.AppendLine("ON t1.item_code=t2.item_code");
@@ -135,7 +214,8 @@ namespace GoWMS.Server.Data
                         Api_name = rdr["api_name"].ToString(),
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
                         Gr_remark = rdr["gr_remark"].ToString(),
-                        Unit = rdr["uom"].ToString()
+                        Unit = rdr["uom"].ToString(),
+                        Item_name = rdr["item_name"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -155,7 +235,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
                 sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
                 sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
-                sql.AppendLine(",t2.uom ");
+                sql.AppendLine(",t2.uom, t2.item_name");
                 sql.AppendLine("FROM dbo.api_ggc t1");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
                 sql.AppendLine("ON t1.item_code=t2.item_code");
@@ -196,7 +276,8 @@ namespace GoWMS.Server.Data
                         Api_name = rdr["api_name"].ToString(),
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
                         Gr_remark = rdr["gr_remark"].ToString(),
-                        Unit = rdr["uom"].ToString()
+                        Unit = rdr["uom"].ToString(),
+                        Item_name = rdr["item_name"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -216,7 +297,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
                 sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
                 sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
-                sql.AppendLine(",t2.uom ");
+                sql.AppendLine(",t2.uom, t2.item_name");
                 sql.AppendLine("FROM dbo.api_ggc t1");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
                 sql.AppendLine("ON t1.item_code=t2.item_code");
@@ -257,7 +338,8 @@ namespace GoWMS.Server.Data
                         Api_name = rdr["api_name"].ToString(),
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
                         Gr_remark = rdr["gr_remark"].ToString(),
-                        Unit = rdr["uom"].ToString()
+                        Unit = rdr["uom"].ToString(),
+                        Item_name = rdr["item_name"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

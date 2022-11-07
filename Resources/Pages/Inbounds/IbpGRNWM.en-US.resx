@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ACTION" xml:space="preserve">
+    <value>CANCEL</value>
+  </data>
+  <data name="AddAcc" xml:space="preserve">
+    <value>NEW</value>
+  </data>
   <data name="BatchNo" xml:space="preserve">
     <value>BATCH</value>
   </data>
@@ -124,7 +130,7 @@
     <value>DATE</value>
   </data>
   <data name="DNNo" xml:space="preserve">
-    <value>RESERVATION</value>
+    <value>DOCNO</value>
   </data>
   <data name="DNSeq" xml:space="preserve">
     <value>DNSeq</value>

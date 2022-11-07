@@ -132,6 +132,9 @@
   <data name="ItemCode" xml:space="preserve">
     <value>รหัสสินค้า</value>
   </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>ชื่อสินค้า</value>
+  </data>
   <data name="LotNo" xml:space="preserve">
     <value>ลอท</value>
   </data>

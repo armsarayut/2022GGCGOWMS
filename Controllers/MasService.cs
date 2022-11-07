@@ -61,6 +61,14 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
-       
+        public Boolean ManageMasterAccessory(long idx, string itemcode, string itemname, double packqty, string packuon, string uom, double gosweight, double netweight, bool batchmanage, Int32 managecase, ref string retmessage)
+        {
+            Boolean bret = false;
+            bret = objDAL.ManageMasterAccessory(idx, itemcode, itemname, packqty, packuon, uom, gosweight, netweight, batchmanage, managecase , ref retmessage);
+            return bret;
+        }
+
+
+
     }
 }

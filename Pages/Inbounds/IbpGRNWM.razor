@@ -1,4 +1,4 @@
-﻿@page "/1/1_x"
+﻿@page "/1/1_2_1"
 @using System
 @using System.Data;
 @using System.IO
@@ -19,7 +19,7 @@
 @using System.Security.Claims
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IStringLocalizer<IbpGRN> L
+@inject IStringLocalizer<IbpGRNWM> L
 @inject IJSRuntime JSRuntime
 @inject ReportService UserlogService
 @inject CustomerService ObjCustomService
@@ -27,6 +27,7 @@
 @inject InboundService ObjInboundService
 @inject IPrintingService PrintingService
 @inject StoreoutService ObjService
+@inject ErpApiService ObjErpApiService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
@@ -42,6 +43,9 @@ else
     <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
 
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
+          <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
+               Color="Color.Primary" OnClick="@AddNewGrAcc">@L["AddAcc"] 
+               </MudButton>
         <MudSpacer />
         <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
@@ -124,6 +128,7 @@ else
             <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNNo"]" />
             <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["BatchNo"]" />
             <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemCode"]" />
+            <Column T="Api_ggc" Field="Item_name" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemName"]" />
             <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Qty"]">
                 <CellTemplate>
                     @string.Format(VarGlobals.FormatN3, context.Item.Total_qty)
@@ -138,10 +143,12 @@ else
             </Column>
             <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false">
                 <CellTemplate>
-
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Primary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
-
-
+                </CellTemplate>
+            </Column>
+             <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Secondary" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
                 </CellTemplate>
             </Column>
         </Columns>
@@ -156,10 +163,10 @@ else
 
     private string msgAction = "Enter Palletcode";
 
-    public string pageheader { get; set; } = "1.x.Receiving Order";
+    public string pageheader { get; set; } = "1.2.1.Order Receiving";
 
-    public string mPagedesc { get; set; } = "1.x.Receiving Order";
-    private string mPagename { get; set; } = "/1/1_x";
+    public string mPagedesc { get; set; } = "1.2.1.Order Receiving";
+    private string mPagename { get; set; } = "/1/1_2_1";
 
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
@@ -595,6 +602,74 @@ else
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
+
+    private async Task AddNewGrAcc()
+    {
+        bool? result = await CheckRoleAdd();
+        if (result == true)
+        {
+            //[Parameter] public long pIdx { get; set; }
+            //  [Parameter] public string pItemcode { get; set; }
+            //  [Parameter] public double pTotalQty { get; set; }
+            //  [Parameter] public string pBatchno{ get; set; }
+            //  [Parameter] public DateTime? pRecivedate { get; set; }
+            //  [Parameter] public string pRemark { get; set; }
+            //  [Parameter] public string pDocref { get; set; }
+            //  [Parameter] public string pDocrefitem { get; set; }
+            //  [Parameter] public Int32 pManagecase { get; set; }
+
+            long pid = 0;
+            DialogOptions closeOnEscapeKey = new DialogOptions() { CloseButton = true };
+            DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+            var parameters = new DialogParameters();
+            parameters.Add("pIdx", pid);
+            parameters.Add("pItemcode", "");
+            parameters.Add("pTotalQty", 0.000);
+            parameters.Add("pBatchno", "");
+            parameters.Add("pRecivedate", DateTime.Now.Date);
+            parameters.Add("pRemark", "");
+            parameters.Add("pDocref", "");
+            parameters.Add("pDocrefitem", "");
+            parameters.Add("pManagecase", 0);
+
+            var dialog = DialogService.Show<InbGRAcc>("NEW Accessory order receiving", parameters, maxWidth);
+           
+            var resultDialog = await dialog.Result;
+
+            if (!resultDialog.Cancelled)
+            {
+                 Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());
+                this.StateHasChanged();
+            }
+
+           
+        }
+
+    }
+
+    async Task CancleGR(long apiid)
+    {
+        bool? result = await CheckRoleDelete();
+        if (result == true)
+        {
+            bool resultReturn;
+            string msgReturn = "";
+            resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
+            if (resultReturn == true)
+            {
+                this.InsertAuditrial("Accessory order receiving : Cancle Ref. " + apiid.ToString(), pageheader);
+
+                Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());
+                this.StateHasChanged();
+
+            }
+        }
+
+         
+
+    }
+
+
 
 
 

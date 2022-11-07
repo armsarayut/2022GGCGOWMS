@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="1.2.1ReceivingOrder" xml:space="preserve">
+    <value>1.2.1.Order Receiving</value>
+  </data>
   <data name="1.Inbound" xml:space="preserve">
     <value>1.Inbound</value>
   </data>
@@ -328,7 +331,7 @@
     <value>Inbound</value>
   </data>
   <data name="InboundACC" xml:space="preserve">
-    <value>1.2.Accessories</value>
+    <value>1.2.Accessory</value>
   </data>
   <data name="InboundFG" xml:space="preserve">
     <value>1.1.Product &amp; Pagaking</value>
@@ -370,7 +373,7 @@
     <value>3.3.Queue Picking</value>
   </data>
   <data name="ReceivingOrder" xml:space="preserve">
-    <value>1.1.Order Receiving </value>
+    <value>1.1.1.Order Receiving </value>
   </data>
   <data name="ReleaseStock" xml:space="preserve">
     <value>2.7.Release Stock</value>

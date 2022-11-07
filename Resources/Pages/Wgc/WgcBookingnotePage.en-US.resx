@@ -132,6 +132,9 @@
   <data name="ItemCode" xml:space="preserve">
     <value>SKU</value>
   </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>NAME</value>
+  </data>
   <data name="LotNo" xml:space="preserve">
     <value>BATCH</value>
   </data>

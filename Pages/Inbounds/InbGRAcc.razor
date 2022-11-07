@@ -1,0 +1,131 @@
+﻿@using GoWMS.Server.Data;
+@using GoWMS.Server.Controllers
+@using NETCore.Encrypt;
+@using GoWMS.Server.Models
+@using GoWMS.Server.Models.Mas
+@using Microsoft.Extensions.Configuration
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IConfiguration Configuration
+@inject UserServices ObjUserService
+@inject ReportService UserlogService
+@inject MasService ObjMasService
+@inject InboundService ObjInboundService
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<IbpGRNWM> L
+
+<MudDialog>
+    <DialogContent>
+
+        <MudTextField @bind-Value="pDocref" Counter="20" MaxLength="20" Label="@L["DNNo"]" Variant="Variant.Outlined" />
+         <MudSelect Label="@L["ItemCode"]" HelperText="Pick the Item" @bind-SelectedValues="selectedItems">
+            @foreach (var cmd in Elements)
+            {
+                <MudSelectItem Value="@cmd">@cmd.Itemname</MudSelectItem>
+            }
+        </MudSelect>
+        <MudNumericField @bind-Value="pTotalQty" Label="@L["Qty"]" Format="F3" Variant="Variant.Outlined" Min="0.000" />
+        <MudTextField @bind-Value="pBatchno" Counter="50" MaxLength="50" Label="@L["BatchNo"]" Variant="Variant.Outlined" />
+        <MudDatePicker Label="@L["DNDate"]" @bind-Date="pRecivedate" />
+        <MudTextField @bind-Value="pRemark" Counter="255" MaxLength="255" Label="@L["REMARK"]" Variant="Variant.Outlined" />
+
+    </DialogContent>
+    <DialogActions>
+    <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public long pIdx { get; set; }
+    [Parameter] public string pItemcode { get; set; }
+    [Parameter] public double pTotalQty { get; set; }
+    [Parameter] public string pBatchno{ get; set; }
+    [Parameter] public DateTime? pRecivedate { get; set; }
+    [Parameter] public string pRemark { get; set; }
+    [Parameter] public string pDocref { get; set; }
+    [Parameter] public string pDocrefitem { get; set; }
+    [Parameter] public Int32 pManagecase { get; set; }
+
+   private readonly string pageheader = "6.1.Item";
+    string sUsername { get; set; } = "";
+    string sRole { get; set; } = "";
+    string sGroupID { get; set; } = "";
+    string sUserID { get; set; } = "";
+   
+    private IEnumerable<Mas_Item_Go> selectedItems = new HashSet<Mas_Item_Go>();
+    private IEnumerable<Mas_Item_Go> Elements = new List<Mas_Item_Go>();
+
+      protected override async Task OnInitializedAsync()
+    {
+        await GetUserAthu();
+        Elements = await Task.Run(() => ObjMasService.GetAllMasterItems().Where(w => w.Itemcat=="ACC"));
+    }
+
+     async Task GetUserAthu()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        sUsername = user.Identity.Name;
+
+        sGroupID = user.Claims.FirstOrDefault(
+        c => c.Type == ClaimTypes.Role)?.Value;
+
+        sUserID = user.Claims.FirstOrDefault(
+            c => c.Type == ClaimTypes.Actor)?.Value;
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+
+        if (selectedItems.Count() >0 )
+        {
+            bool resultReturn;
+            string msgReturn = "";
+            string sItem = "";
+            foreach (var item in selectedItems)
+            {
+                sItem = item.Itemcode;
+            }
+
+
+            resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(pIdx, sItem, pTotalQty, sUsername, pBatchno, (DateTime)pRecivedate, pRemark, pDocref, pManagecase, ref msgReturn));
+            if (resultReturn == true)
+            {
+                if (pManagecase == 0)
+                {
+                    this.InsertAuditrial("Accessory order receiving : Add Document " + pDocref, pageheader);
+                }
+                else if (pManagecase == 1)
+                {
+                    this.InsertAuditrial("Accessory order receiving : Edit Document " + pDocref, pageheader);
+                }
+
+
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+        }
+        else{
+            MudDialog.Cancel();
+        }
+       
+
+ 
+
+    }
+
+    private void InsertAuditrial(String actdesc, String munname)
+    {
+        bool bRet = UserlogService.InsertAudittrial(actdesc, munname, long.Parse(sUserID));
+    }
+
+
+}

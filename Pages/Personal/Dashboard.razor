@@ -8,8 +8,8 @@
 @using GoWMS.Server.Controllers
 
 @inject IStringLocalizer<Dashboard> L
-
-@inject WgcService ObjErpService
+@inject ErpApiService ObjErpService
+@*@inject WgcService ObjErpService*@
 @inject InboundService ObjInbService
 @inject DashService ObjDashService
 @attribute [Authorize]
@@ -316,8 +316,8 @@
         //Ticker();
 
         /////-- Get from ERP
-        //palletGR = await ObjErpService.GetSumPalletAllApiNewDelivery_note();
-        //orderGR = await ObjErpService.GetSumOrderAllApiNewDelivery_note();
+        palletGR = await ObjErpService.GetSumGetApiInboundAll();
+        orderGR = await ObjErpService.GetSumGetApiInboundAllACC();
         ////--------------------
 
 
@@ -786,8 +786,8 @@
         {
             theTime = DateTime.Now.ToLongTimeString();
             // get code ---
-            palletGR = await ObjErpService.GetSumPalletAllApiNewDelivery_note();
-            orderGR = await ObjErpService.GetSumOrderAllApiNewDelivery_note();
+            palletGR = await ObjErpService.GetSumGetApiInboundAll();
+            orderGR = await ObjErpService.GetSumGetApiInboundAllACC();
             palletPut = await ObjInbService.GetSumPalletAllInbGoodreceiptGo();
             orderPut = await ObjInbService.GetSumOrderAllInbGoodreceiptGo();
 

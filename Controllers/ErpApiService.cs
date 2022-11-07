@@ -20,6 +20,19 @@ namespace GoWMS.Server.Controllers
             return retlist;
         }
 
+    
+
+        public Task<Int64> GetSumGetApiInboundAll()
+        {
+            return objDAL.GetSumGetApiInboundAll();
+        }
+
+        public Task<Int64> GetSumGetApiInboundAllACC()
+        {
+            return objDAL.GetSumGetApiInboundAllACC();
+        }
+
+
         public List<Api_ggc> GetApiInboundAllACC()
         {
             List<Api_ggc> retlist = objDAL.GetApiInboundAllACC().ToList();

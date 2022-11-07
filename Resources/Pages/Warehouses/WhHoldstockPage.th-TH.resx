@@ -118,27 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AREA" xml:space="preserve">
-    <value>AREA</value>
+    <value>พื้นที่</value>
   </data>
   <data name="ITEMCODE" xml:space="preserve">
-    <value>SKU</value>
+    <value>รหัสสินค้า</value>
   </data>
   <data name="ITEMNAME" xml:space="preserve">
-    <value>NAME</value>
+    <value>ชื่อสินค้า</value>
+  </data>
+  <data name="Lot" xml:space="preserve">
+    <value>เลขที่ครั้งที่ผลิต</value>
   </data>
   <data name="PACKID" xml:space="preserve">
-    <value>TAG</value>
+    <value>เลขกำกับ</value>
   </data>
   <data name="PALLET" xml:space="preserve">
-    <value>PALLET</value>
+    <value>พาเลท</value>
   </data>
   <data name="QTY" xml:space="preserve">
-    <value>Qty</value>
+    <value>จำนวน</value>
   </data>
   <data name="STOCK" xml:space="preserve">
-    <value>STOCK</value>
+    <value>คงคลัง</value>
   </data>
   <data name="STROAGEBIN" xml:space="preserve">
-    <value>LOCATION</value>
+    <value>ตำแหน่ง</value>
   </data>
 </root>

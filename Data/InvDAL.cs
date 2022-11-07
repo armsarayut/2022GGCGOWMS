@@ -58,7 +58,8 @@ namespace GoWMS.Server.Data
                         Palletcode = rdr["pallet_bc"].ToString(),
                         Shelfname = rdr["loc"].ToString(),
                         StorageArae = rdr["whse"].ToString(),
-                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"]
+                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
+                        BatchNo = rdr["lot"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -164,10 +165,10 @@ namespace GoWMS.Server.Data
                 //Sql.AppendLine("order by itemcode");
 
                 Sql.AppendLine("select row_number() over(order by item asc) AS rn,");
-                Sql.AppendLine("item, itemdesc, sum(qty) as totalstock, count(pallet_bc) as countpallet");
+                Sql.AppendLine("item, itemdesc, uom, sum(qty) as totalstock, count(pallet_bc) as countpallet");
                 Sql.AppendLine("from dbo.v_wmstran_stock_rpt_lot ");
                 //Sql.AppendLine("WHERE allocatequantity < quantity");
-                Sql.AppendLine("group by item, itemdesc");
+                Sql.AppendLine("group by item, uom, itemdesc");
                 Sql.AppendLine("order by item");
 
 
@@ -186,7 +187,8 @@ namespace GoWMS.Server.Data
                         Item_code = rdr["item"].ToString(),
                         Item_name = rdr["itemdesc"].ToString(),
                         Totalstock = rdr["totalstock"] == DBNull.Value ? null : (Decimal?)rdr["totalstock"],
-                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int32?)rdr["countpallet"]
+                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int32?)rdr["countpallet"],
+                        Unit = rdr["uom"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -203,9 +205,9 @@ namespace GoWMS.Server.Data
                 StringBuilder Sql = new StringBuilder();
 
                 Sql.AppendLine("select row_number() over(order by item asc) AS rn,");
-                Sql.AppendLine("item, itemdesc, lot, sum(qty) as totalstock, count(pallet_bc) as countpallet");
+                Sql.AppendLine("item, itemdesc, uom, lot, sum(qty) as totalstock, count(pallet_bc) as countpallet");
                 Sql.AppendLine("from dbo.v_wmstran_stock_rpt_lot ");
-                Sql.AppendLine("group by item, itemdesc, lot");
+                Sql.AppendLine("group by item, uom, itemdesc, lot");
                 Sql.AppendLine("order by item");
 
 
@@ -225,7 +227,9 @@ namespace GoWMS.Server.Data
                         Item_name = rdr["itemdesc"].ToString(),
                         Lot = rdr["lot"].ToString(),
                         Totalstock = rdr["totalstock"] == DBNull.Value ? null : (Decimal?)rdr["totalstock"],
-                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int32?)rdr["countpallet"]
+                        Countpallet = rdr["countpallet"] == DBNull.Value ? null : (Int32?)rdr["countpallet"],
+                        Unit = rdr["uom"].ToString(),
+
                     };
                     lstobj.Add(objrd);
                 }

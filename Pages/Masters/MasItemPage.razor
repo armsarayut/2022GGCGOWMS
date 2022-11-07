@@ -24,6 +24,10 @@ else
 {
     <MudText Typo="Typo.h6" Color="Color.Primary"> @pageheader </MudText>
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
+           <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
+               Color="Color.Primary" OnClick=@AddNewMaster>@L["AddAcc"] 
+               </MudButton>
+
         <MudSpacer />
         <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
@@ -55,7 +59,8 @@ else
             <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["NETWEIGHT"]</MudTh>
             <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["GROSSWEIGHT"]</MudTh>
            @* <MudTh>@L["WEIGHTUNIT"]</MudTh>*@
-             <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">BATCH</MudTh>
+             <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["BATCH"]</MudTh>
+            <MudTh>@L["EDIT"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Itemcode</MudTd>
@@ -65,7 +70,14 @@ else
             <MudTd DataLabel=@L["NETWEIGHT"]>@context.Weightnet</MudTd>
             <MudTd DataLabel=@L["GROSSWEIGHT"]>@context.Weightgross</MudTd>
             @*<MudTd DataLabel=@L["WEIGHTUNIT"]>@context.Weightuint</MudTd>*@
-             <MudTd DataLabel="BATCH"><MudCheckBox @bind-Checked="@context.IsBatchMgn" /></MudTd>
+             <MudTd DataLabel=@L["BATCH"]><MudCheckBox @bind-Checked="@context.IsBatchMgn" ReadOnly="true"/></MudTd>
+            <MudTd Class="clm-row-small" DataLabel=@L["EDIT"]>
+                @if(@context.Itemcat=="ACC")
+                {
+                    <MudFab @onclick="@(()=>EditMaster((long)@context.Efidx,@context.Itemcode, @context.Itemname, (double)@context.Palqty, "00", @context.Itemunit, (double)@context.Weightgross, (double)@context.Weightnet, (bool)@context.IsBatchMgn))" Color="Color.Secondary" Icon="@Icons.Material.Filled.ModeEdit" Size="Size.Small" IconSize="Size.Small" />
+                }
+                
+            </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
@@ -118,7 +130,7 @@ else
         this.InsertAuditrial("View", pageheader);
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-        Elements = await Task.Run(() => objCS.GetAllMasterItems());
+        Elements = await Task.Run(() => objCS.GetAllMasterItems().OrderBy(o => o.Itemcode));
     }
 
     async Task GetUserAthu()
@@ -228,6 +240,7 @@ else
             var exmsg = e.Message.ToString();
         }
     }
+
 
     #region "Role"
     private async Task<bool> CheckRoleAdd()
@@ -391,4 +404,74 @@ else
         return bRet;
     }
     #endregion
+
+    private async Task AddNewMaster()
+    {
+        bool? result = await CheckRoleAdd();
+        if (result == true)
+        {
+            long pid = 0;
+            DialogOptions closeOnEscapeKey = new DialogOptions() { CloseButton = true };
+            DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+            var parameters = new DialogParameters();
+             parameters.Add("pIdx", pid);
+            parameters.Add("pItemcode", "");
+            parameters.Add("pItemname", "");
+            parameters.Add("pPackqty", 0.000);
+            parameters.Add("pPackuon", "00");
+            parameters.Add("pUom", "");
+            parameters.Add("pGosweight", 0.000);
+            parameters.Add("pNetweight", 0.000);
+            parameters.Add("pBatchmanage", false);
+            parameters.Add("pManagecase", 0);
+
+            var dialog = DialogService.Show<MasAddItemAccPage>("NEW ACCESSORY", parameters, maxWidth);
+
+            var resultDialog = await dialog.Result;
+
+            if (!resultDialog.Cancelled)
+            {
+                Elements = await Task.Run(() => ObjService.GetAllMasterItems().OrderBy(o => o.Itemcode));
+                this.StateHasChanged();
+            }
+
+        }
+
+    }
+
+    private async Task EditMaster(long idx, string itemcode, string itemname, double packqty, string packuon, string uom, double gosweight, double netweight, bool batchmanage)
+    {
+        bool? result = await CheckRoleAdd();
+        if (result == true)
+        {
+            DialogOptions closeOnEscapeKey = new DialogOptions() { CloseButton = true };
+            DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+            var parameters = new DialogParameters();
+
+            parameters.Add("pIdx", idx);
+            parameters.Add("pItemcode", itemcode);
+            parameters.Add("pItemname", itemname);
+            parameters.Add("pPackqty", packqty);
+            parameters.Add("pPackuon", packuon);
+            parameters.Add("pUom", uom);
+            parameters.Add("pGosweight", gosweight);
+            parameters.Add("pNetweight", netweight);
+            parameters.Add("pBatchmanage", batchmanage);
+            parameters.Add("pManagecase", 1);
+
+            var dialog = DialogService.Show<MasAddItemAccPage>("EDIT ACCESSORY", parameters, maxWidth);
+
+             var resultDialog = await dialog.Result;
+
+            if (!resultDialog.Cancelled)
+            {
+                Elements = await Task.Run(() => ObjService.GetAllMasterItems().OrderBy(o => o.Itemcode));
+                this.StateHasChanged();
+            }
+        }
+
+    }
+    
+
+
 }

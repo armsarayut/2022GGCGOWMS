@@ -126,6 +126,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>NAME</value>
   </data>
+  <data name="Loc" xml:space="preserve">
+    <value>LOCATION</value>
+  </data>
   <data name="LOT" xml:space="preserve">
     <value>BATCH</value>
   </data>
@@ -139,7 +142,7 @@
     <value>PALLET</value>
   </data>
   <data name="QTY" xml:space="preserve">
-    <value>Q'ty</value>
+    <value>Qty</value>
   </data>
   <data name="REQUESTDATE" xml:space="preserve">
     <value>REQUESTDATE</value>

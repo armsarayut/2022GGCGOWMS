@@ -1258,5 +1258,67 @@ namespace GoWMS.Server.Data
             return bRet;
         }
 
+        public Boolean ManageGRAccessory(long idx, string itemcode, double totalqty, string createby, string batchno, DateTime recivedate, string remark, String docref, Int32 managecase, ref string retmessage)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_manage_gracc");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_idx", idx);
+                    cmd.Parameters.AddWithValue("@_itemcode", itemcode);
+                    cmd.Parameters.AddWithValue("@_totalqty", totalqty);
+                    cmd.Parameters.AddWithValue("@_createby", createby);
+                    cmd.Parameters.AddWithValue("@_batchno", batchno);
+                    cmd.Parameters.AddWithValue("@_recivedate", recivedate);
+                    cmd.Parameters.AddWithValue("@_remark", remark);
+                    cmd.Parameters.AddWithValue("@_docref", docref);
+                    cmd.Parameters.AddWithValue("@_docrefitem", docref);
+                    cmd.Parameters.AddWithValue("@_managecase", managecase);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (SqlException ex)
+                {
+                    //Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+                retmessage = sRet;
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+            return bRet;
+        }
+
     }
 }

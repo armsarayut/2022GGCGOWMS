@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="1.2.1ReceivingOrder" xml:space="preserve">
+    <value>1.2.1.รับออเดอร์</value>
+  </data>
   <data name="1.Inbound" xml:space="preserve">
     <value>1.ขาเข้า</value>
   </data>
@@ -370,7 +373,7 @@
     <value>3.3.การเลือกคิว</value>
   </data>
   <data name="ReceivingOrder" xml:space="preserve">
-    <value>1.1.รับออเดอร์</value>
+    <value>1.1.1.รับออเดอร์</value>
   </data>
   <data name="ReleaseStock" xml:space="preserve">
     <value>2.7.ปล่อยสินค้า</value>

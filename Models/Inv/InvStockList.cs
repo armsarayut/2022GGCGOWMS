@@ -18,6 +18,7 @@ namespace GoWMS.Server.Models.Inv
         public Int32? Efstatus { get; set; }
 
         public string StorageArae { get; set; }
+        public string BatchNo { get; set; }
 
     }
 }

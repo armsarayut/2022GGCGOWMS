@@ -25,5 +25,6 @@ namespace GoWMS.Server.Models.Mas
 		public bool ? IsBatchMgn { get; set; }
         public Decimal? Palqty { get; set; }
 
+        public string Itemcat { get; set; }
     }
 }

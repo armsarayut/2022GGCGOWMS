@@ -130,7 +130,8 @@ namespace GoWMS.Server.Data
                         Weightuint = rdr["weight_unit"].ToString(),
                         Vendor = rdr["vendor"].ToString(),
                         IsBatchMgn = rdr["batch_management"] == DBNull.Value ? null : (bool?)rdr["batch_management"],
-                        Palqty = rdr["pack_qty"] == DBNull.Value ? null : (decimal?)rdr["pack_qty"]
+                        Palqty = rdr["pack_qty"] == DBNull.Value ? null : (decimal?)rdr["pack_qty"],
+                        Itemcat= rdr["item_cat"].ToString()
 
                     };
                     lstobj.Add(objrd);
@@ -212,6 +213,10 @@ namespace GoWMS.Server.Data
             }
             return lstobj;
         }
+
+
+        
+
 
         public IEnumerable<Mas_Status_Go> GetAllMasterstatusGo()
         {
@@ -323,6 +328,68 @@ namespace GoWMS.Server.Data
                 }
             }
             return bret;
+        }
+
+        public Boolean ManageMasterAccessory(long idx, string itemcode, string itemname, double packqty, string packuon, string uom, double gosweight, double netweight , bool batchmanage, Int32 managecase ,ref  string retmessage)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+   
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_manage_masteraccessories");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_idx", idx);
+                    cmd.Parameters.AddWithValue("@_itemcode", itemcode);
+                    cmd.Parameters.AddWithValue("@_itemname", itemname);
+                    cmd.Parameters.AddWithValue("@_packqty", packqty);
+                    cmd.Parameters.AddWithValue("@_packuon", packuon);
+                    cmd.Parameters.AddWithValue("@_uom", uom);
+                    cmd.Parameters.AddWithValue("@_gosweight", gosweight);
+                    cmd.Parameters.AddWithValue("@_netweight", netweight);
+                    cmd.Parameters.AddWithValue("@_batchmanage", batchmanage);
+                    cmd.Parameters.AddWithValue("@_managecase", managecase);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+                retmessage = sRet;
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+            return bRet;
         }
 
     }

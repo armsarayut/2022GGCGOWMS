@@ -126,6 +126,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>ชื่อสินค้า</value>
   </data>
+  <data name="Loc" xml:space="preserve">
+    <value>ตำแหน่ง</value>
+  </data>
   <data name="LOT" xml:space="preserve">
     <value>แบท</value>
   </data>

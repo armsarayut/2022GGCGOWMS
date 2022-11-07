@@ -123,6 +123,9 @@
   <data name="ItemName" xml:space="preserve">
     <value>NAME</value>
   </data>
+  <data name="Loc" xml:space="preserve">
+    <value>LOCATION</value>
+  </data>
   <data name="Lot" xml:space="preserve">
     <value>BATCH</value>
   </data>

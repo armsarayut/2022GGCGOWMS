@@ -126,6 +126,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>NAME</value>
   </data>
+  <data name="Lot" xml:space="preserve">
+    <value>BATCH</value>
+  </data>
   <data name="PACKID" xml:space="preserve">
     <value>TAG</value>
   </data>

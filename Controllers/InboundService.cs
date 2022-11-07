@@ -7,6 +7,7 @@ using GoWMS.Server.Data;
 using GoWMS.Server.Models;
 using GoWMS.Server.Models.Inb;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Emit;
 
 namespace GoWMS.Server.Controllers
 {
@@ -147,6 +148,13 @@ namespace GoWMS.Server.Controllers
         public bool CreatePutawayEmpty(string lpncode, string tagcode, string gatecode, string worktype, ref string retstring)
         {
             bool bret = objDAL.CreatePutawayEmpty(lpncode, tagcode, gatecode, worktype, ref retstring);
+
+            return bret;
+        }
+
+        public bool ManageGRAccessory(long idx, string itemcode, double totalqty, string createby, string batchno, DateTime recivedate, string remark, String docref, Int32 managecase, ref string retmessage)
+        {
+            bool bret = objDAL.ManageGRAccessory(idx, itemcode, totalqty, createby, batchno, recivedate, remark, docref, managecase, ref retmessage);
 
             return bret;
         }

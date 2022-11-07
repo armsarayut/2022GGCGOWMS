@@ -162,4 +162,7 @@
   <data name="TotalStock" xml:space="preserve">
     <value>รวมคงคลัง</value>
   </data>
+  <data name="Unit" xml:space="preserve">
+    <value>หน่วย</value>
+  </data>
 </root>

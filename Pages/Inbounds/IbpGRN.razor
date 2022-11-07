@@ -1,4 +1,4 @@
-﻿@page "/1/1_1"
+﻿@page "/1/1_1_1"
 @using System
 @using System.Data;
 @using System.IO
@@ -102,7 +102,8 @@ else
         Items="@Elements" 
         SortMode="SortMode.Multiple" 
         Hideable="@hideable"
- Filterable ="@filterable"
+        Filterable ="@filterable"
+        HorizontalScrollbar="true"
         FilterMode="@DataGridFilterMode.ColumnFilterRow"
         FixedHeader="@fixed_header" 
         FixedFooter="@fixed_footer"
@@ -121,10 +122,11 @@ else
                     @Convert.ToDateTime(context.Item.Receiving_date).ToString(VarGlobals.FormatD)
             </CellTemplate>
         </Column>
-        <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNNo"]"/>
-        <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["BatchNo"]"/>
-        <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemCode"]"/>
-        <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Qty"]">
+            <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNNo"]" StickyLeft="true"/>
+            <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["BatchNo"]"/>
+            <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemCode"]"/>
+            <Column T="Api_ggc" Field="Item_name" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemName"]" />
+            <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Qty"]">
             <CellTemplate>
                     @string.Format(VarGlobals.FormatN3, context.Item.Total_qty) 
             </CellTemplate>
@@ -136,7 +138,7 @@ else
                     @string.Format(VarGlobals.FormatN3, context.Item.Gr_qty)
             </CellTemplate>
         </Column>
-        <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false">
+            <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false" StickyRight="true">
               <CellTemplate>
                  
                       <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Primary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
@@ -156,10 +158,10 @@ else
 
     private string msgAction = "Enter Palletcode";
 
-    public string pageheader { get; set; } = "1.1.Order Receiving";
+    public string pageheader { get; set; } = "1.1.1.Order Receiving";
 
-    public string mPagedesc { get; set; } = "1.1.Order Receiving";
-    private string mPagename { get; set; } = "/1/1_1";
+    public string mPagedesc { get; set; } = "1.1.1.Order Receiving";
+    private string mPagename { get; set; } = "/1/1_1_1";
 
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";

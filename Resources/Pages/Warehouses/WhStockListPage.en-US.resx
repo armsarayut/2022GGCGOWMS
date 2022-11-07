@@ -168,4 +168,7 @@
   <data name="TotalStock" xml:space="preserve">
     <value>TOTALSTOCK</value>
   </data>
+  <data name="Unit" xml:space="preserve">
+    <value>UNIT</value>
+  </data>
 </root>

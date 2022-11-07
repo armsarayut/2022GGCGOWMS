@@ -14,5 +14,6 @@ namespace GoWMS.Server.Models.Inv
         public Decimal? Totalstock { get; set; }
         public Int32? Countpallet { get; set; }
 
+        public string Unit { get; set; }
     }
 }
