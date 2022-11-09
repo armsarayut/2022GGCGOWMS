@@ -54,7 +54,7 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_From)">@L["SOURCE"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_To)">@L["DESTINATION"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Stime)">@L["STARTED"]</MudTableSortLabel></MudTh>
-            <MudTh>URGENT</MudTh>
+            <MudTh>ACTION</MudTh>
         </HeaderContent>
         <RowTemplate>
             @*<MudTd DataLabel=@L["PRIORITY"]>@context.Work_Priority</MudTd>*@
@@ -74,6 +74,7 @@ else
                 @if (context.Work_Code == "05")
                     {
                     <MudFab Color="Color.Error" OnClick="(()=> UpdateUrgent( context.Lpncode))" Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" IconSize="Size.Small" />
+                    <MudFab Color="Color.Warning" OnClick="(()=> CancelQueueOutbound( context.Lpncode))" Icon="@Icons.Material.Filled.Cancel" Size="Size.Small" IconSize="Size.Small" />
                     }
             </MudTd>
         </RowTemplate>
@@ -193,7 +194,26 @@ else
                 Snackbar.Add("UpdateUrgent Losss", Severity.Error);
             }
         }
+    }
 
+    private async Task CancelQueueOutbound(string pallet)
+    {
+        string strreturn = "" ;
+        bool? result = await CheckRoleDelete();
+        if (result == true)
+        {
+            if (ObjWcsService.CancelQueueOutbound(pallet,ref strreturn) == true)
+            {
+                Snackbar.Add("Cancle Queue OK", Severity.Success);
+                this.InsertAuditrial("Cancle Queue : " + pallet.ToString(), pageheader);
+                Elements = await Task.Run(() => ObjWcsService.GetASRSWorks());
+                this.StateHasChanged();
+            }
+            else
+            {
+                Snackbar.Add("Cancle Queue Losss", Severity.Error);
+            }
+        }
     }
 
     #region "Role"

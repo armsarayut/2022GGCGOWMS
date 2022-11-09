@@ -340,6 +340,8 @@ namespace GoWMS.Server.Data
             {
                 try
                 {
+                    Int16 ibatchmanage;
+
                     StringBuilder sqlQurey = new StringBuilder();
                     //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
                     sqlQurey.Append("dbo.ssp_manage_masteraccessories");
@@ -350,6 +352,11 @@ namespace GoWMS.Server.Data
 
                     con.Open();
 
+                    if (batchmanage)
+                        ibatchmanage = 1;
+                    else
+                        ibatchmanage = 0;
+
                     cmd.Parameters.AddWithValue("@_idx", idx);
                     cmd.Parameters.AddWithValue("@_itemcode", itemcode);
                     cmd.Parameters.AddWithValue("@_itemname", itemname);
@@ -358,7 +365,7 @@ namespace GoWMS.Server.Data
                     cmd.Parameters.AddWithValue("@_uom", uom);
                     cmd.Parameters.AddWithValue("@_gosweight", gosweight);
                     cmd.Parameters.AddWithValue("@_netweight", netweight);
-                    cmd.Parameters.AddWithValue("@_batchmanage", batchmanage);
+                    cmd.Parameters.AddWithValue("@_batchmanage", ibatchmanage);
                     cmd.Parameters.AddWithValue("@_managecase", managecase);
 
                     SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
@@ -374,7 +381,7 @@ namespace GoWMS.Server.Data
                     iRet = (Int32)cmd.Parameters["@_retchk"].Value;
                     sRet = (string)cmd.Parameters["@_retmsg"].Value;
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }

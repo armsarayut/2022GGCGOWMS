@@ -130,7 +130,7 @@
     <value>เลขที่ครั้งที่ผลิต</value>
   </data>
   <data name="PACKID" xml:space="preserve">
-    <value>เลขกำกับ</value>
+    <value>ป้าย</value>
   </data>
   <data name="PALLET" xml:space="preserve">
     <value>พาเลท</value>

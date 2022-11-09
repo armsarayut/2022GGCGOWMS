@@ -122,15 +122,6 @@ namespace GoWMS.Server.Data
             {
                 StringBuilder sqlQurey = new StringBuilder();
 
-                //sqlQurey.AppendLine("select row_number() over(order by t1.item_code asc) AS rn, t1.idx, ");
-                //sqlQurey.AppendLine("t1.item_code, t1.item_name, t1.request_qty, t1.unit, t1.su_no, ");
-                //sqlQurey.AppendLine("t1.pallet_no, t1.stock_qty, t1.transfer_qty, t1.movement_type ");
-                //sqlQurey.AppendLine("from public.sap_storeout t1");
-                //sqlQurey.AppendLine("where (1=1)");
-                //sqlQurey.AppendLine("and t1.pallet_no = @pallet_no");
-                //sqlQurey.AppendLine("order by t1.item_code asc ");
-                //sqlQurey.AppendLine(";");
-
                 sqlQurey.AppendLine("select top (1) t0.site,t0.doc_num,cast(t0.trans_num as bigint) trans_num,t0.ref_type,t0.trans_type,t0.trans_date");
                 sqlQurey.AppendLine(" ,t0.unit_key,t0.item_bc,t0.item, t1.item_name, t1.uom, t1.weight_unit,t0.qty");
                 sqlQurey.AppendLine(",t0.lot,t0.prod_date,t0.stat,t0.source");
@@ -147,18 +138,7 @@ namespace GoWMS.Server.Data
                 sqlQurey.AppendLine("AND t0.item_bc = @pallet_bc");
                 sqlQurey.AppendLine("ORDER BY t0.trans_num desc");
 
-                //sqlQurey.AppendLine("select row_number() over(order by t1.item_code asc) AS rn, t1.idx, ");
-                //sqlQurey.AppendLine("t1.item_code, t1.item_name, t1.request_qty, t1.unit, t1.su_no, ");
-                //sqlQurey.AppendLine("t1.pallet_no, t1.stock_qty, t1.transfer_qty, t1.movement_type ");
-                //sqlQurey.AppendLine("from public.sap_storeout t1");
-                //sqlQurey.AppendLine("where (1=1)");
-                //sqlQurey.AppendLine("and t1.pallet_no = @pallet_no");
-                //sqlQurey.AppendLine("order by t1.item_code asc ");
-                //sqlQurey.AppendLine(";");
-
-
-
-                SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                   SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };
@@ -233,12 +213,6 @@ namespace GoWMS.Server.Data
                     var total_qty = "Qty" + i.ToString();
                     var createdby = "createdby" + i.ToString();
 
-                    //sql.AppendLine("UPDATE public.sap_storeout");
-                    //sql.AppendLine("SET request_qty = @" + request_qty);
-                    //sql.AppendLine(", movement_type = @" + movement_type);
-                    //sql.AppendLine("WHERE su_no = @" + su_no);
-                    //sql.AppendLine(";");
-
                     sql.AppendLine("UPDATE dbo.wms_trans");
                     sql.AppendLine("SET Qty = @" + total_qty);
                     if (dStock == 0 )
@@ -254,7 +228,6 @@ namespace GoWMS.Server.Data
 
                     sql.AppendLine("WHERE item_bc = @" + su_nostock);
                     sql.AppendLine("AND [unit_key] = '01'");
-                    //sql.AppendLine("AND [stat] = 0");
                     sql.AppendLine("AND [flag] = 0");
                     sql.AppendLine("AND [is_req] = 0");
 
@@ -263,14 +236,6 @@ namespace GoWMS.Server.Data
                     cmd.Parameters.Add(new SqlParameter(total_qty.ToString(), SqlDbType.Decimal)).Value = dStock;
                     cmd.Parameters.Add(new SqlParameter(su_nostock.ToString(), SqlDbType.VarChar)).Value = sSuno;
                     cmd.Parameters.Add(new SqlParameter(createdby.ToString(), SqlDbType.VarChar)).Value = sCreatedby;
-
-
-                    //cmd.Parameters.Add(new SqlParameter<decimal>(request_qty, dRequestqty));
-                    //cmd.Parameters.Add(new SqlParameter<string>(movement_type, sMovementtype));
-                    //cmd.Parameters.Add(new SqlParameter<string>(su_no, sSuno));
-
-                    //cmd.Parameters.Add(new SqlParameter<decimal>(total_qty, dStock));
-                    //cmd.Parameters.Add(new SqlParameter<string>(su_nostock, sSuno));
 
                     i++;
                 }
@@ -457,13 +422,11 @@ namespace GoWMS.Server.Data
             Boolean bRet = false;
             string sRet = "";
             Int32? iRet = 0;
-            string cmdcode = "Call";
             using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sqlQurey = new StringBuilder();
-                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
                     sqlQurey.Append("dbo.ssp_createoutboundorder_manual_erp");
                     SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
@@ -525,7 +488,6 @@ namespace GoWMS.Server.Data
                 try
                 {
                     StringBuilder sqlQurey = new StringBuilder();
-                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
                     sqlQurey.Append("dbo.ssp_createoutbound_manual_audit_json");
                     SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
@@ -582,7 +544,6 @@ namespace GoWMS.Server.Data
                 try
                 {
                     StringBuilder sqlQurey = new StringBuilder();
-                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
                     sqlQurey.Append("dbo.ssp_startoutboundorder_manual_json");
                     SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
@@ -591,6 +552,61 @@ namespace GoWMS.Server.Data
                     con.Open();
 
                     cmd.Parameters.AddWithValue("@_pJson", jsonOrder);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
+
+        public bool CancelOrderpick(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+      
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+
+                    sqlQurey.Append("dbo.wms_cancelorder_wcs");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_lpnJson", jsonOrder);
 
 
                     SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
@@ -626,5 +642,6 @@ namespace GoWMS.Server.Data
             return bRet;
 
         }
+
     }
 }

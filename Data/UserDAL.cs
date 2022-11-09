@@ -225,6 +225,7 @@ namespace GoWMS.Server.Data
                             Usname = rdr["usfirstname"].ToString(),
                             Uspass = rdr["uspass"].ToString(),
                             Usgid = rdr["ugid"] == DBNull.Value ? null : (long?)rdr["ugid"],
+                            UserId = rdr["usid"].ToString()
                         };
                         lstobj.Add(objrd);
                     }
@@ -280,7 +281,7 @@ namespace GoWMS.Server.Data
                             Role_edit = rdr["role_edit"] == DBNull.Value ? false : (bool?)rdr["role_edit"],
                             Role_del = rdr["role_del"] == DBNull.Value ? false : (bool?)rdr["role_del"],
                             Role_rpt = rdr["role_rpt"] == DBNull.Value ? false : (bool?)rdr["role_rpt"],
-                            Role_apv = rdr["role_apv"] == DBNull.Value ? false : (bool?)rdr["role_apv"],
+                            Role_apv = rdr["role_apv"] == DBNull.Value ? false : (bool?)rdr["role_apv"]
 
                         };
                         lstobj.Add(objrd);
@@ -653,7 +654,6 @@ namespace GoWMS.Server.Data
                 sql.AppendLine("UPDATE dbo.set_users");
                 sql.AppendLine("SET usfirstname = @usfirstname");
                 sql.AppendLine(", usgridcolor = @usgridcolor");
-                //sql.AppendLine(", ugid = @ugid");
                 sql.AppendLine(", uspass = @uspass");
                 sql.AppendLine(", departmentid = @departmentid");
                 sql.AppendLine("WHERE usid = @usid");

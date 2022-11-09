@@ -135,6 +135,12 @@ namespace GoWMS.Server.Controllers
 
             return bret;
         }
+        public bool CancelQueueOutbound(string lpncode, ref string msgret)
+        {
+            bool bret = objDAL.CancelQueueOutbound(lpncode, ref msgret);
+
+            return bret;
+        }
 
     }
 }

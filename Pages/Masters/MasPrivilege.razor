@@ -52,7 +52,7 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Ugdesc)">@L["GROUP"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Ugdesc)" >@L["GROUP"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Menu_desc)">@L["MENU"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_acc)">@L["ACCESS"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_add)">@L["ADD"]</MudTableSortLabel></MudTh>
@@ -65,12 +65,12 @@ else
         <RowTemplate>
             <MudTd DataLabel=@L["GROUP"]>@context.Ugdesc</MudTd>
             <MudTd DataLabel=@L["MENU"]>@context.Menu_desc</MudTd>
-            <MudTd DataLabel=@L["ACCESS"]><MudCheckBox @bind-Checked="@context.Role_acc" /></MudTd>
-            <MudTd DataLabel=@L["ADD"]><MudCheckBox @bind-Checked="@context.Role_add" /></MudTd>
-            <MudTd DataLabel=@L["EDIT"]><MudCheckBox @bind-Checked="@context.Role_edit" /></MudTd>
-            <MudTd DataLabel=@L["DELETE"]><MudCheckBox @bind-Checked="@context.Role_del" /></MudTd>
-            <MudTd DataLabel=@L["REPORT"]><MudCheckBox @bind-Checked="@context.Role_rpt" /></MudTd>
-            <MudTd DataLabel=@L["APPROVE"]><MudCheckBox @bind-Checked="@context.Role_apv" /></MudTd>
+            <MudTd DataLabel=@L["ACCESS"]><MudCheckBox   @bind-Checked="@context.Role_acc"/></MudTd>
+            <MudTd DataLabel=@L["ADD"]><MudCheckBox Color="Color.Tertiary" @bind-Checked="@context.Role_add"/></MudTd>
+            <MudTd DataLabel=@L["EDIT"]><MudCheckBox Color="Color.Secondary" @bind-Checked="@context.Role_edit"/></MudTd>
+            <MudTd DataLabel=@L["DELETE"]><MudCheckBox Color="Color.Warning" @bind-Checked="@context.Role_del"/></MudTd>
+            <MudTd DataLabel=@L["REPORT"]><MudCheckBox Color="Color.Info" @bind-Checked="@context.Role_rpt"/></MudTd>
+            <MudTd DataLabel=@L["APPROVE"]><MudCheckBox Color="Color.Error" @bind-Checked="@context.Role_apv"/></MudTd>
 
 
             <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>

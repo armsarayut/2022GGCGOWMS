@@ -11,7 +11,7 @@ namespace GoWMS.Server.Data
     {
         public static string GetConnLocalDB()
         {
-            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL;Trusted_Connection=True;";
+            return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL-UAT;Trusted_Connection=True;";
         }
 
         #region SQL Database
@@ -24,8 +24,6 @@ namespace GoWMS.Server.Data
         private static readonly string SqlPass = "@ei0u2020";
         //private static readonly string NpgPass = "@ei0u";
         private static readonly string SqlContime = "60";
-
-
 
         /// <summary>
         /// GetConnLocalDBSQL

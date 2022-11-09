@@ -75,7 +75,14 @@ namespace GoWMS.Server.Controllers
             return bRet;
         }
 
-        
+        public bool CancelOrderpick(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            bRet = objDAL.CancelOrderpick(jsonOrder, ref msgReturn);
+            return bRet;
+        }
+
+
 
 
     }

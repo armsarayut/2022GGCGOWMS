@@ -131,7 +131,7 @@ namespace GoWMS.Server.Reports
                     PdfContentByte cb03 = writer.DirectContent;
                     cb03.SetFontAndSize(baseFont, 12.0f);
                     cb03.BeginText();
-                    cb03.SetTextMatrix(10f, 175f);
+                    cb03.SetTextMatrix(10f, 172f);
                     cb03.ShowText(hProduct);
                     cb03.EndText();
 
@@ -200,14 +200,14 @@ namespace GoWMS.Server.Reports
 
                     PdfContentByte cb12 = writer.DirectContent;
                     cb12.BeginText();
-                    cb12.SetFontAndSize(baseFont, 12.0f);
+                    cb12.SetFontAndSize(baseFont, 16.0f);
                     cb12.ShowTextAligned(Element.ALIGN_CENTER, listRpt.BatchNo.ToString() , 120f, 193f, 0);
                     cb12.EndText();
 
                     PdfContentByte cb13 = writer.DirectContent;
                     cb13.BeginText();
-                    cb13.SetFontAndSize(baseFont, 12.0f);
-                    cb13.ShowTextAligned(Element.ALIGN_CENTER, listRpt.ProductNo.ToString(), 110f, 175f, 0);
+                    cb13.SetFontAndSize(baseFont, 16.0f);
+                    cb13.ShowTextAligned(Element.ALIGN_CENTER, listRpt.ProductNo.ToString(), 112f, 172f, 0);
                     cb13.EndText();
 
                     PdfContentByte cb14 = writer.DirectContent;

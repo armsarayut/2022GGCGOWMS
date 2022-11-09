@@ -170,6 +170,8 @@ else
         string mboxcontent { get; set; } = "";
         string mboxmessage { get; set; } = "";
 
+        private Int32 iState { get; set; } = 0;
+
         public int elevation = 0;
         private ResultReturn resultReturn = null;
 
@@ -197,7 +199,8 @@ else
             this.InsertAuditrial("View", pageheader);
             Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
-            Elements = await Task.Run(() => objCS.GetStockListInfo());
+            Elements = await Task.Run(() => objCS.GetStockListInfo().Result.Where(x => x.Efstatus == iState));
+            //Elements = await Task.Run(() => objCS.GetStckList().Where(x => x.Efstatus == iState));
 
             this.OnSelectChange();
         }

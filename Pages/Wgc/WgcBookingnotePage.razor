@@ -27,6 +27,7 @@
 @inject InboundService ObjInboundService
 @inject WhService ObjWhService
 @inject IPrintingService PrintingService
+@inject ErpApiService ObjErpApiService
 @inject ISnackbar Snackbar
 
 @attribute [Authorize]
@@ -131,6 +132,11 @@ else
             <Column T="Api_ggc" Title="@L["PICK"]" Filterable="false">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.RequestQuote" Color="Color.Primary" OnClick="@(()=>RequestPick(context.Item.Item_code , context.Item.Batch_no, context.Item.Total_qty.Value, sUsername, context.Item.Idx.Value))" />
+                </CellTemplate>
+            </Column>
+            <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Secondary" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
                 </CellTemplate>
             </Column>
         </Columns>
@@ -531,6 +537,8 @@ else
             if (bRet)
             {
                  Snackbar.Add("Create : " + sRet, Severity.Success);
+
+              
             }
             else
             {
@@ -575,4 +583,24 @@ else
 
 
     }
+
+     async Task CancleGR(long apiid)
+    {
+        bool? result = await CheckRoleDelete();
+        if (result == true)
+        {
+            bool resultReturn;
+            string msgReturn = "";
+            resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
+            if (resultReturn == true)
+            {
+                this.InsertAuditrial(mPagedesc + " : Cancle Ref. " + apiid.ToString(), pageheader);
+
+                Elements = await Task.Run(() => ObjErpApiService.GetApiOutboundAll());
+                this.StateHasChanged();
+
+            }
+        }
+    }
+
 }

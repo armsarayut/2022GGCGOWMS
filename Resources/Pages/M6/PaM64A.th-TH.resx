@@ -151,10 +151,10 @@
     <value>ค้นหา</value>
   </data>
   <data name="SEQ" xml:space="preserve">
-    <value>ใบปะ</value>
+    <value>ป้าย</value>
   </data>
   <data name="SEQNO" xml:space="preserve">
-    <value>เลขลำดับ</value>
+    <value>ป้าย</value>
   </data>
   <data name="TASKTYPE" xml:space="preserve">
     <value>ประเภทงาน</value>

@@ -90,7 +90,7 @@ namespace GoWMS.Server.Data
                 Sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
                 Sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
                 Sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
-                Sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date");
+                Sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date ,cast(is_hold as int) as efstatus");
                 Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
                 //Sql.AppendLine("WHERE allocatequantity < quantity");
                 Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
@@ -107,7 +107,7 @@ namespace GoWMS.Server.Data
                     Inv_Stock_GoInfo objrd = new Inv_Stock_GoInfo
                     {
                         Efidx = rdr["trans_num"] == DBNull.Value ? null : (long?)rdr["trans_num"],
-                        Efstatus = null,
+                        Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
                         Created = rdr["trans_date"] == DBNull.Value ? null : (DateTime?)rdr["trans_date"],
                         Modified = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
                         Innovator = null,
@@ -344,7 +344,7 @@ namespace GoWMS.Server.Data
 
         public async Task UpdateHoldStock(List<InvStockList> liststock)
         {
-            using SqlConnection con = new SqlConnection(connectionString);
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
             try
             {
                 StringBuilder sql = new StringBuilder();
@@ -368,7 +368,7 @@ namespace GoWMS.Server.Data
 
                     sql.Append("@").Append(pallettag);
 
-                    cmd.Parameters.AddWithValue(pallettag, s.Su_no);
+                    cmd.Parameters.AddWithValue(pallettag, s.Rn);
 
                     //cmd.Parameters.Add(new NpgsqlParameter<string>(pallettag, s.Su_no));
 

@@ -28,6 +28,7 @@
 @inject IPrintingService PrintingService
 @inject StoreoutService ObjService
 @inject IDialogService DialogService
+@inject ErpApiService ObjErpApiService
 @inject ISnackbar Snackbar
 
 @attribute [Authorize]
@@ -140,12 +141,14 @@ else
         </Column>
             <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false" StickyRight="true">
               <CellTemplate>
-                 
                       <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Primary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
-                 
-                    
               </CellTemplate>
         </Column>
+        <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Secondary" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
+                </CellTemplate>
+         </Column>
     </Columns>
     <PagerContent>
         <MudDataGridPager T="Api_ggc" />
@@ -593,7 +596,6 @@ else
 
     private static Random random = new Random();
 
-
     public static string RandomString(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -601,6 +603,28 @@ else
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
+
+    async Task CancleGR(long apiid)
+    {
+        bool? result = await CheckRoleDelete();
+        if (result == true)
+        {
+            bool resultReturn;
+            string msgReturn = "";
+            resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
+            if (resultReturn == true)
+            {
+                this.InsertAuditrial("Accessory order receiving : Cancle Ref. " + apiid.ToString(), pageheader);
+
+                Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAll());
+                this.StateHasChanged();
+
+            }
+        }
+
+
+
+    }
 
 
 }

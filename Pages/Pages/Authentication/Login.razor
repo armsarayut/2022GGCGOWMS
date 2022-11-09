@@ -114,6 +114,7 @@
                         if (resultReturn.Bret == true)
                         {
                             UserAdElements = await Task.Run(() => ObjUserService.GetUserAD(Userword, encrypted));
+
                             if (UserAdElements.Count() > 0)
                             {
                                 var grouid = UserAdElements.Select(x => x.Usgid).FirstOrDefault();
@@ -240,12 +241,14 @@
        
             //search.ClientTimeout = TimeSpan.FromSeconds(10);
             SearchResult result;
-            search.Filter = "(objectclass=user)";
+            search.Filter = sFilter;
+
+            //search.Filter = "(objectclass=user)";
 
             result = search.FindOne();
+
             if (result is null)
             {
-
                 bRet = false;
                 //Snackbar.Add("AD Login Fail", Severity.Warning);
             }
@@ -253,14 +256,13 @@
             else
             {
                 bRet = true;
-                 //Snackbar.Add("AD Login OK", Severity.Success);
+                //Snackbar.Add("AD Login OK", Severity.Success);
             }
         }
         catch (Exception ex)
         {
-
             bRet = false;
-            //Snackbar.Add("AD " + ex.Message.ToString() , Severity.Error);
+            Log.Error(ex.ToString());
         }
 
         return bRet;

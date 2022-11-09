@@ -38,10 +38,22 @@ else
     <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
 
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
-               Color="Color.Error"
+
+        <MudButtonGroup Color="Color.Error" Variant="Variant.Outlined">
+            <MudButton StartIcon="@Icons.Material.Filled.Done" IconColor="Color.Success" OnClick=@SetOrderpicking>@L["Start ASRS"]</MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Cancel" IconColor="Color.Warning" OnClick=@CancelOrderpicking>@L["Cancelorder"]</MudButton>
+        </MudButtonGroup>
+
+@*        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
+               Color="Color.Primary"
                OnClick=@SetOrderpicking>@L["Start ASRS"]</MudButton>
+
+        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel"
+               Color="Color.Warning"
+               >@L["Cancelorder"]</MudButton>*@
+
         <MudSpacer />
+
     </MudAppBar>
 
     <MudTable Hover="true"
@@ -88,7 +100,7 @@ else
         </GroupHeaderTemplate>
         <RowTemplate>
             <MudTd DataLabel=@L["ORDERNO"]>@context.Order_No</MudTd>
-           <MudTd DataLabel=@L["LOT"]>@context.Batch_Number</MudTd>
+            <MudTd DataLabel=@L["LOT"]>@context.Batch_Number</MudTd>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN0, context.Request_Qty)</MudTd>
@@ -224,10 +236,6 @@ else
                     WriteIndented = true
                 };
 
-
-
-               
-
             var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, pallet = x.Pallet_No, gateout = "G08" }).ToList();
 
                             var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
@@ -325,6 +333,37 @@ else
         this.StateHasChanged();
 
     }
+
+    private async Task CancelOrderpicking()
+    {
+        bool? result = await CheckRoleDelete();
+        if (result == true)
+        {
+            var serializeOptions = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+
+            var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, Pallet_No = x.Pallet_No }).ToList();
+
+            var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
+
+            string sRet = "Call";
+            bool bRet;
+
+            bRet = ObjWhService.CancelOrderpick(jsonRES, ref sRet);
+
+            this.InsertAuditrial("Cancel Order ASRS : " + jsonRES.ToString(), pageheader);
+
+            Elements = ObjService.GetSapStoreoutSetBatch();
+            selectedItems.Clear();
+            searchString = null;
+        }
+        this.StateHasChanged();
+
+    }
+
 
     #region "Role"
     private async Task<bool> CheckRoleAdd()

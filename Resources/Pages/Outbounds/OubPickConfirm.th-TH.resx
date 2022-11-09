@@ -130,7 +130,7 @@
     <value>รหัสสินค้า</value>
   </data>
   <data name="PACKID" xml:space="preserve">
-    <value>เลขลำดับ</value>
+    <value>ป้าย</value>
   </data>
   <data name="Pallet" xml:space="preserve">
     <value>พาเลท</value>

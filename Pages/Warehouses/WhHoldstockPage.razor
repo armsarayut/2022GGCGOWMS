@@ -72,11 +72,11 @@ else
                
                 <MudTd DataLabel=@L["Lot"]>@context.BatchNo</MudTd>
                 <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_code</MudTd>
-                <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_name</MudTd>>
+                <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_name</MudTd>
                 <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN3, @context.Qty)</MudTd>
                 <MudTd DataLabel=@L["PACKID"]>@context.Su_no</MudTd>
-                <MudTd DataLabel=@L["PALLET"]>@context.Su_no</MudTd>
-                <MudTd DataLabel=@L["STROAGEBIN"]>@context.Su_no</MudTd>
+                <MudTd DataLabel=@L["PALLET"]>@context.Palletcode</MudTd>
+                <MudTd DataLabel=@L["STROAGEBIN"]>@context.Shelfname</MudTd>
             </RowTemplate>
             <GroupFooterTemplate>
                 <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="6">Total : @string.Format(VarGlobals.FormatN2, context.Items.Sum((e) => e.Qty))</MudTh>
@@ -236,7 +236,7 @@ else
 
             var ListHold = selectedItems.ToList();
 
-            //ObjService.UpdateHoldStock(ListHold.ToList());
+            ObjService.UpdateHoldStock(ListHold.ToList());
 
         }
 

@@ -156,6 +156,9 @@
   <data name="Search" xml:space="preserve">
     <value>ค้นหา</value>
   </data>
+  <data name="SUNo" xml:space="preserve">
+    <value>ป้าย</value>
+  </data>
   <data name="Unit" xml:space="preserve">
     <value>หน่วย</value>
   </data>

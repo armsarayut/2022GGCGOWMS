@@ -1176,5 +1176,103 @@ namespace GoWMS.Server.Data
             return bret;
         }
 
+        public Boolean CancelQueueOutbound(string lpncode,ref string msgret)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    sqlQurey.Append("dbo.wms_cancelqueue_wcs");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+                    cmd.Parameters.AddWithValue("@_lpncode", lpncode);
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+
+            }
+            msgret = sRet;
+            return bRet;
+        }
+
+        public Boolean CancelQueueOutboundOrder(string lpncode, ref string msgret)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    sqlQurey.Append("dbo.wms_cancelqueue_wcs");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+                    cmd.Parameters.AddWithValue("@_lpncode", lpncode);
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+
+            }
+            msgret = sRet;
+            return bRet;
+        }
+
     }
 }
