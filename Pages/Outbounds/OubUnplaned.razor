@@ -370,7 +370,8 @@ else
 
                     }
 
-                    Elements = await Task.Run(() => ObjService.GetStockListInfo());
+                    //Elements = await Task.Run(() => ObjService.GetStockListInfo());
+                    Elements = await Task.Run(() => ObjService.GetStockListInfo().Result.Where(x => x.Efstatus == iState));
                     selectedItems.Clear();
                     searchString = null;
 

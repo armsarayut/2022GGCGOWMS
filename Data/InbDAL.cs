@@ -12,6 +12,8 @@ using GoWMS.Server.Models.Inb;
 using NpgsqlTypes;
 using System.Text;
 using GoWMS.Server.Models.Api;
+using System.Reflection.Emit;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace GoWMS.Server.Data
 {
@@ -613,6 +615,90 @@ namespace GoWMS.Server.Data
 
             }
             return bret;
+        }
+
+        public bool CancelReceivingOrdersBypackId_SP(long transId, decimal tramsQty, string tranDoc, string tranItem, string tranTag, ref string retstring)
+        {
+            bool bRet = false;
+            string sRet = "Error";
+            Int32? iRet = 0;
+
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    sqlQurey.Append("dbo.wms_canceltagorder");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+
+                    SqlParameter param0 = new SqlParameter("@_transId", SqlDbType.Decimal);
+                    param0.Direction = ParameterDirection.Input;
+                    param0.Precision = 10;
+                    param0.Scale = 0;
+                    param0.Value = transId;
+
+                    SqlParameter param1 = new SqlParameter("@_tramsQty", SqlDbType.Decimal);
+                    param1.Direction = ParameterDirection.Input;
+                    param1.Precision = 18;
+                    param1.Scale = 3;
+                    param1.Value = tramsQty;
+
+                    SqlParameter param2 = new SqlParameter("@_transDoc", SqlDbType.VarChar, 50);
+                    param2.Direction = ParameterDirection.Input;
+                    param2.Value = tranDoc;
+
+                    SqlParameter param3 = new SqlParameter("@_transItem", SqlDbType.VarChar, 50);
+                    param3.Direction = ParameterDirection.Input;
+                    param3.Value = tranItem;
+
+                    SqlParameter param4 = new SqlParameter("@_transTag", SqlDbType.VarChar, 50);
+                    param4.Direction = ParameterDirection.Input;
+                    param4.Value = tranItem;
+
+
+                    cmd.Parameters.Add(param0);
+                    cmd.Parameters.Add(param1);
+                    cmd.Parameters.Add(param2);
+                    cmd.Parameters.Add(param3);
+                    cmd.Parameters.Add(param4);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+
+                }
+                catch (SqlException ex)
+                {
+                    //Log.Error(ex.ToString());
+                    sRet = ex.Message.ToString();
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+            retstring = sRet;
+
+            return bRet;
         }
 
         public bool CancelReceivingOrdersBypack(string pallet, string pack)

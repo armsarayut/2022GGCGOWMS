@@ -151,11 +151,16 @@ else
 }
 
 @code {
-    public string mPagedesc { get; set; } = "1.1.Receiving Order";
-    private string mPagename { get; set; } = "/1/1_1";
+    //public string mPagedesc { get; set; } = "1.1.Receiving Order";
+    //private string mPagename { get; set; } = "/1/1_1";
+
+    private string pageheader { get; set; } = "1.4.Putaway";
+    private bool _processing = false;
+
+    public string mPagedesc { get; set; } = "1.4.Putaway";
+    private string mPagename { get; set; } = "/1/1_4";
 
 
-    private string pageheader = "Master Mapping";
     private string msgAction = "Enter TAG No.";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";

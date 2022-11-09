@@ -110,8 +110,15 @@ else
 }*@
 
 @code {
-    private string pageheader = "Storage";
+    //private string pageheader = "Storage";
     private string msgAction = "Enter Location";
+       private string pageheader { get; set; } = "1.5.Stacking";
+    private bool _processing = false;
+
+    public string mPagedesc { get; set; } = "1.5.Stacking";
+    private string mPagename { get; set; } = "/1/1_5";
+
+
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
     private string palletcode { get; set; }

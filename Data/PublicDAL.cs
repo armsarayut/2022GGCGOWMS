@@ -3799,15 +3799,15 @@ namespace GoWMS.Server.Data
         public IEnumerable<Helpdesk> GetAllHelpdesk()
         {
             List<Helpdesk> lstobj = new List<Helpdesk>();
-            using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
                 try
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine("SELECT");
-                    sql.Append("idx, created, entity_lock, modified, client_id, client_ip, ");
-                    sql.Append("hlp_name, hlp_desc, hlp_tel, hlp_mail");
-                    sql.AppendLine("FROM public.set_helpdesk ");
+                    sql.AppendLine("idx, created, entity_lock, modified, client_id, client_ip ");
+                    sql.AppendLine(",hlp_name, hlp_desc, hlp_tel, hlp_mail");
+                    sql.AppendLine("FROM dbo.set_helpdesk ");
                     sql.AppendLine("WHERE 1=1");
                     //sql.AppendLine("and (w_date >='" & dtpStart.ToString("s") & "' and w_date < '" & dtpStop.ToString("s") & "')");
                     sql.AppendLine("ORDER BY idx ASC ");
@@ -3815,14 +3815,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine(";");
 
 
-                    NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                    SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                     {
                         CommandType = CommandType.Text
                     };
 
                     con.Open();
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
                         Helpdesk objrd = new Helpdesk
@@ -3841,7 +3841,7 @@ namespace GoWMS.Server.Data
                         lstobj.Add(objrd);
                     }
                 }
-                catch (NpgsqlException ex)
+                catch (SqlException ex)
                 {
                     Log.Error(ex.ToString());
                 }

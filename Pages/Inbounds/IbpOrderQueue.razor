@@ -24,6 +24,7 @@
 @inject InboundService ObjInboundService
 @inject UserServices OpjUserService
 @inject IStringLocalizer<IbpOrderQueue> L
+@inject ISnackbar Snackbar
 @attribute [Authorize]
 
 <style>
@@ -134,7 +135,7 @@ else
         </Column>
         <Column T="Inb_Goodreceive_Go" Field="Unit" Title="@L["Unit"]"/>
         <Column T="Inb_Goodreceive_Go" Field="Lotno" Title="@L["LotNo"]"/>
-        <Column T="Inb_Goodreceive_Go" Field="Pallettag" Title="@L["BatchNo"]"/>
+            <Column T="Inb_Goodreceive_Go" Field="Pallettag" Title="@L["SUNo"]" />
         <Column T="Inb_Goodreceive_Go" Title="@L["Adjust"]" Filterable="false">
               <CellTemplate>
                     <MudIconButton Size="@Size.Small" 
@@ -156,11 +157,11 @@ else
     private bool _dense = true;
     private bool _multiSelect = false;
 
-    private string pageheader { get; set; } = "1.2.Good Receive";
+    private string pageheader { get; set; } = "1.3.Good Receive";
     private bool _processing = false;
 
-    public string mPagedesc { get; set; } = "1.2.Good Receive";
-    private string mPagename { get; set; } = "/1/1_2";
+    public string mPagedesc { get; set; } = "1.3.Good Receive";
+    private string mPagename { get; set; } = "/1/1_3";
 
     private string msgAction = "Enter Palletcode";
     private string mPalletcode { get; set; } = "";
@@ -307,11 +308,23 @@ else
 
         if (result == true)
         {
-            ObjInboundService.CancelReceivingOrdersBypackId(tranId, tranQty, tranDoc,tranItem, tranTag);
+            string msg="";
 
-            this.InsertAuditrial("Cancel ReceivingOrder SKU : " + tranItem + " Qty : " + tranQty.ToString() +  " From Doc : " + tranDoc, pageheader);
+            if (ObjInboundService.CancelReceivingOrdersBypackId_SP(tranId, tranQty, tranDoc,tranItem, tranTag,ref msg))
+                {
+                this.InsertAuditrial("Cancel ReceivingOrder SKU : " + tranItem + " Qty : " + tranQty.ToString() + " From Doc : " + tranDoc, pageheader);
+                Snackbar.Add(msg, Severity.Success);
+                Elements = ObjInboundService.GetAllInbGoodreceiveGos();
+                }
+                else{
+                    Snackbar.Add(msg, Severity.Error);
+                }
 
-            Elements = ObjInboundService.GetAllInbGoodreceiveGos();
+            //ObjInboundService.CancelReceivingOrdersBypackId(tranId, tranQty, tranDoc,tranItem, tranTag);
+
+          
+
+            
         }
 
         this.StateHasChanged();

@@ -89,6 +89,12 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
+        public bool CancelReceivingOrdersBypackId_SP(long transId, decimal tramsQty, string tranDoc, string tranItem, string tranTag, ref string retstring)
+        {
+            bool bret = objDAL.CancelReceivingOrdersBypackId_SP(transId, tramsQty, tranDoc, tranItem, tranTag, ref retstring);
+
+            return bret;
+        }
 
 
         public bool CancelReceivingOrdersByPallet(string pallet)
