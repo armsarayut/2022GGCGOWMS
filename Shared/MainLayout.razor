@@ -43,8 +43,10 @@
         </MudHidden>
         <MudSpacer />
         <ChooseLanguage />
-
-        <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())" />
+        <MudToggleIconButton Toggled="@DarkOn" ToggledChanged="OnToggledChanged"
+                             Icon="@Icons.Material.Filled.BrightnessHigh" Color="@Color.Inherit" Title="Dark"
+                             ToggledIcon="@Icons.Material.Filled.BrightnessLow" ToggledColor="@Color.Inherit" ToggledTitle="Bright" />
+     @*   <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())" />*@
         <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => btnLogout_Click())" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="_themeManager.DrawerClipMode" Width="300px">
@@ -77,6 +79,8 @@
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
     public bool _drawerOpen = true;
     public bool _themeManagerOpen = false;
+
+     public bool DarkOn { get; set; }
 
     void DrawerToggle()
     {
@@ -114,6 +118,32 @@
 
 
     #region Theme
+
+    public void OnToggledChanged(bool toggled)
+    {
+        // Because variable is not two-way bound, we need to update it ourself
+        DarkOn = toggled;
+
+        //if (DarkOn)
+        //{
+        //    if (SwitchedOnCount < MaxCount)
+        //        SwitchedOnCount++;
+        //    else
+        //        DarkOn = false;    // We can force a state under specific condition (max count reached)
+        //}
+
+        if (currentTheme == defaultTheme)
+        {
+            currentTheme = darkTheme;
+        }
+        else
+        {
+            currentTheme = defaultTheme;
+        }
+        _themeManager.Theme = currentTheme;
+
+    }
+
 
     void DarkMode()
     {

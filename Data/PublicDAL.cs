@@ -310,7 +310,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("AND T.unit_key = '01'");
                     sql.AppendLine("AND R.trans_date = T.trans_date");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("AND (R.rptStockDate >= @startdate AND R.rptStockDate <= @stopdate)");
+                    sql.AppendLine("AND (R.rptStockDate >= @startdate AND R.rptStockDate < @stopdate)");
                     sql.AppendLine("ORDER BY R.rptStockDate ASC, R.prodcode ASC, R.item ASC");
                     sql.AppendLine(";");
 
@@ -545,7 +545,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("AND T.unit_key='01'");
                     sql.AppendLine("AND R.trans_date=T.trans_date");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("and (R.rptStockDate >= @startdate and R.rptStockDate <= @stopdate)");
+                    sql.AppendLine("and (R.rptStockDate >= @startdate and R.rptStockDate < @stopdate)");
                     sql.AppendLine("group by R.item,R.itemdesc,T.lot,R.uom,R.whse,R.rptStockDate , R.doc_num");
                     sql.AppendLine("order by R.rptStockDate asc,  R.item asc");
 
@@ -1413,7 +1413,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("ON R.item_bc=T.item_bc");
                     sql.AppendLine("AND R.trans_date=T.trans_date");
                     sql.AppendLine("WHERE (1=1)");
-                    sql.AppendLine("AND (R.rptStockDate>= @startdate AND R.rptStockDate<=@stopdate)");
+                    sql.AppendLine("AND (R.rptStockDate>= @startdate AND R.rptStockDate<@stopdate)");
                     sql.AppendLine("order by R.rptStockDate asc, R.prodcode asc, R.item asc");
                     sql.AppendLine(";");
 
@@ -1660,7 +1660,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("ON R.item_bc=T.item_bc");
                     sql.AppendLine("AND R.trans_date=T.trans_date");
                     sql.AppendLine("where (1=1)");
-                    sql.AppendLine("and (R.rptStockDate>=@startdate and R.rptStockDate<=@stopdate)");
+                    sql.AppendLine("and (R.rptStockDate>=@startdate and R.rptStockDate<@stopdate)");
                     sql.AppendLine("group by R.item,R.itemdesc,R.supcode,R.uom,R.whse,R.rptStockDate,T.lot, R.doc_num");
                     sql.AppendLine("order by R.rptStockDate asc, R.item asc , T.lot asc ");
                     sql.AppendLine(";");

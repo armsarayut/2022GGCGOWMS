@@ -15,6 +15,7 @@
 @inject MasService ObjMasService
 @inject UserServices OpjUserService
 @inject ReportService UserlogService
+@inject StoreoutService ObjOutboundService
 
 @inject ISnackbar Snackbar
 @attribute [Authorize]
@@ -72,8 +73,7 @@ else
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
-                @*<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
-                    <MudTh>@L["ACTION"]</MudTh>
+                   @* <MudTh>@L["ACTION"]</MudTh>*@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel=@L["STATE"]>
@@ -93,12 +93,11 @@ else
                     <MudTd Class="clm-row-small" DataLabel=@L["MATERIAL"]>@context.Item_Code</MudTd>
                     <MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Stock_Qty)</MudTd>
                     <MudTd Class="clm-row-small" DataLabel=@L["UNIT"]>@context.Unit</MudTd>
-                    //<MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Request_Qty)</MudTd>
-                    <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>
+                  @*  <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>
                         <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
                         <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
                         <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
-                    </MudTd>
+                    </MudTd>*@
                 </RowTemplate>
 
                 <PagerContent>
@@ -128,7 +127,7 @@ else
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
                     //<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                    <MudTh>@L["ACTION"]</MudTh>
+                    @*<MudTh>@L["ACTION"]</MudTh>*@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel=@L["STATE"]>
@@ -146,11 +145,11 @@ else
                     <MudTd DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
                     <MudTd DataLabel=@L["QTY"]>@context.Stock_Qty</MudTd>
                     //<MudTd DataLabel=@L["QTY"]>@context.Request_Qty</MudTd>
-                    <MudTd DataLabel=@L["ACTION"]>
+                  @*  <MudTd DataLabel=@L["ACTION"]>
                         <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
                         <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
                         <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
-                    </MudTd>
+                    </MudTd>*@
 
                 </RowTemplate>
 
@@ -298,13 +297,13 @@ else
             if (bValidate)
             {
                 mPalletcode = str.ToUpper();
-                msgAction = "Enter DnSEQ";
+                msgAction = "Enter TagNo";
                 elevation = 1;
-                Snackbar.Add("Enter DnSEQ", Severity.Normal);
+                Snackbar.Add("Enter TagNo", Severity.Normal);
 
                 Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
 
-                this.InsertAuditrial("Start Counting Pallet : [" + mPalletcode + "]", pageheader);
+                this.InsertAuditrial("Start picking TagNo : [" + mPalletcode + "]", pageheader);
 
             }
             else
@@ -323,13 +322,21 @@ else
                 if (Elements.ToList().Count > 0)
                 {
                     elevation = 2;
-                    msgAction = "Mapping successfully";
+                    msgAction = "Picking successfully";
 
                     //ObjErpApiService.SetMappedPallet(mPalletcode);
 
                     // Set Update Count
-                    bool bCheck = ObjWhService.UpdateCount(Elements.ToList());
-                    this.InsertAuditrial("Update Counting Pallet : [" + mPalletcode + "]", pageheader);
+                    var query = Elements.First(x => x.Su_No == mPalletcode);
+                    string PalletCode = query.Pallet_No;
+                    string retMsg = "";
+
+
+                    bool bCheck = ObjOutboundService.UpdateStockOut(PalletCode,ref retMsg);
+
+                    //bool bCheck = ObjWhService.UpdateCount(Elements.ToList());
+                    this.InsertAuditrial("Update picking TagNo : [" + mPalletcode + "]", pageheader);
+
                     // Set SAP Complete
                     if (bCheck)
                     {
@@ -340,26 +347,26 @@ else
                         {
                             //bCheck = ObjWcsService.CreateCommandMC("G04", 88);
                             mPalletcode = "";
-                            Snackbar.Add("Audit successfully", Severity.Success);
+                            Snackbar.Add("Pick successfully", Severity.Success);
 
-                            this.InsertAuditrial("Comfirm Counting Pallet : [" + mPalletcode + "]", pageheader);
+                            this.InsertAuditrial("Confirm picking pallet : [" + mPalletcode + "]", pageheader);
 
                             Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
 
                         }
                         else
                         {
-                            Snackbar.Add("Complete Error", Severity.Error);
+                            Snackbar.Add("Complete error", Severity.Error);
                         }
                     }
                     else
                     {
-                        Snackbar.Add("Adjust Stick Error", Severity.Error);
+                        Snackbar.Add("Update pick error : " + retMsg.ToString(), Severity.Error);
                     }
                 }
                 else
                 {
-                    Snackbar.Add("Please enter DnSEQ", Severity.Info);
+                    Snackbar.Add("Please enter TagNo", Severity.Info);
                 }
             }
             else
@@ -380,13 +387,13 @@ else
                     Elements.ToList()[iCorrect].Movement_Type = "CYC";
                     Elements.ToList()[iCorrect].Request_Qty = 0;
                     Elements.ToList()[iCorrect].Update_By = sUsername;
-                    this.InsertAuditrial("Counting DnSEQ: [" + mPackid + "] is OK", pageheader);
+                    this.InsertAuditrial("Counting TagNo : [" + mPackid + "] is OK", pageheader);
 
-                    Snackbar.Add("Counting DnSEQ: [" + mPackid + "] is OK", Severity.Success);
+                    Snackbar.Add("Counting TagNo : [" + mPackid + "] is OK", Severity.Success);
                 }
                 else
                 {
-                    Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                    Snackbar.Add("Find not found TagNo  please enter again", Severity.Warning);
                 }
 
             }
@@ -410,13 +417,13 @@ else
                 Elements.ToList()[iCorrect].Movement_Type = "Z01";
                 Elements.ToList()[iCorrect].Request_Qty = Elements.ToList()[iCorrect].Stock_Qty;
                 Elements.ToList()[iCorrect].Update_By = sUsername;
-                this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is not found", pageheader);
+                this.InsertAuditrial("Counting TagNo : [" + pack + "] is not found", pageheader);
 
-                Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
+                Snackbar.Add("Count TagNo : [" + pack + "] is OK", Severity.Success);
             }
             else
             {
-                Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
             }
         }
 
@@ -439,14 +446,14 @@ else
                 Elements.ToList()[iCorrect].Movement_Type = "CYC";
                 Elements.ToList()[iCorrect].Request_Qty = 0;
                 Elements.ToList()[iCorrect].Update_By = sUsername;
-                this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is OK", pageheader);
+                this.InsertAuditrial("Counting TagNo : [" + pack + "] is OK", pageheader);
 
-                Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
+                Snackbar.Add("Count TagNo: [" + pack + "] is OK", Severity.Success);
 
             }
             else
             {
-                Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
             }
         }
 
@@ -469,11 +476,11 @@ else
             Elements.ToList()[iCorrect].Movement_Type = "CYC";
             Elements.ToList()[iCorrect].Request_Qty = 0;
 
-            Snackbar.Add("Reset DnSEQ: [" + pack + "] is OK", Severity.Success);
+            Snackbar.Add("Reset TagNo : [" + pack + "] is OK", Severity.Success);
         }
         else
         {
-            Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+            Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
         }
         this.StateHasChanged();
 
@@ -503,13 +510,13 @@ else
                     Elements.ToList()[iCorrect].Movement_Type = "Z01";
                     Elements.ToList()[iCorrect].Request_Qty = Elements.ToList()[iCorrect].Stock_Qty;
                     Elements.ToList()[iCorrect].Update_By = sUsername;
-                    this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is not found", pageheader);
+                    this.InsertAuditrial("Counting TagNo : [" + pack + "] is not found", pageheader);
 
                     //Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
                 }
                 else
                 {
-                    Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                    Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
                 }
             }
         }
@@ -541,7 +548,7 @@ else
                     Elements.ToList()[iCorrect].Movement_Type = "CYC";
                     Elements.ToList()[iCorrect].Request_Qty = 0;
                     Elements.ToList()[iCorrect].Update_By = sUserID;
-                    this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is OK", pageheader);
+                    this.InsertAuditrial("Counting TagNo : [" + pack + "] is OK", pageheader);
 
                     // Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
 

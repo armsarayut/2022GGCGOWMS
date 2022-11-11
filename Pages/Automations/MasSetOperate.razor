@@ -48,7 +48,7 @@ else
             <MudTd DataLabel="SRM">@context.Mc_Name</MudTd>
             <MudTd DataLabel="ENABLE"><MudCheckBox @bind-Checked="@context.Enable" /></MudTd>
             <MudTd Class="clm-row-small" DataLabel="ACTION">
-                <MudFab @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Enable.Value, @context.Mc_Name.ToString()))" Color="Color.Error" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
+                <MudFab @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Enable.Value, @context.Mc_Name.ToString()))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
                 <MudFab @onclick="@(()=>Refreshconstance())" Color="Color.Info" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" IconSize="Size.Small" />
             </MudTd>
         </RowTemplate>

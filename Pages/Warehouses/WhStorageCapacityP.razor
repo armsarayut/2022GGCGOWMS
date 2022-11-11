@@ -58,7 +58,7 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.Locavlt1)">@L["Occupied"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.Locemp)">@L["Mass"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.Perr)">@L["Block/Error"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.Prohloc)">@L["ProhibitedLocation"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.Plemp)">@L["Plemp"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.Total)">@L["Total"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WhStorageCapacity, object>(x=>x.OccRate)">@L["OccupancyRate"]</MudTableSortLabel></MudTh>
         </HeaderContent>
@@ -67,7 +67,7 @@ else
             <MudTd DataLabel=@L["Occupied"]>@context.Locavlt1</MudTd>
             <MudTd DataLabel=@L["Mass"]>@context.Locemp</MudTd>
             <MudTd DataLabel=@L["Block/Error"]>@context.Perr</MudTd>
-            <MudTd DataLabel=@L["ProhibitedLocation"]>@context.Prohloc</MudTd>
+            <MudTd DataLabel=@L["Plemp"]>@context.Plemp</MudTd>
             <MudTd DataLabel=@L["Total"]>@context.Total</MudTd>
             <MudTd DataLabel=@L["OccupancyRate"]>@context.OccRate %</MudTd>
         </RowTemplate>

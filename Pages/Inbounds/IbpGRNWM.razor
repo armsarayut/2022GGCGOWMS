@@ -143,12 +143,12 @@ else
             </Column>
             <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false">
                 <CellTemplate>
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Primary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Tertiary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
                 </CellTemplate>
             </Column>
              <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">
                 <CellTemplate>
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Secondary" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
                 </CellTemplate>
             </Column>
         </Columns>

@@ -1,4 +1,4 @@
-﻿@page "/1/1_2"
+﻿@page "/1/1_3"
 @using System
 @using System.IO
 @using System.Linq
@@ -140,7 +140,7 @@ else
               <CellTemplate>
                     <MudIconButton Size="@Size.Small" 
                         Icon="@Icons.Outlined.Delete" 
-                        Color="Color.Primary"
+                        Color="Color.Warning"
                                OnClick="@(()=>DeleteMapTran(context.Item.Efidx.Value, context.Item.Quantity.Value ,context.Item.Docno,context.Item.Itemcode, context.Item.Itembar ))" />
               </CellTemplate>
         </Column>

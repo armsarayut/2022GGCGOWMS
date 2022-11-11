@@ -1,4 +1,4 @@
-﻿@page "/1/1_3"
+﻿@page "/1/1_4"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -138,7 +138,7 @@ else
               <CellTemplate>
                     <MudIconButton Size="@Size.Small" 
                         Icon="@Icons.Outlined.Delete" 
-                        Color="Color.Primary" 
+                        Color="Color.Warning" 
                         OnClick="@(()=>DeleteMap(@context.Item.Itemtag))"/>
               </CellTemplate>
         </Column>

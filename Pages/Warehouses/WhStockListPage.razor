@@ -114,7 +114,7 @@ else
                 <MudTd DataLabel="@L["ItemCode"]">@context.Item_code</MudTd>
                 <MudTd DataLabel="@L["ItemName"]">@context.Item_name</MudTd>
                 <MudTd DataLabel="@L["TotalStock"]">@string.Format(VarGlobals.FormatN3, @context.Totalstock) </MudTd>
-                <MudTd DataLabel="@L["Unit"]">@context.Item_name</MudTd>
+                <MudTd DataLabel="@L["Unit"]">@context.Unit</MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />

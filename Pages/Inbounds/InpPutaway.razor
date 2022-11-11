@@ -1,4 +1,4 @@
-﻿@page "/1/1_4"
+﻿@page "/1/1_5"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -42,9 +42,7 @@ else if (elevation == 4) // Error
     <MudItem xs="12">
         <div class="form-group">
   @*          <input style="width: 100%; height: 40px" type="text" class="form-control" @bind="@palletcode" @onkeydown="@DoTheThing" placeholder="Input scan" />*@
-
              <input Id="inputBar" style="width: 100%; height: 40px" type="text" class="form-control" @bind-value="@palletcode" @onkeyup="@KeyUp" placeholder="Input scan" />
-
         </div>
     </MudItem>
 </MudGrid>

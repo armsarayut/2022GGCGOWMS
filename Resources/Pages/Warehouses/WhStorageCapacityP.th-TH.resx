@@ -144,6 +144,9 @@
   <data name="PDF" xml:space="preserve">
     <value>พีดีเอฟ</value>
   </data>
+  <data name="Plemp" xml:space="preserve">
+    <value>พาเลทเปล่า</value>
+  </data>
   <data name="ProhibitedLocation" xml:space="preserve">
     <value>สถานที่ต้องห้าม</value>
   </data>

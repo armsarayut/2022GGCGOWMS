@@ -64,7 +64,17 @@ namespace GoWMS.Server.Controllers
             List<Oub_CustomerReturn> retlist = objDAL.GetAllCustomerReturn().ToList();
             return retlist;
         }
-      
+
+        public Boolean UpdateStockOut(string lpncode, ref string msgret)
+        {
+            Boolean bRet = false;
+            bRet = objDAL.UpdateStockOut(lpncode, ref msgret);
+            return bRet;
+        }
+
+
+
+
 
     }
 }

@@ -592,15 +592,15 @@ namespace GoWMS.Server.Data
 
         public void CancelReceivingOrdersBypack(string pallet, string pack)
         {
-            using NpgsqlConnection con = new NpgsqlConnection(connectionString);
+            using SqlConnection con = new SqlConnection(connectionStringSQL);
             StringBuilder sql = new StringBuilder();
-            sql.AppendLine("Update wms.api_receivingorders_go");
+            sql.AppendLine("Update dbo.wms_trans");
             sql.AppendLine("Set Lpncode = NULL");
             //sql.AppendLine(", Lpncode = @Pallet");
             sql.AppendLine(", efstatus = @efstatus");
             sql.AppendLine("Where package_id = @Pack ");
             sql.AppendLine("and Lpncode = @Pallet");
-            NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+            SqlCommand cmd = new SqlCommand(sql.ToString(), con)
             {
                 CommandType = CommandType.Text
             };

@@ -15,6 +15,7 @@
 @inject MasService ObjMasService
 @inject UserServices OpjUserService
 @inject ReportService UserlogService
+@inject StoreoutService ObjOutboundService
 
 @inject ISnackbar Snackbar
 @attribute [Authorize]
@@ -321,40 +322,56 @@ else
             {
                 if (Elements.ToList().Count > 0)
                 {
-                    elevation = 2;
-                    msgAction = "Mapping successfully";
 
-                    //ObjErpApiService.SetMappedPallet(mPalletcode);
+                    var query = Elements.First(x => x.Su_No == mPalletcode);
+                    string PalletCode = query.Pallet_No;
+                    string retMsg = "";
 
-                    // Set Update Count
-                    bool bCheck = ObjWhService.UpdateCount(Elements.ToList());
-                    this.InsertAuditrial("Update Counting Pallet : [" + mPalletcode + "]", pageheader);
-                    // Set SAP Complete
-                    if (bCheck)
+
+
+                    bool bCheckCom = ObjOutboundService.UpdateStockOut(PalletCode,ref retMsg);
+                    if (bCheckCom)
                     {
-                        //bCheck = ObjWhService.SapComplete(mPalletcode);
-                        bCheck = true;
+                        elevation = 2;
+                        msgAction = "Mapping successfully";
 
+                        //ObjErpApiService.SetMappedPallet(mPalletcode);
+
+                        // Set Update Count
+                        bool bCheck = ObjWhService.UpdateCount(Elements.ToList());
+                        this.InsertAuditrial("Update Counting Pallet : [" + mPalletcode + "]", pageheader);
+                        // Set SAP Complete
                         if (bCheck)
                         {
-                            //bCheck = ObjWcsService.CreateCommandMC("G04", 88);
-                            mPalletcode = "";
-                            Snackbar.Add("Audit successfully", Severity.Success);
+                            //bCheck = ObjWhService.SapComplete(mPalletcode);
+                            bCheck = true;
 
-                            this.InsertAuditrial("Comfirm Counting Pallet : [" + mPalletcode + "]", pageheader);
+                            if (bCheck)
+                            {
+                                //bCheck = ObjWcsService.CreateCommandMC("G04", 88);
+                                mPalletcode = "";
+                                Snackbar.Add("Audit successfully", Severity.Success);
 
-                            Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
+                                this.InsertAuditrial("Comfirm Counting Pallet : [" + mPalletcode + "]", pageheader);
 
+                                Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
+
+                            }
+                            else
+                            {
+                                Snackbar.Add("Comfirm Error", Severity.Error);
+                            }
                         }
                         else
                         {
-                            Snackbar.Add("Complete Error", Severity.Error);
+                            Snackbar.Add("Adjust Stick Error", Severity.Error);
                         }
                     }
                     else
                     {
-                        Snackbar.Add("Adjust Stick Error", Severity.Error);
+                        Snackbar.Add("Complete Error : " + retMsg, Severity.Error);
                     }
+                    
                 }
                 else
                 {

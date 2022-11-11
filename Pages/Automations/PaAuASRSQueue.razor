@@ -73,7 +73,7 @@ else
             <MudTd Class="clm-row-small" DataLabel="URGENT">
                 @if (context.Work_Code == "05")
                     {
-                    <MudFab Color="Color.Error" OnClick="(()=> UpdateUrgent( context.Lpncode))" Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" IconSize="Size.Small" />
+                    <MudFab Color="Color.Secondary" OnClick="(()=> UpdateUrgent( context.Lpncode))" Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" IconSize="Size.Small" />
                     <MudFab Color="Color.Warning" OnClick="(()=> CancelQueueOutbound( context.Lpncode))" Icon="@Icons.Material.Filled.Cancel" Size="Size.Small" IconSize="Size.Small" />
                     }
             </MudTd>

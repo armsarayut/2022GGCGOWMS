@@ -145,8 +145,8 @@ namespace GoWMS.Server.Data
                 con.Open();
 
                 cmd.Parameters.AddWithValue("@unit_key", "05");
-                cmd.Parameters.AddWithValue("@stat", 1);
-                cmd.Parameters.AddWithValue("@flag", 2);
+                cmd.Parameters.AddWithValue("@stat", 0);
+                cmd.Parameters.AddWithValue("@flag", 0);
                 cmd.Parameters.AddWithValue("@pallet_bc", sPallet);
 
 
