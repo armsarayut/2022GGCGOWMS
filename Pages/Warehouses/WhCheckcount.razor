@@ -167,7 +167,7 @@ else
     public string mPagedesc { get; set; } = "2.5.Counting";
     private string mPagename { get; set; } = "/2/2_5";
 
-    private string msgAction = "Enter Tag No.";
+    private string msgAction = "Enter TagNo.";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = null;
     public string stringput { get; set; } = "";
@@ -291,20 +291,23 @@ else
         {
 
             Boolean bValidate = false;
-            bValidate = await Task.Run(() => ObjMasService.ValidateMasterpallet(str.ToUpper()));
+               mPalletcode = str.ToUpper();
+            //bValidate = await Task.Run(() => ObjMasService.ValidateMasterpallet(str.ToUpper()));
+              Elements = await Task.Run(() => ObjWhService.GetCountlist(mPalletcode));
 
-            bValidate = true;
+            if (Elements.Count()>0)
+                bValidate = true;
 
             if (bValidate)
             {
                 mPalletcode = str.ToUpper();
-                msgAction = "Enter DnSEQ";
+                msgAction = "Enter TagNo";
                 elevation = 1;
-                Snackbar.Add("Enter DnSEQ", Severity.Normal);
+                Snackbar.Add("Enter TagNo", Severity.Normal);
 
-                Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
+                //Elements = await Task.Run(() => ObjWhService.GetCountlist(mPalletcode));
 
-                this.InsertAuditrial("Start Counting Pallet : [" + mPalletcode + "]", pageheader);
+                this.InsertAuditrial("Start Counting TagNo : [" + mPalletcode + "]", pageheader);
 
             }
             else
@@ -333,13 +336,13 @@ else
                     if (bCheckCom)
                     {
                         elevation = 2;
-                        msgAction = "Mapping successfully";
+                        msgAction = "Counting successfully";
 
                         //ObjErpApiService.SetMappedPallet(mPalletcode);
 
                         // Set Update Count
                         bool bCheck = ObjWhService.UpdateCount(Elements.ToList());
-                        this.InsertAuditrial("Update Counting Pallet : [" + mPalletcode + "]", pageheader);
+                        this.InsertAuditrial("Update Counting TagNo : [" + mPalletcode + "]", pageheader);
                         // Set SAP Complete
                         if (bCheck)
                         {
@@ -352,9 +355,9 @@ else
                                 mPalletcode = "";
                                 Snackbar.Add("Audit successfully", Severity.Success);
 
-                                this.InsertAuditrial("Comfirm Counting Pallet : [" + mPalletcode + "]", pageheader);
+                                this.InsertAuditrial("Comfirm Counting TagNo : [" + mPalletcode + "]", pageheader);
 
-                                Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
+                                Elements = await Task.Run(() => ObjWhService.GetCountlist(mPalletcode));
 
                             }
                             else
@@ -375,7 +378,7 @@ else
                 }
                 else
                 {
-                    Snackbar.Add("Please enter DnSEQ", Severity.Info);
+                    Snackbar.Add("Please enter TagNo", Severity.Info);
                 }
             }
             else
@@ -396,13 +399,13 @@ else
                     Elements.ToList()[iCorrect].Movement_Type = "CYC";
                     Elements.ToList()[iCorrect].Request_Qty = 0;
                     Elements.ToList()[iCorrect].Update_By = sUsername;
-                    this.InsertAuditrial("Counting DnSEQ: [" + mPackid + "] is OK", pageheader);
+                    this.InsertAuditrial("Counting TagNo: [" + mPackid + "] is OK", pageheader);
 
-                    Snackbar.Add("Counting DnSEQ: [" + mPackid + "] is OK", Severity.Success);
+                    Snackbar.Add("Counting TagNo: [" + mPackid + "] is OK", Severity.Success);
                 }
                 else
                 {
-                    Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                    Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
                 }
 
             }
@@ -426,9 +429,9 @@ else
                 Elements.ToList()[iCorrect].Movement_Type = "Z01";
                 Elements.ToList()[iCorrect].Request_Qty = Elements.ToList()[iCorrect].Stock_Qty;
                 Elements.ToList()[iCorrect].Update_By = sUsername;
-                this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is not found", pageheader);
+                this.InsertAuditrial("Counting TagNo: [" + pack + "] is not found", pageheader);
 
-                Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
+                Snackbar.Add("Count TagNo: [" + pack + "] is OK", Severity.Success);
             }
             else
             {
@@ -455,14 +458,14 @@ else
                 Elements.ToList()[iCorrect].Movement_Type = "CYC";
                 Elements.ToList()[iCorrect].Request_Qty = 0;
                 Elements.ToList()[iCorrect].Update_By = sUsername;
-                this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is OK", pageheader);
+                this.InsertAuditrial("Counting TagNo: [" + pack + "] is OK", pageheader);
 
-                Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
+                Snackbar.Add("Count TagNo: [" + pack + "] is OK", Severity.Success);
 
             }
             else
             {
-                Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
             }
         }
 
@@ -485,11 +488,11 @@ else
             Elements.ToList()[iCorrect].Movement_Type = "CYC";
             Elements.ToList()[iCorrect].Request_Qty = 0;
 
-            Snackbar.Add("Reset DnSEQ: [" + pack + "] is OK", Severity.Success);
+            Snackbar.Add("Reset TagNo: [" + pack + "] is OK", Severity.Success);
         }
         else
         {
-            Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+            Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
         }
         this.StateHasChanged();
 
@@ -519,13 +522,13 @@ else
                     Elements.ToList()[iCorrect].Movement_Type = "Z01";
                     Elements.ToList()[iCorrect].Request_Qty = Elements.ToList()[iCorrect].Stock_Qty;
                     Elements.ToList()[iCorrect].Update_By = sUsername;
-                    this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is not found", pageheader);
+                    this.InsertAuditrial("Counting TagNo: [" + pack + "] is not found", pageheader);
 
                     //Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
                 }
                 else
                 {
-                    Snackbar.Add("Find not found DnSEQ please enter again", Severity.Warning);
+                    Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
                 }
             }
         }
@@ -557,7 +560,7 @@ else
                     Elements.ToList()[iCorrect].Movement_Type = "CYC";
                     Elements.ToList()[iCorrect].Request_Qty = 0;
                     Elements.ToList()[iCorrect].Update_By = sUserID;
-                    this.InsertAuditrial("Counting DnSEQ: [" + pack + "] is OK", pageheader);
+                    this.InsertAuditrial("Counting TagNo: [" + pack + "] is OK", pageheader);
 
                     // Snackbar.Add("Count DnSEQ: [" + pack + "] is OK", Severity.Success);
 

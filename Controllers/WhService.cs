@@ -32,6 +32,14 @@ namespace GoWMS.Server.Controllers
             return lisRet;
         }
 
+        public List<Sap_StoreoutInfo> GetCountlist(string sPallet)
+        {
+            List<Sap_StoreoutInfo> lisRet = objDAL.GetCountlist(sPallet).ToList();
+            return lisRet;
+        }
+
+
+
         public bool UpdateCount(List<Sap_StoreoutInfo> listupdate)
         {
             bool bRet = objDAL.UpdateCount(listupdate);

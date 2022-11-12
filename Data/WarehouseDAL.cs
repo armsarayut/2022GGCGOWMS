@@ -136,6 +136,8 @@ namespace GoWMS.Server.Data
                 sqlQurey.AppendLine("AND t0.stat = @stat");
                 sqlQurey.AppendLine("AND t0.flag = @flag");
                 sqlQurey.AppendLine("AND t0.item_bc = @pallet_bc");
+                sqlQurey.AppendLine("AND t0.ref_type = @reftype");
+                sqlQurey.AppendLine("AND t0.trans_type = @transtype");
                 sqlQurey.AppendLine("ORDER BY t0.trans_num desc");
 
                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
@@ -147,6 +149,8 @@ namespace GoWMS.Server.Data
                 cmd.Parameters.AddWithValue("@unit_key", "05");
                 cmd.Parameters.AddWithValue("@stat", 0);
                 cmd.Parameters.AddWithValue("@flag", 0);
+                cmd.Parameters.AddWithValue("@reftype", "J");
+                cmd.Parameters.AddWithValue("@transtype", "I");
                 cmd.Parameters.AddWithValue("@pallet_bc", sPallet);
 
 
@@ -167,6 +171,70 @@ namespace GoWMS.Server.Data
                         Transfer_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
                         Movement_Type = rdr["unit_key"].ToString(),
                         Bcount=false
+                    };
+                    lstModels.Add(listRead);
+                }
+                con.Close();
+            }
+            return lstModels;
+        }
+
+        public IEnumerable<Sap_StoreoutInfo> GetCountlist(string sPallet)
+        {
+            List<Sap_StoreoutInfo> lstModels = new List<Sap_StoreoutInfo>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                StringBuilder sqlQurey = new StringBuilder();
+
+                sqlQurey.AppendLine("select top (1) t0.site,t0.doc_num,cast(t0.trans_num as bigint) trans_num,t0.ref_type,t0.trans_type,t0.trans_date");
+                sqlQurey.AppendLine(" ,t0.unit_key,t0.item_bc,t0.item, t1.item_name, t1.uom, t1.weight_unit,t0.qty");
+                sqlQurey.AppendLine(",t0.lot,t0.prod_date,t0.stat,t0.source");
+                sqlQurey.AppendLine(",t0.reason,t0.createdby,t0.createddate");
+                sqlQurey.AppendLine(",t0.whse,t0.loc,t0.pallet_bc,t0.ref_item");
+                sqlQurey.AppendLine(",t0.flag,t0.require_detail_id,t0.is_req");
+                sqlQurey.AppendLine(",t0.is_hold,t0.is_lock,t0.update2sl,t0.modifie_date");
+                sqlQurey.AppendLine("FROM dbo.wms_trans t0");
+                sqlQurey.AppendLine("INNER JOIN dbo.set_itemmaster t1");
+                sqlQurey.AppendLine("ON t0.item=t1.item_code");
+                sqlQurey.AppendLine("WHERE t0.unit_key = @unit_key");
+                sqlQurey.AppendLine("AND t0.stat = @stat");
+                sqlQurey.AppendLine("AND t0.flag = @flag");
+                sqlQurey.AppendLine("AND t0.item_bc = @pallet_bc");
+                sqlQurey.AppendLine("AND t0.ref_type = @reftype");
+                sqlQurey.AppendLine("AND t0.trans_type = @transtype");
+                sqlQurey.AppendLine("ORDER BY t0.trans_num desc");
+
+                SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+                con.Open();
+
+                cmd.Parameters.AddWithValue("@unit_key", "05");
+                cmd.Parameters.AddWithValue("@stat", 0);
+                cmd.Parameters.AddWithValue("@flag", 0);
+                cmd.Parameters.AddWithValue("@reftype", "I");
+                cmd.Parameters.AddWithValue("@transtype", "A");
+                cmd.Parameters.AddWithValue("@pallet_bc", sPallet);
+
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Sap_StoreoutInfo listRead = new Sap_StoreoutInfo
+                    {
+                        Idx = rdr["trans_num"] == DBNull.Value ? null : (Int64?)rdr["trans_num"],
+                        Item_Code = rdr["item"].ToString(),
+                        Item_Name = rdr["item_name"].ToString(),
+                        Request_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Unit = rdr["uom"].ToString(),
+                        Su_No = rdr["item_bc"].ToString(),
+                        Pallet_No = rdr["pallet_bc"].ToString(),
+                        Batch_No = rdr["lot"].ToString(),
+                        Stock_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Transfer_Qty = rdr["qty"] == DBNull.Value ? null : (decimal?)rdr["qty"],
+                        Movement_Type = rdr["unit_key"].ToString(),
+                        Bcount = false
                     };
                     lstModels.Add(listRead);
                 }
@@ -231,7 +299,7 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("AND [flag] = 0");
                     sql.AppendLine("AND [is_req] = 0");
 
-                    sql.AppendLine(";");
+                    sql.AppendLine(";");                                                                                                                                                                         
 
                     cmd.Parameters.Add(new SqlParameter(total_qty.ToString(), SqlDbType.Decimal)).Value = dStock;
                     cmd.Parameters.Add(new SqlParameter(su_nostock.ToString(), SqlDbType.VarChar)).Value = sSuno;
