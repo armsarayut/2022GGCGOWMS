@@ -123,9 +123,13 @@ namespace GoWMS.Server.Data
             List<Vrpt_shelfsummary> lstobj = new List<Vrpt_shelfsummary>();
             using (SqlConnection con = new SqlConnection(connectionStringSQL))
             {
-                SqlCommand cmd = new SqlCommand("select srm_name, srm_no, locavl, locemp, plemp, plerr, prohloc, total, percen " +
-                    "FROM wcs.vrpt_shelfsummary " +
-                    "ORDER BY srm_no", con)
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("select srm_name, srm_no, locavl, locemp, plemp, plerr, prohloc, total, percen");
+                sql.AppendLine("FROM wcs.vrpt_shelfsummary");
+                sql.AppendLine("ORDER BY srm_no");
+
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
                 {
                     CommandType = CommandType.Text
                 };

@@ -16,6 +16,24 @@
 
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Dashboard</MudText>
+@if (TotalPercenuse>=85)
+{
+    <MudProgressLinear Striped="true" Color="Color.Error" Size="Size.Large" Maximum="100" Value="@TotalPercenuse" Class="my-7">
+        <MudText Typo="Typo.subtitle1" Color="Color.Dark">
+            <b>used storage : @TotalPercenuse%</b>
+        </MudText>
+    </MudProgressLinear>
+}
+else
+{
+    <MudProgressLinear Striped="true" Color="Color.Info" Size="Size.Large" Maximum="100" Value="@TotalPercenuse" Class="my-7">
+        <MudText Typo="Typo.subtitle1" Color="Color.Dark">
+            <b>used storage : @TotalPercenuse%</b>
+        </MudText>
+    </MudProgressLinear>
+}
+
+
 <MudGrid>
     <MudItem xs="12" sm="6" md="3">
         <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:90px;">
@@ -128,7 +146,7 @@
             </div>
         </MudPaper>
     </MudItem>
-
+     
 
      <MudItem xs="12" sm="6">
         <MudCard Elevation="25" Style="height:350px;">
@@ -198,9 +216,12 @@
     private Int64 L1Use = 0;
     private Int64 L1Emp = 0;
 
+
     private Int64 L2Total = 0;
     private Int64 L2Use = 0;
     private Int64 L2Emp = 0;
+
+    private Double TotalPercenuse = 0.0;
 
     private Int64 L3Total = 0;
     private Int64 L3Use = 0;
@@ -216,9 +237,6 @@
     private Int64 rretrieval = 0;
     private Int64 rretrievalemp = 0;
     private Int64 rtotal = 0;
-
-
-
 
     private Boolean bRun = true;
 
@@ -239,17 +257,6 @@
 
 
     private IEnumerable<DashTaskTime> RgvCompleteData = new List<DashTaskTime>();
-
-
-    EarningReport[] earningReports = new EarningReport[]
-{
-        new EarningReport { Name = "SRM01", Title = "Disconnect", Avatar = "https://avatars2.githubusercontent.com/u/71094850?s=460&u=66c16f5bb7d27dc751f6759a82a3a070c8c7fe4b&v=4", Salary = "10:01", Severity = Color.Error, SeverityTitle = "High"},
-        new EarningReport { Name = "RGV01", Title = "Disconnect", Avatar = "https://avatars.githubusercontent.com/u/16208742?s=120&v=4", Salary = "10:02", Severity = Color.Error, SeverityTitle = "High"},
-        new EarningReport { Name = "CVY01", Title = "Barcode not found", Avatar = "https://avatars2.githubusercontent.com/u/10367109?s=460&amp;u=2abf95f9e01132e8e2915def42895ffe99c5d2c6&amp;v=4", Salary = "10:05", Severity = Color.Warning, SeverityTitle = "Medium"},
-        new EarningReport { Name = "CVY02", Title = "Sensor not found", Avatar = "https://avatars2.githubusercontent.com/u/10367109?s=460&amp;u=2abf95f9e01132e8e2915def42895ffe99c5d2c6&amp;v=4", Salary = "10:10", Severity = Color.Warning, SeverityTitle = "Medium"},
-        new EarningReport { Name = "SRM02", Title = "Distance error", Avatar = "https://avatars2.githubusercontent.com/u/10367109?s=460&amp;u=2abf95f9e01132e8e2915def42895ffe99c5d2c6&amp;v=4", Salary = "10:10", Severity = Color.Error, SeverityTitle = "High"},
-        new EarningReport { Name = "SRM03", Title = "Limit X error", Avatar = "https://avatars2.githubusercontent.com/u/10367109?s=460&amp;u=2abf95f9e01132e8e2915def42895ffe99c5d2c6&amp;v=4", Salary = "10:10", Severity = Color.Error, SeverityTitle = "High"},
-                };
 
     class EarningReport
     {
@@ -414,63 +421,28 @@
             L2Use = 0;
             L2Emp = 0;
         }
+        //(float.Parse(L1Use) + float.Parse(L2Use)
+        //double aa = L1Use + L2Use;
+        //double bb = L1Total + L2Total;
+        //double cc = aa / bb;
 
-        var allCorrect3 = Elementlocation.Where(a => a.Srm_No == 3).ToList();
+        //TotalPercenuse = cc * 100 ;
+
+        var allCorrect3 = Elementlocation.Where(a => a.Srm_No == 0).ToList();
 
         if (allCorrect3.ToList().Count > 0)
         {
             foreach (var val in allCorrect3)
             {
-                data3[0] = (double)val.Locavl;
-                data3[1] = (double)val.Locemp;
-                data3[2] = (double)val.Plerr;
-                data3[3] = (double)val.Plemp;
-
-                L3Total = (Int64)val.Total;
-                L3Use = (Int64)val.Locavl;
-                L3Emp = (Int64)val.Locemp;
+                TotalPercenuse = (double)val.Percen;
             }
         }
         else
         {
-            data3.Append(0);
-            data3.Append(0);
-            data3.Append(0);
-            data3.Append(0);
-            L3Total = 0;
-            L3Use = 0;
-            L3Emp = 0;
+            TotalPercenuse = 0;
         }
 
-        var allCorrect4 = Elementlocation.Where(a => a.Srm_No == 4).ToList();
 
-        if (allCorrect4.ToList().Count > 0)
-        {
-            foreach (var val in allCorrect4)
-            {
-
-                data4[0] = (double)val.Locavl;
-                data4[1] = (double)val.Locemp;
-                data4[2] = (double)val.Plerr;
-                data4[3] = (double)val.Plemp;
-
-                L4Total = (Int64)val.Total;
-                L4Use = (Int64)val.Locavl;
-                L4Emp = (Int64)val.Locemp;
-            }
-        }
-        else
-        {
-
-            data4.Append(0);
-            data4.Append(0);
-            data4.Append(0);
-            data4.Append(0);
-
-            L4Total = 0;
-            L4Use = 0;
-            L4Emp = 0;
-        }
 
         var allCorrectTas01 = ElementWorks.Where(a => a.Work_Code == "01").ToList();
         var allCorrectTas101 = ElementWorks.Where(a => a.Work_Code == "101").ToList();
