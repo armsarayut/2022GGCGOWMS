@@ -38,14 +38,14 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Batch_No)">WAVENO</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Delivery_Pio)">PRIORITY</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Cdate)">DATE</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Count_Do)">PACKID(COUNT)</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Ctime)">CREATED</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Stime)">STARTED</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Mtime)">COMPLETED</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Loadtime)">PICKED</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Batch_No)">WAVENO</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Delivery_Pio)">PRIORITY</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Cdate)">DATE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Count_Do)">PACKID(COUNT)</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Ctime)">CREATED</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Stime)">STARTED</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Mtime)">COMPLETED</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_4_D, object>(x=>x.Loadtime)">PICKED</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="WAVENO">@context.Batch_No</MudTd>

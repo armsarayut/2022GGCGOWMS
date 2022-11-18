@@ -81,13 +81,13 @@ else
 
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W_date)">@L["DATE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.Wtotal)">@L["TOTAL"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W01)">@L["STORE-IN"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W05)">@L["STORE-OUT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W101)">@L["EMPTY-IN"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W102)">@L["EMPTY-OUT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W09)">@L["MOVE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W_date)">@L["DATE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.Wtotal)">@L["TOTAL"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W01)">@L["STORE-IN"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W05)">@L["STORE-OUT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W101)">@L["EMPTY-IN"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W102)">@L["EMPTY-OUT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_F, object>(x=>x.W09)">@L["MOVE"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["DATE"]>@Convert.ToDateTime(context.W_date).ToString(VarGlobals.FormatD)</MudTd>

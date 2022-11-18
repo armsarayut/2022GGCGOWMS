@@ -122,23 +122,23 @@ else
             AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <Columns>
-        <Column T="Inb_Goodreceive_Go" Field="Created" Title="@L["GRDatetime"]">
+            <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Field="Created" Title="@L["GRDatetime"]">
             <CellTemplate>
                 @Convert.ToDateTime(context.Item.Created).ToString(VarGlobals.FormatDT)
             </CellTemplate>
         </Column>
-        <Column T="Inb_Goodreceive_Go" Field="Pono" Title="@L["DNNo"]" />
-        <Column T="Inb_Goodreceive_Go" Field="Itemcode" Title="@L["ItemCode"]" />
-        <Column T="Inb_Goodreceive_Go" Field="Itemname" Title="@L["ItemName"]" />
-        <Column T="Inb_Goodreceive_Go" Field="Quantity" Title="@L["Qty"]">
+        <Column T="Inb_Goodreceive_Go" Field="Pono" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["DNNo"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Itemcode" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ItemCode"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Itemname" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ItemName"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Quantity" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Qty"]">
             <CellTemplate>
                 @string.Format(VarGlobals.FormatN3, context.Item.Quantity) 
             </CellTemplate>
         </Column>
-        <Column T="Inb_Goodreceive_Go" Field="Unit" Title="@L["Unit"]"/>
-        <Column T="Inb_Goodreceive_Go" Field="Lotno" Title="@L["LotNo"]"/>
-            <Column T="Inb_Goodreceive_Go" Field="Pallettag" Title="@L["SUNo"]" />
-        <Column T="Inb_Goodreceive_Go" Title="@L["Adjust"]" Filterable="false">
+        <Column T="Inb_Goodreceive_Go" Field="Unit" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Unit"]"/>
+        <Column T="Inb_Goodreceive_Go" Field="Lotno" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["LotNo"]"/>
+            <Column T="Inb_Goodreceive_Go" Field="Pallettag" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["SUNo"]" />
+        <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Adjust"]" Filterable="false">
               <CellTemplate>
 
                   <MudIconButton Size="@Size.Small"
@@ -319,17 +319,29 @@ else
 
         if (result == true)
         {
-            string msg="";
 
-            if (ObjInboundService.CancelReceivingOrdersBypackId_SP(tranId, tranQty, tranDoc,tranItem, tranTag,ref msg))
+            string state = "";
+
+            state = await ConfirmDelete();
+
+            if (state=="Deleted")
+            {
+                string msg = "";
+
+                if (ObjInboundService.CancelReceivingOrdersBypackId_SP(tranId, tranQty, tranDoc, tranItem, tranTag, ref msg))
                 {
-                this.InsertAuditrial("Cancel ReceivingOrder SKU : " + tranItem + " Qty : " + tranQty.ToString() + " From Doc : " + tranDoc, pageheader);
-                Snackbar.Add(msg, Severity.Success);
-                Elements = ObjInboundService.GetAllInbGoodreceiveGos();
+                    this.InsertAuditrial("Cancel ReceivingOrder SKU : " + tranItem + " Qty : " + tranQty.ToString() + " From Doc : " + tranDoc, pageheader);
+                    Snackbar.Add(msg, Severity.Success);
+                    //Elements = ObjInboundService.GetAllInbGoodreceiveGos();
+                    Elements = await Task.Run(() => ObjInboundService.GetAllInbGoodreceiveGos());
+                    this.StateHasChanged();
                 }
-                else{
+                else
+                {
                     Snackbar.Add(msg, Severity.Error);
                 }
+            }
+            
 
             //ObjInboundService.CancelReceivingOrdersBypackId(tranId, tranQty, tranDoc,tranItem, tranTag);
 
@@ -589,6 +601,19 @@ else
     }
     #endregion
 
+    private async Task<string> ConfirmDelete()
+    {
+        string state = "";
 
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Deleting can not be undone!",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Cancelled" : "Deleted";
+
+        return state;
+
+    }
 
 }

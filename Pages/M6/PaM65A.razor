@@ -85,11 +85,11 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Created)">@L["CREATED"]</MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Mccode)">@L["MC"]</MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.St_No)">@L["STATUS"]</MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_Th)">@L["DESCRIPTION(TH)"]</MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_En)">@L["DESCRIPTION(EN)"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Created)">@L["CREATED"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Mccode)">@L["MC"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.St_No)">@L["STATUS"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_Th)">@L["DESCRIPTION(TH)"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_En)">@L["DESCRIPTION(EN)"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             @if (@context.Status == 4)

@@ -51,10 +51,10 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Userinfo, object>(x=>x.Usgrp)">@L["GROUP"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Userinfo, object>(x=>x.UserId)">@L["USERID"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Userinfo, object>(x=>x.Usname)">@L["USERNAME"]</MudTableSortLabel></MudTh>
-            <MudTh>@L["EDIT"]</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Userinfo, object>(x=>x.Usgrp)">@L["GROUP"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Userinfo, object>(x=>x.UserId)">@L["USERID"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Userinfo, object>(x=>x.Usname)">@L["USERNAME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")">@L["EDIT"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["GROUP"]>@context.Usgrp</MudTd>

@@ -52,15 +52,15 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Ugdesc)" >@L["GROUP"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Menu_desc)">@L["MENU"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_acc)">@L["ACCESS"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_add)">@L["ADD"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_edit)">@L["EDIT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_del)">@L["DELETE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_rpt)">@L["REPORT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_apv)">@L["APPROVE"]</MudTableSortLabel></MudTh>
-            <MudTh>@L["ACTION"]</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Ugdesc)" >@L["GROUP"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Menu_desc)">@L["MENU"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_acc)">@L["ACCESS"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_add)">@L["ADD"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_edit)">@L["EDIT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_del)">@L["DELETE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_rpt)">@L["REPORT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<UserPrivilege, object>(x=>x.Role_apv)">@L["APPROVE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")">@L["ACTION"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["GROUP"]>@context.Ugdesc</MudTd>

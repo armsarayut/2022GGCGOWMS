@@ -76,15 +76,15 @@
             <MudTextField @bind-Value="searchString" Placeholder=@L["Search"] Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh>@L["PALLET"]</MudTh>
-            <MudTh>@L["TASKCODE"]</MudTh>
-            <MudTh>@L["TASKTYPE"]</MudTh>
-            <MudTh>@L["SRM"]</MudTh>
-            <MudTh>@L["SOURCE"]</MudTh>
-            <MudTh>@L["DESTINATION"]</MudTh>
-            <MudTh>@L["START"]</MudTh>
-            <MudTh>@L["END"]</MudTh>
-            <MudTh>@L["TIME"]</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Lpncode)">@L["PALLET"]</MudTableSortLabel> </MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Work_code)">@L["TASKCODE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Work_text_th)">@L["TASKTYPE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Srm_no)">@L["SRM"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Srm_from)">@L["SOURCE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Srm_to)">@L["DESTINATION"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Stime)">@L["START"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Etime)">@L["END"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<AsrsLoadtime, object>(x=>x.Loadtime)">@L["TIME"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
 

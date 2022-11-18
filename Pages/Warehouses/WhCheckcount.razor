@@ -67,16 +67,16 @@ else
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
-                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
-                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Name)">@L["MATNAME"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Name)">@L["MATNAME"]</MudTableSortLabel></MudTh>
               @*  <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
-                <MudTh ><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
-                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
                  @*<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
-                <MudTh>@L["ACTION"]</MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")">@L["ACTION"]</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel=@L["STATE"]>

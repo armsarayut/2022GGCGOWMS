@@ -38,12 +38,12 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Su_No)">PACKID</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Lpn_No)">PALLET</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Work_Type)">TASKTYPE</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Srm_No)">LANE</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Loc_No)">STORAGEBIN</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Loadtime)">TIME</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Su_No)">PACKID</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Lpn_No)">PALLET</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Work_Type)">TASKTYPE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Srm_No)">LANE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Loc_No)">STORAGEBIN</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_D, object>(x=>x.Loadtime)">TIME</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="PACKID">@context.Su_No</MudTd>

@@ -54,15 +54,15 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemcode)" >@L["ITEMCODE"]</MudTableSortLabel></MudTh>
-             <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemname)" >@L["ITEMNAME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemunit)">@L["UNIT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Palqty)">@L["QTYPERPAL"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Weightnet)">@L["NETWEIGHT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Weightgross)">@L["GROSSWEIGHT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemcode)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemname)" >@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemunit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Palqty)">@L["QTYPERPAL"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Weightnet)">@L["NETWEIGHT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Weightgross)">@L["GROSSWEIGHT"]</MudTableSortLabel></MudTh>
            @* <MudTh>@L["WEIGHTUNIT"]</MudTh>*@
-             <MudTh>@L["BATCH"]</MudTh>
-            <MudTh>@L["EDIT"]</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")">@L["BATCH"]</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")">@L["EDIT"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Itemcode</MudTd>

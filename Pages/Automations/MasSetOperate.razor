@@ -40,16 +40,17 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Set_Operate, object>(x=>x.Mc_Name)">SRM</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Set_Operate, object>(x=>x.Entity_Lock)">ENABLE</MudTableSortLabel></MudTh>
-            <MudTh>ACTION</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Set_Operate, object>(x=>x.Mc_Name)">SRM</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Set_Operate, object>(x=>x.Entity_Lock)">ENABLE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" >ACTION</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="SRM">@context.Mc_Name</MudTd>
             <MudTd DataLabel="ENABLE"><MudCheckBox @bind-Checked="@context.Enable" /></MudTd>
             <MudTd Class="clm-row-small" DataLabel="ACTION">
-                <MudFab @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Enable.Value, @context.Mc_Name.ToString()))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
-                <MudFab @onclick="@(()=>Refreshconstance())" Color="Color.Info" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" IconSize="Size.Small" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Save" Color="Color.Error" @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Enable.Value, @context.Mc_Name.ToString()))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Refresh" Color="Color.Info"  @onclick="@(()=>Refreshconstance())" />
+
             </MudTd>
         </RowTemplate>
 

@@ -68,10 +68,10 @@
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh>@L["MACHINE"]</MudTh>
-                <MudTh>@L["IN"]</MudTh>
-                <MudTh>@L["OUT"]</MudTh>
-                <MudTh>@L["TOTAL"]</MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<AsrsPerformance, object>(x=>x.Mccode)">@L["MACHINE"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<AsrsPerformance, object>(x=>x.Inbound)">@L["IN"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<AsrsPerformance, object>(x=>x.Outbound)">@L["OUT"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<AsrsPerformance, object>(x=>x.Total)">@L["TOTAL"]</MudTableSortLabel></MudTh>
 
             </HeaderContent>
             <RowTemplate>

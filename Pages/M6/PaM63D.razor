@@ -37,11 +37,11 @@ else
 
         <HeaderContent>
 
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Item_Code)">ITEMCODE</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Item_Name)">ITEMNAME</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Qty)">STOCK </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Su_No)">SEQ </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Unit)">UNIT </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Item_Code)">ITEMCODE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Item_Name)">ITEMNAME</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Qty)">STOCK </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Su_No)">SEQ </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_D, object>(x=>x.Unit)">UNIT </MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="ITEMCODE">@context.Item_Code</MudTd>

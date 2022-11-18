@@ -84,16 +84,16 @@ else
             <col />
         </ColGroup>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Order_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Batch_Number)">@L["LOT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Su_No)">@L["DNSEQ"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Pallet_No)">@L["PALLET"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Storage_Location)">@L["Loc"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Delivery_Date)">@L["REQUESTDATE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Order_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Batch_Number)">@L["LOT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Su_No)">@L["DNSEQ"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Pallet_No)">@L["PALLET"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Storage_Location)">@L["Loc"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_Storeout, object>(x=>x.Delivery_Date)">@L["REQUESTDATE"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <GroupHeaderTemplate>
             <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName} : {context.Key}") @L["Total"]: @context.Items.Sum((e) => e.Request_Qty)</MudTh>
@@ -339,28 +339,51 @@ else
         bool? result = await CheckRoleDelete();
         if (result == true)
         {
-            var serializeOptions = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = true
-                };
+            string state = "";
 
-            var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, Pallet_No = x.Pallet_No }).ToList();
+            state = await ConfirmDelete();
 
-            var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
+            if (state == "Deleted")
+            {
+                var serializeOptions = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        WriteIndented = true
+                    };
 
-            string sRet = "Call";
-            bool bRet;
+                var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, Pallet_No = x.Pallet_No }).ToList();
 
-            bRet = ObjWhService.CancelOrderpick(jsonRES, ref sRet);
+                var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
 
-            this.InsertAuditrial("Cancel Order ASRS : " + jsonRES.ToString(), pageheader);
+                string sRet = "Call";
+                bool bRet;
+
+                bRet = ObjWhService.CancelOrderpick(jsonRES, ref sRet);
+
+                this.InsertAuditrial("Cancel Order ASRS : " + jsonRES.ToString(), pageheader);
+            }
+           
 
             Elements = ObjService.GetSapStoreoutSetBatch();
             selectedItems.Clear();
             searchString = null;
         }
         this.StateHasChanged();
+
+    }
+
+    private async Task<string> ConfirmDelete()
+    {
+        string state = "";
+
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Deleting can not be undone!",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Cancelled" : "Deleted";
+
+        return state;
 
     }
 

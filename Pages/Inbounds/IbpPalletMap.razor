@@ -118,23 +118,23 @@ else
         Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")" 
         Dense="@dense" >
     <ToolBarContent>
-        <MudText Typo="Typo.h6">@L["MasterPallet"] : [ @mPalletcode ]</MudText>
+            <MudText Typo="Typo.h6">@L["SeqNo"] : [ @mPalletcode ]</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
             AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <Columns>
-            <Column T="Inb_Goodreceive_Go" Field="Itemtag" Title="@L["SeqNo"]" />
-             <Column T="Inb_Goodreceive_Go" Field="Itemcode" Title="@L["ItemCode"]" />
-            <Column T="Inb_Goodreceive_Go" Field="Itemname" Title="@L["ItemName"]" />
-             <Column T="Inb_Goodreceive_Go" Field="Quantity" Title="@L["Qty"]">
+            <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Field="Itemtag" Title="@L["SeqNo"]" />
+             <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Field="Itemcode" Title="@L["ItemCode"]" />
+            <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Field="Itemname" Title="@L["ItemName"]" />
+             <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Field="Quantity" Title="@L["Qty"]">
             <CellTemplate>
                 @string.Format(VarGlobals.FormatN3, context.Item.Quantity) 
             </CellTemplate>
 
         </Column>
-        <Column T="Inb_Goodreceive_Go" Field="Unit" Title="@L["Unit"]" />
-            <Column T="Inb_Goodreceive_Go" Title="@L["Action"]" Filterable="false">
+            <Column T="Inb_Goodreceive_Go" Field="Unit" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Unit"]" />
+            <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Action"]" Filterable="false">
               <CellTemplate>
                     <MudIconButton Size="@Size.Small" 
                         Icon="@Icons.Outlined.Delete" 

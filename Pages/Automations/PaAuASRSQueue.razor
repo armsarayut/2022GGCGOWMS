@@ -47,14 +47,14 @@ else
         </ToolBarContent>
         <HeaderContent>
             @*<MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Work_Priority)">@L["PRIORITY"]</MudTableSortLabel></MudTh>*@
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Ctime)">@L["QUEUING"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Lpncode)">@L["PALLET"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Work_Code)">@L["TASKTYPE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_No)">@L["SRM"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_From)">@L["SOURCE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_To)">@L["DESTINATION"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Stime)">@L["STARTED"]</MudTableSortLabel></MudTh>
-            <MudTh>ACTION</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Ctime)">@L["QUEUING"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Lpncode)">@L["PALLET"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Work_Code)">@L["TASKTYPE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_No)">@L["SRM"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_From)">@L["SOURCE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Srm_To)">@L["DESTINATION"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Mcworks, object>(x=>x.Stime)">@L["STARTED"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" >ACTION</MudTh>
         </HeaderContent>
         <RowTemplate>
             @*<MudTd DataLabel=@L["PRIORITY"]>@context.Work_Priority</MudTd>*@
@@ -73,8 +73,8 @@ else
             <MudTd Class="clm-row-small" DataLabel="URGENT">
                 @if (context.Work_Code == "05")
                     {
-                    <MudFab Color="Color.Secondary" OnClick="(()=> UpdateUrgent( context.Lpncode))" Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab Color="Color.Warning" OnClick="(()=> CancelQueueOutbound( context.Lpncode))" Icon="@Icons.Material.Filled.Cancel" Size="Size.Small" IconSize="Size.Small" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.ArrowUpward" Color="Color.Secondary" OnClick="(()=> UpdateUrgent( context.Lpncode))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="(()=> CancelQueueOutbound( context.Lpncode))" />
                     }
             </MudTd>
         </RowTemplate>
@@ -202,18 +202,41 @@ else
         bool? result = await CheckRoleDelete();
         if (result == true)
         {
-            if (ObjWcsService.CancelQueueOutbound(pallet,ref strreturn) == true)
+              string state = "";
+
+            state = await ConfirmDelete();
+
+            if (state=="Deleted")
             {
-                Snackbar.Add("Cancle Queue OK", Severity.Success);
-                this.InsertAuditrial("Cancle Queue : " + pallet.ToString(), pageheader);
-                Elements = await Task.Run(() => ObjWcsService.GetASRSWorks());
-                this.StateHasChanged();
+                if (ObjWcsService.CancelQueueOutbound(pallet,ref strreturn) == true)
+                {
+                    Snackbar.Add("Cancle Queue OK", Severity.Success);
+                    this.InsertAuditrial("Cancle Queue : " + pallet.ToString(), pageheader);
+                    Elements = await Task.Run(() => ObjWcsService.GetASRSWorks());
+                    this.StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add("Cancle Queue Losss", Severity.Error);
+                }
             }
-            else
-            {
-                Snackbar.Add("Cancle Queue Losss", Severity.Error);
-            }
+            
         }
+    }
+
+     private async Task<string> ConfirmDelete()
+    {
+        string state = "";
+
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Deleting can not be undone!",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Cancelled" : "Deleted";
+
+        return state;
+
     }
 
     #region "Role"

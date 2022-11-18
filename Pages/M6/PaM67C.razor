@@ -78,8 +78,8 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_C, object>(x=>x.W_Hour)">@L["DATETIME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_7_C, object>(x=>x.W_Count)">@L["TASKCOUNT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_C, object>(x=>x.W_Hour)">@L["DATETIME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_7_C, object>(x=>x.W_Count)">@L["TASKCOUNT"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["DATETIME"]>@Convert.ToDateTime(context.W_Hour).ToString(VarGlobals.FormatDTHM)</MudTd>

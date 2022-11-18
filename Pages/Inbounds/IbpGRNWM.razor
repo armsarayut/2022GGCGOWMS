@@ -606,6 +606,10 @@ else
 
                     Snackbar.Add("Created", Severity.Success);
 
+                     Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());
+
+                     this.StateHasChanged();
+
                 }
             }
         }
@@ -677,17 +681,25 @@ else
         bool? result = await CheckRoleDelete();
         if (result == true)
         {
-            bool resultReturn;
-            string msgReturn = "";
-            resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
-            if (resultReturn == true)
+            string state = "";
+
+            state = await ConfirmDelete();
+
+            if (state=="Deleted")
             {
-                this.InsertAuditrial("Accessory order receiving : Cancle Ref. " + apiid.ToString(), pageheader);
+                bool resultReturn;
+                string msgReturn = "";
+                resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
+                if (resultReturn == true)
+                {
+                    this.InsertAuditrial("Accessory order receiving : Cancle Ref. " + apiid.ToString(), pageheader);
 
-                Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());
-                this.StateHasChanged();
+                    Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());
+                    this.StateHasChanged();
 
+                }
             }
+            
         }
 
          
@@ -739,7 +751,20 @@ else
 
     }
 
+    private async Task<string> ConfirmDelete()
+    {
+        string state = "";
 
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Deleting can not be undone!",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Cancelled" : "Deleted";
+
+        return state;
+
+    }
 
 
 }

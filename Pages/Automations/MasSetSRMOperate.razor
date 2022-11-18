@@ -34,18 +34,18 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Set_Srm_Operate, object>(x=>x.Mc_Name)">SRM</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Set_Srm_Operate, object>(x=>x.Inbound)">IN</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Set_Srm_Operate, object>(x=>x.Outbound)">OUT</MudTableSortLabel></MudTh>
-            <MudTh>ACTION</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Set_Srm_Operate, object>(x=>x.Mc_Name)">SRM</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Set_Srm_Operate, object>(x=>x.Inbound)">IN</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Set_Srm_Operate, object>(x=>x.Outbound)">OUT</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" >ACTION</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="SRM">@context.Mc_Name</MudTd>
             <MudTd DataLabel="IN"><MudCheckBox @bind-Checked="@context.Inbound" /></MudTd>
             <MudTd DataLabel="OUT"><MudCheckBox @bind-Checked="@context.Outbound" /></MudTd>
             <MudTd Class="clm-row-small" DataLabel="ACTION">
-                <MudFab @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Inbound.Value,@context.Outbound.Value, @context.Mc_Name.ToString()))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
-                <MudFab @onclick="@(()=>Refreshconstance())" Color="Color.Info" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" IconSize="Size.Small" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Save" Color="Color.Error" @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Inbound.Value,@context.Outbound.Value, @context.Mc_Name.ToString()))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Refresh" Color="Color.Info" @onclick="@(()=>Refreshconstance())" />
             </MudTd>
         </RowTemplate>
 

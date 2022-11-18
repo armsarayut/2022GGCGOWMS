@@ -46,10 +46,10 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh>@L["HelpCondition"]</MudTh>
-            <MudTh>@L["HelpName"]</MudTh>
-            <MudTh>@L["Tel"]</MudTh>
-            <MudTh>@L["Email"]</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Helpdesk, object>(x=>x.Hlp_desc)">@L["HelpCondition"]</MudTableSortLabel> </MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Helpdesk, object>(x=>x.Hlp_name)">@L["HelpName"]</MudTableSortLabel> </MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Helpdesk, object>(x=>x.Hlp_tel)">@L["Tel"]</MudTableSortLabel> </MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Helpdesk, object>(x=>x.Hlp_mail)">@L["Email"]</MudTableSortLabel> </MudTh>
 
         </HeaderContent>
         <RowTemplate>

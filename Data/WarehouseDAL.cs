@@ -564,7 +564,7 @@ namespace GoWMS.Server.Data
                 try
                 {
                     StringBuilder sqlQurey = new StringBuilder();
-                    sqlQurey.Append("dbo.ssp_createoutbound_manual_audit_json");
+                    sqlQurey.Append("dbo.ssp_createoutbound_manual_tag_audit_json");
                     SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
                         CommandType = CommandType.StoredProcedure

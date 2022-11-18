@@ -47,12 +47,12 @@ else
 
         <HeaderContent>
 
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Batch_Number)">@L["LOT"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Qty)">@L["STOCK"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Su_No)">@L["SEQ"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Aging)">@L["AGING"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Batch_Number)">@L["LOT"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Qty)">@L["STOCK"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Su_No)">@L["SEQ"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Aging)">@L["AGING"] </MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
              <MudTd DataLabel=@L["LOT"]>@context.Batch_Number</MudTd>

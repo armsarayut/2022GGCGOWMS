@@ -37,9 +37,13 @@ else
 
     <MudGrid>
         <MudItem xs="12" sm="6" md="4">
-            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Save" Style="background-color: limegreen; color: white; width: 300px; height: 30px;" OnClick=@OnButtonOrderSelected>
+            <MudButtonGroup Color="Color.Error" Variant="Variant.Outlined">
+                <MudButton StartIcon="@Icons.Material.Filled.Done" IconColor="Color.Tertiary" OnClick=@OnButtonOrderSelected>Set Releasestock</MudButton>
+                </MudButtonGroup>
+
+          @*  <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Save" Style="background-color: limegreen; color: white; width: 300px; height: 30px;" OnClick=@OnButtonOrderSelected>
                 Set Releasestock
-            </MudButton>
+            </MudButton>*@
         </MudItem>
     </MudGrid>
 
@@ -56,13 +60,13 @@ else
           SelectedItems="@selectedItems"
           MultiSelection="_multiSelect">
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.BatchNo)">@L["Lot"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Item_code)">@L["ITEMCODE"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Item_name)">@L["ITEMNAME"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Qty)">@L["QTY"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Su_no)">@L["PACKID"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Palletcode)">@L["PALLET"] </MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Shelfname)">@L["STROAGEBIN"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.BatchNo)">@L["Lot"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Item_code)">@L["ITEMCODE"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Item_name)">@L["ITEMNAME"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Qty)">@L["QTY"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Su_no)">@L["PACKID"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Palletcode)">@L["PALLET"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<InvStockList, object>(x=>x.Shelfname)">@L["STROAGEBIN"] </MudTableSortLabel></MudTh>
         </HeaderContent>
         <GroupHeaderTemplate>
             <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName}: {context.Key}")</MudTh>

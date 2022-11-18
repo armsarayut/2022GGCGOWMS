@@ -67,12 +67,12 @@ else
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
-                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
+                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
                    @* <MudTh>@L["ACTION"]</MudTh>*@
                 </HeaderContent>
                 <RowTemplate>
@@ -126,7 +126,7 @@ else
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Bcount)">@L["STATE"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-                    //<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+            
                     @*<MudTh>@L["ACTION"]</MudTh>*@
                 </HeaderContent>
                 <RowTemplate>
@@ -144,7 +144,6 @@ else
                     </MudTd>
                     <MudTd DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
                     <MudTd DataLabel=@L["QTY"]>@context.Stock_Qty</MudTd>
-                    //<MudTd DataLabel=@L["QTY"]>@context.Request_Qty</MudTd>
                   @*  <MudTd DataLabel=@L["ACTION"]>
                         <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
                         <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
@@ -158,6 +157,21 @@ else
                 </PagerContent>
             </MudTable>
         </MudHidden>
+
+        <MudItem  xs="12">
+            @if(iState==0)
+            {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true" Class="my-2">@sStage</MudAlert>
+            }
+            else if (iState==1)
+            {
+                <MudAlert Severity="Severity.Success" Variant="Variant.Filled" Dense="true" Class="my-2">@sStage</MudAlert>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2">@sStage</MudAlert>
+            }
+    </MudItem>
 }
 
 @code {
@@ -204,6 +218,11 @@ else
     string sUserID { get; set; } = "";
     List<Userroleinfo> Roles = new List<Userroleinfo>();
     [Inject] private IDialogService DialogService { get; set; }
+
+    private Boolean bError;
+
+    private int iState =0;
+    private string sStage { get; set; } = "Intral";
 
     private void KeyboardEventHandler(KeyboardEventArgs args)
     {

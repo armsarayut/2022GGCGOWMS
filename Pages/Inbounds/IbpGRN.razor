@@ -191,8 +191,6 @@ else
 
     List<ggcTag4x4> TagList = new List<ggcTag4x4>();
 
-
-
     //[Inject] private IDialogService DialogService { get; set; }
 
 
@@ -205,24 +203,24 @@ else
     string sGroupID { get; set; } = "";
     string sUserID { get; set; } = "";
 
-        private Func<Api_ggc, bool> _quickFilter => x =>
+    private Func<Api_ggc, bool> _quickFilter => x =>
     {
-        if (string.IsNullOrWhiteSpace(_searchString))
-            return true;
+    if (string.IsNullOrWhiteSpace(_searchString))
+        return true;
 
-        if (x.Batch_no.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+    if (x.Batch_no.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        return true;
 
-        if (x.Doc_ref.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+    if (x.Doc_ref.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        return true;
 
-        if (x.Item_code.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
+    if (x.Item_code.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        return true;
 
-        if ($"{x.Item_name} {x.Doc_item_ref} ".Contains(_searchString))
-            return true;
+    if ($"{x.Item_name} {x.Doc_item_ref} ".Contains(_searchString))
+        return true;
 
-        return false;
+    return false;
     };
 
 
@@ -549,7 +547,7 @@ else
         _ravi["tyexpdate"] = DateTime.Now;
         _ravi["typallet"] = "1";
         dtTrans.Rows.Add(_ravi);
-        
+
         string sRet ="";
 
 
@@ -559,7 +557,7 @@ else
 
         //TagList = await Task.Run(() => ObjInboundService.GetTagGGCByIndex(apiid));
 
-          //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
+        //TagList = ObjInboundService.GetTagGGCByIndex(apiid);
 
         //ggcTag4x4Pdf pdfReport = new ggcTag4x4Pdf();
         //List<ggcTag4x4> listPdfReport = new List<ggcTag4x4>();
@@ -610,6 +608,9 @@ else
 
                     Snackbar.Add("Created", Severity.Success);
 
+                    Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAll());
+
+                    this.StateHasChanged();
 
                 }
             }
@@ -618,7 +619,7 @@ else
             Snackbar.Add("Total > GR", Severity.Warning);
         }
 
-       
+
 
     }
 
@@ -637,17 +638,25 @@ else
         bool? result = await CheckRoleDelete();
         if (result == true)
         {
-            bool resultReturn;
-            string msgReturn = "";
-            resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
-            if (resultReturn == true)
+            string state = "";
+
+            state = await ConfirmDelete();
+
+            if (state=="Deleted")
             {
-                this.InsertAuditrial("Accessory order receiving : Cancle Ref. " + apiid.ToString(), pageheader);
+                bool resultReturn;
+                string msgReturn = "";
+                resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
+                if (resultReturn == true)
+                {
+                    this.InsertAuditrial("Accessory order receiving : Cancle Ref. " + apiid.ToString(), pageheader);
 
-                Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAll());
-                this.StateHasChanged();
+                    Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAll());
+                    this.StateHasChanged();
 
+                }
             }
+            
         }
 
 
@@ -698,6 +707,19 @@ else
 
     }
 
+    private async Task<string>  ConfirmDelete()
+    {
+        string state = "";
 
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning", 
+            "Deleting can not be undone!", 
+            yesText:"Delete!", cancelText:"Cancel");
+
+        state= result==null ? "Cancelled" : "Deleted";
+   
+        return  state ;
+
+    }
 
 }

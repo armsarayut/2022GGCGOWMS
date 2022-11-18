@@ -40,18 +40,18 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Set_code)">CODE</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Set_desc)">DESCTIPTION</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Val_bit)">ENABLE</MudTableSortLabel></MudTh>
-            <MudTh>ACTION</MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Set_code)">CODE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Set_desc)">DESCTIPTION</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<SetConstance, object>(x=>x.Val_bit)">ENABLE</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" >ACTION</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="CODE">@context.Set_code</MudTd>
             <MudTd DataLabel="DESCRIPTION">@context.Set_desc</MudTd>
             <MudTd DataLabel="ENABLE"><MudCheckBox @bind-Checked="@context.Val_bit" /></MudTd>
            <MudTd Class="clm-row-small" DataLabel="ACTION">
-                <MudFab @onclick="@(()=>Commitconstance(@context.Set_code.ToString(), @context.Val_bit.Value, @context.Set_code.ToString()))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
-                <MudFab @onclick="@(()=>Refreshconstance())" Color="Color.Info" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" IconSize="Size.Small" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Save" Color="Color.Error" @onclick="@(()=>Commitconstance(@context.Set_code.ToString(), @context.Val_bit.Value, @context.Set_code.ToString()))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Refresh" Color="Color.Info" @onclick="@(()=>Refreshconstance())" />
             </MudTd>
         </RowTemplate>
 

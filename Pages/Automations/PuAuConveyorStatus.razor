@@ -103,8 +103,10 @@ else
 
                 @if (@context.Is_cmd == true)
                     {
-                    <MudFab  @onclick="@(()=>OpenDialog(@context.Mccode))" Color="Color.Primary" Icon="@Icons.Filled.EditRoad" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>ShowInfomation(@context.Information))"  Color="Color.Info" Icon="@Icons.Filled.Info" Size="Size.Small" IconSize="Size.Small" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.ModeEdit"  Color="Color.Error" @onclick="@(()=>OpenDialog(@context.Mccode))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Preview" Color="Color.Info" @onclick="@(()=>ShowInfomation(@context.Information))" />
+
+
                 }
                 
 

@@ -52,8 +52,8 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Usergroups, object>(x=>x.Created)">@L["CREATED"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Usergroups, object>(x=>x.Ugdesc)">@L["GROUP"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Usergroups, object>(x=>x.Created)">@L["CREATED"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Usergroups, object>(x=>x.Ugdesc)">@L["GROUP"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["CREATED"]>@context.Created</MudTd>

@@ -45,13 +45,13 @@ else
                           IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Ctime)">@L["QUEUING"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Lpncode)">@L["PALLET"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Work_Code)">@L["TASKTYPE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Rgv_No)">@L["RGV"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Rgv_From)">@L["SOURCE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Rgv_To)">@L["DESTINATION"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Stime)">@L["STARTED"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Ctime)">@L["QUEUING"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Lpncode)">@L["PALLET"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Work_Code)">@L["TASKTYPE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Rgv_No)">@L["RGV"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Rgv_From)">@L["SOURCE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Rgv_To)">@L["DESTINATION"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Tas_Rgvworks, object>(x=>x.Stime)">@L["STARTED"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["QUEUING"]>@Convert.ToDateTime(context.Ctime).ToString(VarGlobals.FormatDT)</MudTd>
