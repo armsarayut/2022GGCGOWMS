@@ -260,6 +260,8 @@ namespace GoWMS.Server.Data
                 foreach (var s in listupdate)
                 {
                     decimal dRequestqty = (decimal)s.Request_Qty;
+                    decimal dStocktqty = (decimal)s.Stock_Qty;
+
                     string sMovementtype = s.Movement_Type;
                     string sSuno = s.Su_No;
                     string sCreatedby = s.Update_By;
@@ -267,11 +269,17 @@ namespace GoWMS.Server.Data
 
                     if (dRequestqty == 0)
                     {
-                        dStock = (decimal)s.Stock_Qty;
+                        dStock = 0;
+                        //dStock = (decimal)s.Stock_Qty;
                     }
+                    //else if(dRequestqty == dStocktqty)
+                    //{
+                    //    dStock = 0;
+                    //}
                     else
                     {
-                        dStock = 0;
+                        dStock = dRequestqty;
+
                     }
 
                     var request_qty = "Qty" + i.ToString();
@@ -557,6 +565,62 @@ namespace GoWMS.Server.Data
                 {
                     StringBuilder sqlQurey = new StringBuilder();
                     sqlQurey.Append("dbo.ssp_createoutbound_manual_audit_json");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_pJson", jsonOrder);
+
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (NpgsqlException ex)
+                {
+                    Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+
+            msgReturn = sRet;
+
+            return bRet;
+
+        }
+
+
+        public bool SetOrderprepare(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+            //string cmdcode = "Call";
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    sqlQurey.Append("dbo.ssp_createoutbound_manual_prepare_json");
                     SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
                         CommandType = CommandType.StoredProcedure

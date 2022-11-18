@@ -83,24 +83,25 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Created)">@L["DATE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Po_no)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Batch_Number)">BATCH</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Result_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Created)">@L["DATE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Po_no)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Batch_Number)">@L["BATCH"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_B, object>(x=>x.Result_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+       
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["DATE"]>@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatD)</MudTd>
             <MudTd DataLabel=@L["ORDERNO"]>@context.Po_no</MudTd>
-            <MudTd DataLabel=BATCH>@context.Batch_Number</MudTd>
+            <MudTd DataLabel=@L["BATCH"]>@context.Batch_Number</MudTd>
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN3, context.Result_Qty)</MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
-
         </PagerContent>
     </MudTable>
 }

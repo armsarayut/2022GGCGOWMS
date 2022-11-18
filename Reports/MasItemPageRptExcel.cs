@@ -33,12 +33,13 @@ namespace GoWMS.Server.Reports
 
                 #region Excel Report Data
                 var rptRows = 4;
-                worksheet.Cell(rptRows, 1).Value = "ITEMCODE";
-                worksheet.Cell(rptRows, 2).Value = "ITEMNAME";
+                worksheet.Cell(rptRows, 1).Value = "SKU";
+                worksheet.Cell(rptRows, 2).Value = "NAME";
                 worksheet.Cell(rptRows, 3).Value = "UNIT";
-                worksheet.Cell(rptRows, 4).Value = "NETWEIGHT";
-                worksheet.Cell(rptRows, 5).Value = "GROSSWEIGHT";
-                worksheet.Cell(rptRows, 6).Value = "WEIGHTUNIT";
+                worksheet.Cell(rptRows, 4).Value = "PALLET QTY";
+                worksheet.Cell(rptRows, 5).Value = "NETWEIGHT";
+                worksheet.Cell(rptRows, 6).Value = "GROSSWEIGHT";
+                worksheet.Cell(rptRows, 7).Value = "BATCHMANAGE";
 
                 foreach (var rpt in rptElements)
                 {
@@ -46,9 +47,10 @@ namespace GoWMS.Server.Reports
                     worksheet.Cell(rptRows, 1).Value = rpt.Itemcode;
                     worksheet.Cell(rptRows, 2).Value = rpt.Itemname;
                     worksheet.Cell(rptRows, 3).Value = rpt.Itemunit;
-                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatN2, rpt.Weightnet);
-                    worksheet.Cell(rptRows, 5).Value = string.Format(VarGlobals.FormatN2, rpt.Weightgross);
-                    worksheet.Cell(rptRows, 6).Value = rpt.Weightuint;
+                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatN3, rpt.Palqty);
+                    worksheet.Cell(rptRows, 5).Value = string.Format(VarGlobals.FormatN3, rpt.Weightnet);
+                    worksheet.Cell(rptRows, 6).Value = string.Format(VarGlobals.FormatN3, rpt.Weightgross);
+                    worksheet.Cell(rptRows, 7).Value = rpt.IsBatchMgn;
 
 
                 }

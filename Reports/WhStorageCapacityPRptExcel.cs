@@ -35,9 +35,9 @@ namespace GoWMS.Server.Reports
                 var rptRows = 4;
                 worksheet.Cell(rptRows, 1).Value = "Lane";
                 worksheet.Cell(rptRows, 2).Value = "Occupied";
-                worksheet.Cell(rptRows, 3).Value = "Mass";
+                worksheet.Cell(rptRows, 3).Value = "Free";
                 worksheet.Cell(rptRows, 4).Value = "Block/Error";
-                worksheet.Cell(rptRows, 5).Value = "ProhibitedLocation";
+                worksheet.Cell(rptRows, 5).Value = "Stack";
                 worksheet.Cell(rptRows, 6).Value = "Total";
                 worksheet.Cell(rptRows, 7).Value = "OccupancyRate";
 
@@ -48,7 +48,7 @@ namespace GoWMS.Server.Reports
                     worksheet.Cell(rptRows, 2).Value = rpt.Locavlt1;
                     worksheet.Cell(rptRows, 3).Value = rpt.Locemp;
                     worksheet.Cell(rptRows, 4).Value = rpt.Perr;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Prohloc;
+                    worksheet.Cell(rptRows, 5).Value = rpt.Plemp;
                     worksheet.Cell(rptRows, 6).Value = rpt.Total;
                     worksheet.Cell(rptRows, 7).Value = rpt.OccRate;
 

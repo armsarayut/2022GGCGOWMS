@@ -46,6 +46,9 @@ else
           <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
                Color="Color.Primary" OnClick="@AddNewGrAcc">@L["AddAcc"] 
                </MudButton>
+         @*<MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
+               Color="Color.Primary" OnClick="@AddNewGrAcc">@L["AddAcc"] 
+               </MudButton>*@
         <MudSpacer />
         <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
@@ -105,9 +108,9 @@ else
     <MudDataGrid T="Api_ggc"
              Items="@Elements"
              SortMode="SortMode.Multiple"
-             Hideable="@hideable"
-             Filterable="@filterable"
-             FilterMode="@DataGridFilterMode.ColumnFilterRow"
+             Filterable="true"
+             QuickFilter="@_quickFilter"
+             Hideable="true"
              FixedHeader="@fixed_header"
              FixedFooter="@fixed_footer"
              Height="@(fixed_header || fixed_footer ? VarGlobals.TableHeight:"")"
@@ -120,37 +123,39 @@ else
     </ToolBarContent>*@
 
         <Columns>
-            <Column T="Api_ggc" Field="Receiving_date" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNDate"]">
+            <Column T="Api_ggc" Field="Receiving_date" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["DNDate"]" >
                 <CellTemplate>
                     @Convert.ToDateTime(context.Item.Receiving_date).ToString(VarGlobals.FormatD)
                 </CellTemplate>
             </Column>
-            <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["DNNo"]" />
-            <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["BatchNo"]" />
-            <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemCode"]" />
-            <Column T="Api_ggc" Field="Item_name" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ItemName"]" />
-            <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Qty"]">
+            <Column T="Api_ggc" Field="Doc_ref" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["DNNo"]" />
+            <Column T="Api_ggc" Field="Batch_no" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["BatchNo"]" />
+            <Column T="Api_ggc" Field="Item_code" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ItemCode"]" />
+            <Column T="Api_ggc" Field="Item_name" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ItemName"]" />
+            <Column T="Api_ggc" Field="Total_qty" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Qty"]">
                 <CellTemplate>
                     @string.Format(VarGlobals.FormatN3, context.Item.Total_qty)
                 </CellTemplate>
             </Column>
-            <Column T="Api_ggc" Field="Unit" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["Unit"]" />
-            <Column T="Api_ggc" Field="Remark" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["REMARK"]" />
-            <Column T="Api_ggc" Field="Gr_qty" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["GRQty"]">
+            <Column T="Api_ggc" Field="Unit" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Unit"]" />
+            <Column T="Api_ggc" Field="Remark" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["REMARK"]" />
+            <Column T="Api_ggc" Field="Gr_qty" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["GRQty"]">
                 <CellTemplate>
                     @string.Format(VarGlobals.FormatN3, context.Item.Gr_qty)
                 </CellTemplate>
             </Column>
-            <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["PRINTTAG"]" Filterable="false">
+            <Column T="Api_ggc" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ACTION"]" Filterable="false">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Tertiary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
+
                 </CellTemplate>
             </Column>
-             <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">
+          @*   <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
                 </CellTemplate>
-            </Column>
+            </Column>*@
         </Columns>
         <PagerContent>
             <MudDataGridPager T="Api_ggc" />
@@ -200,6 +205,26 @@ else
     string sRole { get; set; } = "";
     string sGroupID { get; set; } = "";
     string sUserID { get; set; } = "";
+
+     private Func<Api_ggc, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Batch_no.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Doc_ref.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Item_code.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Item_name} {x.Doc_item_ref} ".Contains(_searchString))
+            return true;
+
+        return false;
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -669,6 +694,50 @@ else
 
     }
 
+
+    private async Task AddNewGrManual()
+    {
+        bool? result = await CheckRoleAdd();
+        if (result == true)
+        {
+            //[Parameter] public long pIdx { get; set; }
+            //  [Parameter] public string pItemcode { get; set; }
+            //  [Parameter] public double pTotalQty { get; set; }
+            //  [Parameter] public string pBatchno{ get; set; }
+            //  [Parameter] public DateTime? pRecivedate { get; set; }
+            //  [Parameter] public string pRemark { get; set; }
+            //  [Parameter] public string pDocref { get; set; }
+            //  [Parameter] public string pDocrefitem { get; set; }
+            //  [Parameter] public Int32 pManagecase { get; set; }
+
+            long pid = 0;
+            DialogOptions closeOnEscapeKey = new DialogOptions() { CloseButton = true };
+            DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+            var parameters = new DialogParameters();
+            parameters.Add("pIdx", pid);
+            parameters.Add("pItemcode", "");
+            parameters.Add("pTotalQty", 0.000);
+            parameters.Add("pBatchno", "");
+            parameters.Add("pRecivedate", DateTime.Now.Date);
+            parameters.Add("pRemark", "");
+            parameters.Add("pDocref", "");
+            parameters.Add("pDocrefitem", "");
+            parameters.Add("pManagecase", 0);
+
+            var dialog = DialogService.Show<InbGRMat>("NEW Manual order receiving", parameters, maxWidth);
+
+            var resultDialog = await dialog.Result;
+
+            if (!resultDialog.Cancelled)
+            {
+                Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());
+                this.StateHasChanged();
+            }
+
+
+        }
+
+    }
 
 
 

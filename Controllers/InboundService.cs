@@ -129,6 +129,11 @@ namespace GoWMS.Server.Controllers
         }
 
 
+        public List<ggcTag4x4> GetTagGGCByIndexAddUser(long apiid, string userid)
+        {
+            List<ggcTag4x4> retlist = objDAL.GetTagGGCByIndexAddUser(apiid, userid).ToList();
+            return retlist;
+        }
 
         public List<ggcTag4x4> GetTagGGCByIndex(long apiid)
         {
@@ -161,6 +166,13 @@ namespace GoWMS.Server.Controllers
         public bool ManageGRAccessory(long idx, string itemcode, double totalqty, string createby, string batchno, DateTime recivedate, string remark, String docref, Int32 managecase, ref string retmessage)
         {
             bool bret = objDAL.ManageGRAccessory(idx, itemcode, totalqty, createby, batchno, recivedate, remark, docref, managecase, ref retmessage);
+
+            return bret;
+        }
+
+        public bool ManageGRManual(long idx, string itemcode, double totalqty, string createby, string batchno, DateTime recivedate, string remark, String docref, Int32 managecase, ref string retmessage)
+        {
+            bool bret = objDAL.ManageGRManual(idx, itemcode, totalqty, createby, batchno, recivedate, remark, docref, managecase, ref retmessage);
 
             return bret;
         }

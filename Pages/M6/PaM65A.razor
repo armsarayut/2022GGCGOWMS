@@ -85,19 +85,30 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Created)">@L["CREATED"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Mccode)">@L["MC"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Status)">@L["STATUS"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_Th)">@L["DESCRIPTION(TH)"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_En)">@L["DESCRIPTION(EN)"]</MudTableSortLabel></MudTh>
-
+            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Created)">@L["CREATED"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Mccode)">@L["MC"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.St_No)">@L["STATUS"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_Th)">@L["DESCRIPTION(TH)"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{Colors.Blue.Accent4};")"><MudTableSortLabel SortBy="new Func<Class6_5_A, object>(x=>x.Desc_En)">@L["DESCRIPTION(EN)"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel=@L["CREATED"]>@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatDT)</MudTd>
-            <MudTd DataLabel=@L["MC"]>@context.Mccode</MudTd>
-            <MudTd DataLabel=@L["STATUS"]>@context.Status</MudTd>
-            <MudTd DataLabel=@L["DESCRIPTION(TH)"]>@context.Desc_Th</MudTd>
-            <MudTd DataLabel=@L["DESCRIPTION(EN)"]>@context.Desc_En</MudTd>
+            @if (@context.Status == 4)
+            {
+                <MudTd DataLabel=@L["CREATED"] Style="@($"color:{Colors.Red.Default};")">@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatDT)</MudTd>
+                <MudTd DataLabel=@L["MC"] Style="@($"color:{Colors.Red.Default};")">@context.Mccode</MudTd>
+                <MudTd DataLabel=@L["STATUS"] Style="@($"color:{Colors.Red.Default};")">@context.St_No</MudTd>
+                <MudTd DataLabel=@L["DESCRIPTION(TH)"] Style="@($"color:{Colors.Red.Default};")">@context.Desc_Th</MudTd>
+                <MudTd DataLabel=@L["DESCRIPTION(EN)"] Style="@($"color:{Colors.Red.Default};")">@context.Desc_En</MudTd>
+            }
+            else
+            {
+                <MudTd DataLabel=@L["CREATED"]>@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatDT)</MudTd>
+                <MudTd DataLabel=@L["MC"]>@context.Mccode</MudTd>
+                <MudTd DataLabel=@L["STATUS"]>@context.St_No</MudTd>
+                <MudTd DataLabel=@L["DESCRIPTION(TH)"]>@context.Desc_Th</MudTd>
+                <MudTd DataLabel=@L["DESCRIPTION(EN)"]>@context.Desc_En</MudTd>
+            }
+            
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />

@@ -145,6 +145,6 @@
     <value>TAG</value>
   </data>
   <data name="STORAGEBIN" xml:space="preserve">
-    <value>STORAGEBIN</value>
+    <value>LOCATION</value>
   </data>
 </root>

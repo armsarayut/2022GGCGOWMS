@@ -38,12 +38,12 @@
 else
 {
 <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-    <MudTooltip Text="Check All" Color="Color.Inherit" Placement="Placement.Top">
+  @*  <MudTooltip Text="Check All" Color="Color.Inherit" Placement="Placement.Top">
         <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Error" OnClick="@CountMapAll"></MudIconButton>
     </MudTooltip>
     <MudTooltip Text="Claer All" Color="Color.Inherit" Placement="Placement.Top">
         <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Warning" OnClick="@DeleteMapAll"></MudIconButton>
-    </MudTooltip>
+    </MudTooltip>*@
     <MudTooltip Text="Reset All" Color="Color.Inherit" Placement="Placement.Top">
         <MudIconButton Icon="@Icons.Material.Filled.Restore" Color="Color.Primary" OnClick="@ResetMapAll"></MudIconButton>
     </MudTooltip>
@@ -71,7 +71,8 @@ else
                  <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Batch_No)">@L["Lot"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Code)">@L["MATERIAL"]</MudTableSortLabel></MudTh>
                  <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Item_Name)">@L["MATNAME"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+              @*  <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
+                <MudTh ><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Request_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
                  <MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Su_No)">@L["PACKID"]</MudTableSortLabel></MudTh>
                  @*<MudTh><MudTableSortLabel SortBy="new Func<Sap_StoreoutInfo, object>(x=>x.Stock_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>*@
@@ -92,13 +93,13 @@ else
                 <MudTd Class="clm-row-small" DataLabel=@L["Lot"]>@context.Batch_No</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["MATERIAL"]>@context.Item_Code</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["MATNAME"]>@context.Item_Name</MudTd>
-                <MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Stock_Qty)</MudTd>
+                <MudTd Class="clm-row-small" DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN2, context.Request_Qty)</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["UNIT"]>@context.Unit</MudTd>
                  <MudTd Class="clm-row-small" DataLabel=@L["PACKID"]>@context.Su_No</MudTd>
                 <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>
-                    <MudFab @onclick="@(()=>CountMap(@context.Su_No))" Color="Color.Error" Icon="@Icons.Material.Filled.Check" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>DeleteMap(@context.Su_No))" Color="Color.Warning" Icon="@Icons.Material.Filled.Clear" Size="Size.Small" IconSize="Size.Small" />
-                    <MudFab @onclick="@(()=>ResetMap(@context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Size="Size.Small" IconSize="Size.Small" />
+
+                    <MudFab @onclick="@(()=>OpenDialog((double)@context.Stock_Qty.Value, context.Su_No))" Color="Color.Primary" Icon="@Icons.Material.Filled.ModeEdit" Size="Size.Small" IconSize="Size.Small" />
+
                 </MudTd>
             </RowTemplate>
 
@@ -159,9 +160,42 @@ else
     //        </PagerContent>
     //    </MudTable>
     //</MudHidden>
+
+
+
 }
 
+    <MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3"/> Ajust Counting
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <p>Enter Adjust Q'ty</p>
+            <MudNumericField @bind-Value="adjustQty" Format="F3" Variant="Variant.Outlined" Min="0.000" />
+        </DialogContent>
+        <DialogActions>
+             <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Save</MudButton>
+
+        </DialogActions>
+    </MudDialog>
+
+
+
+
 @code {
+
+    private bool visible;
+    private int rating;
+    private double adjustQty;
+    private double MaxadjustQty = 10000.000;
+    private string adjSU = "";
+
+
+    private DialogOptions dialogOptions = new() { FullWidth = true };
+
     private string pageheader = "2.5.Counting";
 
     public string mPagedesc { get; set; } = "2.5.Counting";
@@ -205,6 +239,71 @@ else
     string sUserID { get; set; } = "";
     List<Userroleinfo> Roles = new List<Userroleinfo>();
     [Inject] private IDialogService DialogService { get; set; }
+
+
+    void Cancel() 
+    {
+
+        adjustQty = 0;
+        visible = false;
+    }
+
+    void Submit() 
+    {
+
+        var iCorrect = Elements.ToList().FindIndex(a => a.Su_No.ToUpper() == adjSU.ToUpper());
+
+                //----------------------
+
+                if (iCorrect >= 0)
+                {
+                    if (adjustQty==0)
+                    {
+                        Elements.ToList()[iCorrect].Bcount = true;
+                        Elements.ToList()[iCorrect].Movement_Type = "Z01";
+                        Elements.ToList()[iCorrect].Request_Qty = Elements.ToList()[iCorrect].Stock_Qty;
+                        Elements.ToList()[iCorrect].Update_By = sUsername;
+                        this.InsertAuditrial("Counting TagNo: [" + adjSU + "] is not found", pageheader);
+
+                        Snackbar.Add("Counting TagNo: [" + adjSU + "] is OK", Severity.Success);
+                    }
+                    else if (adjustQty== MaxadjustQty) {
+                         Elements.ToList()[iCorrect].Bcount = true;
+                        Elements.ToList()[iCorrect].Movement_Type = "CYC";
+                        Elements.ToList()[iCorrect].Request_Qty = 0;
+                        Elements.ToList()[iCorrect].Update_By = sUsername;
+                        this.InsertAuditrial("Counting TagNo: [" + adjSU + "] is OK", pageheader);
+                    }
+                    else
+                    {
+                        Elements.ToList()[iCorrect].Bcount = true;
+                        Elements.ToList()[iCorrect].Movement_Type = "CYC";
+                        Elements.ToList()[iCorrect].Request_Qty = (decimal)adjustQty;
+                        Elements.ToList()[iCorrect].Update_By = sUsername;
+                        this.InsertAuditrial("Counting TagNo: [" + adjSU + "] is OK", pageheader);
+                    }
+                   
+
+                    Snackbar.Add("Counting TagNo: [" + adjSU + "] is OK", Severity.Success);
+            this.StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add("Find not found TagNo please enter again", Severity.Warning);
+                }
+
+        visible = false;
+    }
+
+    private void OpenDialog(Double maxqty, string suno)
+    {
+        ////MaxadjustQty = maxqty;
+        adjSU = suno;
+        visible = true;
+    }
+
+   
+
 
     private void KeyboardEventHandler(KeyboardEventArgs args)
     {
@@ -329,8 +428,6 @@ else
                     var query = Elements.First(x => x.Su_No == mPalletcode);
                     string PalletCode = query.Pallet_No;
                     string retMsg = "";
-
-
 
                     bool bCheckCom = ObjOutboundService.UpdateStockOut(PalletCode,ref retMsg);
                     if (bCheckCom)

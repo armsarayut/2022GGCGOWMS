@@ -34,21 +34,23 @@ namespace GoWMS.Server.Reports
                 #region Excel Report Data
                 var rptRows = 4;
                 worksheet.Cell(rptRows, 1).Value = "DATETIME";
-                worksheet.Cell(rptRows, 2).Value = "ITEMCODE";
-                worksheet.Cell(rptRows, 3).Value = "ITEMNAME";
-                worksheet.Cell(rptRows, 4).Value = "SEQ";
-                worksheet.Cell(rptRows, 5).Value = "ORDERNO";
+                worksheet.Cell(rptRows, 2).Value = "ORDER";
+                worksheet.Cell(rptRows, 3).Value = "BATCH";
+                worksheet.Cell(rptRows, 4).Value = "SKU";
+                worksheet.Cell(rptRows, 5).Value = "NAME";
                 worksheet.Cell(rptRows, 6).Value = "QTY";
+                worksheet.Cell(rptRows, 7).Value = "TAG";
 
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
                     worksheet.Cell(rptRows, 1).Value = Convert.ToDateTime(rpt.Created).ToString(VarGlobals.FormatDT) ;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Item_Code;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Item_Name;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Seq_No;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Order_No;
+                    worksheet.Cell(rptRows, 2).Value = rpt.Order_No;
+                    worksheet.Cell(rptRows, 3).Value = rpt.Batch_Number;
+                    worksheet.Cell(rptRows, 4).Value = rpt.Item_Code;
+                    worksheet.Cell(rptRows, 5).Value = rpt.Item_Name;
                     worksheet.Cell(rptRows, 6).Value = string.Format(VarGlobals.FormatN2, rpt.Result_Qty) ;
+                    worksheet.Cell(rptRows, 7).Value = rpt.Su_No;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

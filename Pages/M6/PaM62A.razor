@@ -78,13 +78,13 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Created)">@L["DATETIME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Po_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Batch_Number)">BATCH</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Result_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Su_No)">@L["SEQ"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Created)">@L["DATETIME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Po_No)">@L["ORDERNO"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Batch_Number)">BATCH</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Result_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Su_No)">@L["SEQ"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["DATETIME"]>@Convert.ToDateTime(context.Created).ToString(VarGlobals.FormatD)</MudTd>

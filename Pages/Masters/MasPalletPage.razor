@@ -53,7 +53,7 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh>@L["Masterpallet"]</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Pallet_Go, object>(x=>x.Palletno)">@L["Masterpallet"]</MudTableSortLabel></MudTh>
             @*<MudTh>@L["Type"]</MudTh>*@
             <MudTh>@L["REPRINT"]</MudTh>
         </HeaderContent>
@@ -61,7 +61,9 @@ else
             <MudTd DataLabel=@L["Masterpallet"]>@context.Palletno</MudTd>
             @*<MudTd DataLabel=@L["Type"]>@context.Pallettype</MudTd>*@
             <MudTd Class="clm-row-small" DataLabel=@L["REPRINT"]>
-                <MudFab @onclick="@(()=>TestCreateTag(context.Palletno))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Print" Size="Size.Small" IconSize="Size.Small" />
+                @*<MudFab @onclick="@(()=>TestCreateTag(context.Palletno))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Print" Size="Size.Small" IconSize="Size.Small" />*@
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Info" @onclick="@(()=>TestCreateTag(context.Palletno))" />
+
             </MudTd>
         </RowTemplate>
         <PagerContent>

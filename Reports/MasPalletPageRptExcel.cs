@@ -34,13 +34,11 @@ namespace GoWMS.Server.Reports
                 #region Excel Report Data
                 var rptRows = 4;
                 worksheet.Cell(rptRows, 1).Value = "PALLETCODE";
-                worksheet.Cell(rptRows, 2).Value = "TYPECODE";
    
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
                     worksheet.Cell(rptRows, 1).Value = rpt.Palletno;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Pallettype;
 
                 }
                 #endregion

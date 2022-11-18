@@ -34,25 +34,25 @@ namespace GoWMS.Server.Reports
                 #region Excel Report Data
                 var rptRows = 4;
                 worksheet.Cell(rptRows, 1).Value = "DATE";
-                worksheet.Cell(rptRows, 2).Value = "SEQNO";
-                worksheet.Cell(rptRows, 3).Value = "TASKTYPE";
-                worksheet.Cell(rptRows, 4).Value = "ORDERNO";
-                worksheet.Cell(rptRows, 5).Value = "ITEMCODE";
-                worksheet.Cell(rptRows, 6).Value = "ITEMNAME";
-                worksheet.Cell(rptRows, 7).Value = "QTY";
-                worksheet.Cell(rptRows, 8).Value = "DNSEQ";
+                worksheet.Cell(rptRows, 2).Value = "ORDER";
+                worksheet.Cell(rptRows, 3).Value = "BARCH";
+                worksheet.Cell(rptRows, 4).Value = "SKU";
+                worksheet.Cell(rptRows, 5).Value = "NAME";
+                worksheet.Cell(rptRows, 6).Value = "QTY";
+                worksheet.Cell(rptRows, 7).Value = "TAG";
+                worksheet.Cell(rptRows, 8).Value = "PALLET";
 
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
                     worksheet.Cell(rptRows, 1).Value = Convert.ToDateTime(rpt.Created).ToString(VarGlobals.FormatD);
-                    worksheet.Cell(rptRows, 2).Value = rpt.Seq_No;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Work_Type;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Order_No;
-                    worksheet.Cell(rptRows, 5).Value =  rpt.Item_Code;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Item_Name;
-                    worksheet.Cell(rptRows, 7).Value = string.Format(VarGlobals.FormatN2, rpt.Result_Qty);
-                    worksheet.Cell(rptRows, 8).Value = rpt.Su_No;
+                    worksheet.Cell(rptRows, 2).Value = rpt.Order_No;
+                    worksheet.Cell(rptRows, 3).Value = rpt.Batch_Number;
+                    worksheet.Cell(rptRows, 4).Value = rpt.Item_Code;
+                    worksheet.Cell(rptRows, 5).Value =  rpt.Item_Name;
+                    worksheet.Cell(rptRows, 6).Value = string.Format(VarGlobals.FormatN3, rpt.Result_Qty);
+                    worksheet.Cell(rptRows, 7).Value = rpt.Su_No;
+                    worksheet.Cell(rptRows, 8).Value = rpt.Pallet_No;
 
                 }
                 #endregion

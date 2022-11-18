@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.IO;
+
 
 
 namespace GoWMS.Server.Data
 {
     public static class ConnGlobals
     {
+
+    
+
+
         public static string GetConnLocalDB()
         {
             //return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL-UAT10;Trusted_Connection=True;";
 
-            return "server=DESKTOP-NQ62BHU\\SQLEXPRESS; database=GOSQL;Trusted_Connection=True;";
+            return "server=DESKTOP-NQ62BHU\\SQLEXPRESS; database=GOSQL-UATCHK;Trusted_Connection=True;";
 
 
             //DESKTOP-NQ62BHU\SQLEXPRESS
@@ -22,6 +29,8 @@ namespace GoWMS.Server.Data
         #region SQL Database
 
         //DESKTOP-NQ62BHU\MSSQL
+
+
         private static readonly string SqlServer = "10.251.11.3"; // Develop ,Local : DESKTOP-NQ62BHU\MSSQL , Host : 203.159.93.86, GGC QAS : 10.251.11.3
         private static readonly string SqlDB = "GOSQL"; // Develop , Local : GOSQLGGC , Host : GOSQL
         private static readonly string SqlPort = "1433";
@@ -30,6 +39,8 @@ namespace GoWMS.Server.Data
         //private static readonly string NpgPass = "@ei0u";
         private static readonly string SqlContime = "60";
 
+        private static readonly string _IPconnectionString = string.Empty;
+
         /// <summary>
         /// GetConnLocalDBSQL
         /// </summary>
@@ -37,8 +48,23 @@ namespace GoWMS.Server.Data
         /// <returns></returns>
         public static string GetConnDBSQL()
         {
-            //return "Server=" + SqlServer + " ," + SqlPort + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
-           
+            string _IPString = string.Empty;
+            string _PortString = string.Empty;
+
+            var configurationBuilder = new ConfigurationBuilder();
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            configurationBuilder.AddJsonFile(path, false);
+
+            var root = configurationBuilder.Build();
+            _IPString = root.GetSection("DBHost").GetSection("IP").Value;
+            _PortString = root.GetSection("DBHost").GetSection("Port").Value;
+
+
+            //var key = _configuration.GetSection("DBHost")["IP"].ToString();
+
+
+            //return "Server=" + _IPString + " ," + _PortString + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
+
             return GetConnLocalDB();
 
         }

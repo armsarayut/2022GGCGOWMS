@@ -33,18 +33,18 @@ namespace GoWMS.Server.Reports
 
                 #region Excel Report Data
                 var rptRows = 4;
-                worksheet.Cell(rptRows, 1).Value = "ITEMCODE";
-                worksheet.Cell(rptRows, 2).Value = "ITEMNAME";
-                worksheet.Cell(rptRows, 3).Value = "STOCK";
-                worksheet.Cell(rptRows, 4).Value = "PACK";
+                worksheet.Cell(rptRows, 1).Value = "BATCH";
+                worksheet.Cell(rptRows, 2).Value = "SKU";
+                worksheet.Cell(rptRows, 3).Value = "NAME";
+                worksheet.Cell(rptRows, 4).Value = "STOCK";
 
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Item_Code;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Item_Name;
-                    worksheet.Cell(rptRows, 3).Value = string.Format(VarGlobals.FormatN2, rpt.Totalstock);
-                    worksheet.Cell(rptRows, 4).Value = rpt.Countpallet;
+                    worksheet.Cell(rptRows, 1).Value = rpt.Batch_Number;
+                    worksheet.Cell(rptRows, 2).Value = rpt.Item_Code;
+                    worksheet.Cell(rptRows, 3).Value = rpt.Item_Name;
+                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatN2, rpt.Totalstock);
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

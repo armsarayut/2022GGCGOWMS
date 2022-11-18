@@ -61,7 +61,9 @@ else
             <MudTd DataLabel=@L["USERID"]>@context.UserId</MudTd>
             <MudTd DataLabel=@L["USERNAME"]>@context.Usname</MudTd>
             <MudTd Class="clm-row-small" DataLabel=@L["EDIT"]>
-                <MudFab @onclick="@(()=>OpenDialog(@context.Uspass,@context.Usname,@context.UserId ))" Color="Color.Secondary" Icon="@Icons.Material.Filled.ModeEdit" Size="Size.Small" IconSize="Size.Small" />
+                @*<MudFab @onclick="@(()=>OpenDialog(@context.Uspass,@context.Usname,@context.UserId ))" Color="Color.Secondary" Icon="@Icons.Material.Filled.ModeEdit" Size="Size.Small" IconSize="Size.Small" />*@
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" Color="Color.Secondary" @onclick="@(()=>OpenDialog(@context.Uspass,@context.Usname,@context.UserId ))" />
+
             </MudTd>
         </RowTemplate>
         <PagerContent>

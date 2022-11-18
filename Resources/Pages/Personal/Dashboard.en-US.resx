@@ -150,4 +150,7 @@
   <data name="Use" xml:space="preserve">
     <value>Use</value>
   </data>
+  <data name="Usedstorage" xml:space="preserve">
+    <value>Used storage</value>
+  </data>
 </root>

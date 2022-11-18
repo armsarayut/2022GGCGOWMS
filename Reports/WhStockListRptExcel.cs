@@ -33,28 +33,28 @@ namespace GoWMS.Server.Reports
 
                 #region Excel Report Data
                 var rptRows = 4;
-                worksheet.Cell(rptRows, 1).Value = "ITEMCODE";
-                worksheet.Cell(rptRows, 2).Value = "ITEMNAME";
-                worksheet.Cell(rptRows, 3).Value = "STOCK";
-                worksheet.Cell(rptRows, 4).Value = "LOT";
-                worksheet.Cell(rptRows, 5).Value = "SEQ";
-                worksheet.Cell(rptRows, 6).Value = "PALLETGO";
-                worksheet.Cell(rptRows, 7).Value = "PALLETNO";
-                worksheet.Cell(rptRows, 8).Value = "AREA";
-                worksheet.Cell(rptRows, 9).Value = "LOCATION";
+                worksheet.Cell(rptRows, 1).Value = "BATCH";
+                worksheet.Cell(rptRows, 2).Value = "SKU";
+                worksheet.Cell(rptRows, 3).Value = "NAME";
+                worksheet.Cell(rptRows, 4).Value = "STOCK";
+                worksheet.Cell(rptRows, 5).Value = "UNIT";
+                worksheet.Cell(rptRows, 6).Value = "TAG";
+                worksheet.Cell(rptRows, 7).Value = "PALLET";
+                worksheet.Cell(rptRows, 8).Value = "LOCATION";
+            
 
                 foreach (var rpt in ListRpt)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Itemcode;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Itemname;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Quantity;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Docno;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Pallettag;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Pallteno;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Itembar;
-                    worksheet.Cell(rptRows, 8).Value = rpt.Storagearea;
-                    worksheet.Cell(rptRows, 9).Value = rpt.Storagebin;
+                    worksheet.Cell(rptRows, 1).Value = rpt.Lotno;
+                    worksheet.Cell(rptRows, 2).Value = rpt.Itemcode;
+                    worksheet.Cell(rptRows, 3).Value = rpt.Itemname;
+                    worksheet.Cell(rptRows, 4).Value = rpt.Quantity;
+                    worksheet.Cell(rptRows, 5).Value = rpt.Unit;
+                    worksheet.Cell(rptRows, 6).Value = rpt.Pallettag;
+                    worksheet.Cell(rptRows, 7).Value = rpt.Pallteno;
+                    worksheet.Cell(rptRows, 8).Value = rpt.Storagebin;
+    
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

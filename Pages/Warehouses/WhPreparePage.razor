@@ -318,8 +318,7 @@ else
                     string sRet = "Call";
                     bool bRet;
 
-                    bRet = ObjWhService.SetOrderaudit(jsonRES, ref sRet);
-
+                    bRet = ObjWhService.SetOrderprepare(jsonRES, ref sRet);
 
                     //SelectOrderPick();
                 }
@@ -331,7 +330,6 @@ else
                 this.StateHasChanged();
             }
         }
-
 
     }
 

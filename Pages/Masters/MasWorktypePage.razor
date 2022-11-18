@@ -53,8 +53,8 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh>@L["Workcode"]</MudTh>
-            <MudTh>@L["Description"]</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Worktype_Go, object>(x=>x.Workcode)">@L["Workcode"]</MudTableSortLabel></MudTh>
+             <MudTh><MudTableSortLabel SortBy="new Func<Mas_Worktype_Go, object>(x=>x.Description)">@L["Description"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel=@L["Workcode"]>@context.Workcode</MudTd>

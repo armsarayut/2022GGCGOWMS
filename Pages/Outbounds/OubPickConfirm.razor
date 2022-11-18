@@ -38,12 +38,12 @@
 else
 {
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-        <MudTooltip Text="Check All" Color="Color.Inherit" Placement="Placement.Top">
+       @* <MudTooltip Text="Check All" Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Error" OnClick="@CountMapAll"></MudIconButton>
         </MudTooltip>
         <MudTooltip Text="Claer All" Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Warning" OnClick="@DeleteMapAll"></MudIconButton>
-        </MudTooltip>
+        </MudTooltip>*@
         <MudTooltip Text="Reset All" Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Material.Filled.Restore" Color="Color.Primary" OnClick="@ResetMapAll"></MudIconButton>
         </MudTooltip>
@@ -290,20 +290,65 @@ else
         {
 
             Boolean bValidate = false;
-            bValidate = await Task.Run(() => ObjMasService.ValidateMasterpallet(str.ToUpper()));
+            //bValidate = await Task.Run(() => ObjMasService.ValidateMasterpallet(str.ToUpper()));
+            Elements = await Task.Run(() => ObjWhService.GetPicklist(str.ToUpper()));
 
-            bValidate = true;
+
+            if (Elements.Count()>0)
+                bValidate = true;
 
             if (bValidate)
             {
                 mPalletcode = str.ToUpper();
                 msgAction = "Enter TagNo";
                 elevation = 1;
-                Snackbar.Add("Enter TagNo", Severity.Normal);
+                Snackbar.Add("Process TagNo", Severity.Warning);
 
-                Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
+                //Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
 
                 this.InsertAuditrial("Start picking TagNo : [" + mPalletcode + "]", pageheader);
+
+               elevation = 2;
+                msgAction = "Picking successfully";
+
+                var query = Elements.First(x => x.Su_No == mPalletcode);
+
+                 string PalletCode = query.Pallet_No;
+                string retMsg = "";
+
+
+                bool bCheck = ObjOutboundService.UpdateStockOut(PalletCode, ref retMsg);
+
+                //bool bCheck = ObjWhService.UpdateCount(Elements.ToList());
+                this.InsertAuditrial("Update picking TagNo : [" + mPalletcode + "]", pageheader);
+
+                // Set SAP Complete
+                if (bCheck)
+                {
+                    //bCheck = ObjWhService.SapComplete(mPalletcode);
+                    //bCheck = true;
+
+                    if (bCheck)
+                    {
+                        //bCheck = ObjWcsService.CreateCommandMC("G04", 88);
+                        mPalletcode = "";
+                        Snackbar.Add("Pick successfully", Severity.Success);
+
+                        this.InsertAuditrial("Confirm picking pallet : [" + mPalletcode + "]", pageheader);
+
+                        Elements = await Task.Run(() => ObjWhService.GetPicklist(mPalletcode));
+
+                    }
+                    else
+                    {
+                        Snackbar.Add("Complete error", Severity.Error);
+                    }
+                }
+                else
+                {
+                    Snackbar.Add("Update pick error : " + retMsg.ToString(), Severity.Error);
+                }
+                MapPalletItem = null;
 
             }
             else
@@ -341,7 +386,7 @@ else
                     if (bCheck)
                     {
                         //bCheck = ObjWhService.SapComplete(mPalletcode);
-                        bCheck = true;
+                        //bCheck = true;
 
                         if (bCheck)
                         {
@@ -363,6 +408,8 @@ else
                     {
                         Snackbar.Add("Update pick error : " + retMsg.ToString(), Severity.Error);
                     }
+
+                     MapPalletItem = null;
                 }
                 else
                 {

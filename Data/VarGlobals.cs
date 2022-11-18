@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using MudBlazor;
+using MudBlazor.Utilities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,6 +59,8 @@ namespace GoWMS.Server.Data
         public static string MessageRoleReportPermit { get; set; } = "You're not authorized to access the report.";
         public static string MessageRoleApprovePermit { get; set; } = "You're not authorized to access the authorization.";
         public static string MessageRoleAuthrizedPermit { get; set; } = "You're not authorized.";
+
+        public static string TableHeaderColor { get; set; } = Colors.Blue.Accent4;
 
 
 

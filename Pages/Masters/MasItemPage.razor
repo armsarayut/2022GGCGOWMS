@@ -38,8 +38,11 @@ else
     <MudTable Items="@Elements"
               FixedHeader="@fixed_header"
               FixedFooter="@fixed_footer"
-          Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
-              Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"
+              Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
+              Dense="@dense" 
+              Hover="@hover" 
+              Bordered="@bordered" 
+              Striped="@striped"
               Filter="new Func<Mas_Item_Go,bool>(FilterFunc)" @bind-SelectedItem="selectedItem"
               SortLabel=@L["SortBy"]>
         <ToolBarContent>
@@ -51,15 +54,14 @@ else
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["ITEMCODE"]</MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["ITEMNAME"]</MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["UNIT"]</MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["QTYPERPAL"]</MudTh>
-
-            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["NETWEIGHT"]</MudTh>
-            <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["GROSSWEIGHT"]</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemcode)" >@L["ITEMCODE"]</MudTableSortLabel></MudTh>
+             <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemname)" >@L["ITEMNAME"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Itemunit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Palqty)">@L["QTYPERPAL"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Weightnet)">@L["NETWEIGHT"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Mas_Item_Go, object>(x=>x.Weightgross)">@L["GROSSWEIGHT"]</MudTableSortLabel></MudTh>
            @* <MudTh>@L["WEIGHTUNIT"]</MudTh>*@
-             <MudTh Style="@($"color:{Colors.Blue.Lighten5}; background:{Colors.Blue.Accent4};")">@L["BATCH"]</MudTh>
+             <MudTh>@L["BATCH"]</MudTh>
             <MudTh>@L["EDIT"]</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -74,7 +76,8 @@ else
             <MudTd Class="clm-row-small" DataLabel=@L["EDIT"]>
                 @if(@context.Itemcat=="ACC")
                 {
-                    <MudFab @onclick="@(()=>EditMaster((long)@context.Efidx,@context.Itemcode, @context.Itemname, (double)@context.Palqty, "00", @context.Itemunit, (double)@context.Weightgross, (double)@context.Weightnet, (bool)@context.IsBatchMgn))" Color="Color.Secondary" Icon="@Icons.Material.Filled.ModeEdit" Size="Size.Small" IconSize="Size.Small" />
+@*                    <MudFab @onclick="@(()=>EditMaster((long)@context.Efidx,@context.Itemcode, @context.Itemname, (double)@context.Palqty, "00", @context.Itemunit, (double)@context.Weightgross, (double)@context.Weightnet, (bool)@context.IsBatchMgn))" Color="Color.Secondary" Icon="@Icons.Material.Filled.ModeEdit" Size="Size.Small" IconSize="Size.Small" />*@
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" Color="Color.Secondary" @onclick="@(()=>EditMaster((long)@context.Efidx,@context.Itemcode, @context.Itemname, (double)@context.Palqty, "00", @context.Itemunit, (double)@context.Weightgross, (double)@context.Weightnet, (bool)@context.IsBatchMgn))" />
                 }
                 
             </MudTd>

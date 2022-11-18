@@ -74,8 +74,12 @@ else
 
 
             <MudTd Class="clm-row-small" DataLabel=@L["ACTION"]>
-                <MudFab @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Role_acc.Value , @context.Role_add.Value, @context.Role_edit.Value, @context.Role_del.Value , @context.Role_rpt.Value, @context.Role_apv.Value, @context.Ugdesc, @context.Menu_desc))" Color="Color.Error" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
+
+              @*  <MudFab @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Role_acc.Value , @context.Role_add.Value, @context.Role_edit.Value, @context.Role_del.Value , @context.Role_rpt.Value, @context.Role_apv.Value, @context.Ugdesc, @context.Menu_desc))" Color="Color.Error" Icon="@Icons.Material.Filled.Save" Size="Size.Small" IconSize="Size.Small" />
                 <MudFab @onclick="@(()=>Refreshconstance())" Color="Color.Info" Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" IconSize="Size.Small" />
+*@
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Save" Color="Color.Error" @onclick="@(()=>Commitconstance(@context.Idx.Value, @context.Role_acc.Value , @context.Role_add.Value, @context.Role_edit.Value, @context.Role_del.Value , @context.Role_rpt.Value, @context.Role_apv.Value, @context.Ugdesc, @context.Menu_desc))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Refresh" Color="Color.Info" @onclick="@(()=>Refreshconstance())" />
             </MudTd>
         </RowTemplate>
 

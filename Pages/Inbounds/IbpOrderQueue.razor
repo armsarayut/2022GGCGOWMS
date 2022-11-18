@@ -25,6 +25,8 @@
 @inject UserServices OpjUserService
 @inject IStringLocalizer<IbpOrderQueue> L
 @inject ISnackbar Snackbar
+@inject IPrintingService PrintingService
+
 @attribute [Authorize]
 
 <style>
@@ -138,10 +140,17 @@ else
             <Column T="Inb_Goodreceive_Go" Field="Pallettag" Title="@L["SUNo"]" />
         <Column T="Inb_Goodreceive_Go" Title="@L["Adjust"]" Filterable="false">
               <CellTemplate>
+
+                  <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Outlined.Print"
+                               Color="Color.Info"
+                               OnClick="@(()=>ReprintTag(context.Item.Efidx.Value))" />
+
                     <MudIconButton Size="@Size.Small" 
                         Icon="@Icons.Outlined.Delete" 
                         Color="Color.Warning"
                                OnClick="@(()=>DeleteMapTran(context.Item.Efidx.Value, context.Item.Quantity.Value ,context.Item.Docno,context.Item.Itemcode, context.Item.Itembar ))" />
+                    
               </CellTemplate>
         </Column>
     </Columns>
@@ -188,7 +197,7 @@ else
     List<Userroleinfo> Roles = new List<Userroleinfo>();
     [Inject] private IDialogService DialogService { get; set; }
 
-
+    List<ggcTag4x4> TagList = new List<ggcTag4x4>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -210,6 +219,8 @@ else
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+
+        sUsername = user.Identity.Name;
 
         sGroupID = user.Claims.FirstOrDefault(
         c => c.Type == ClaimTypes.Role)?.Value;
@@ -302,7 +313,7 @@ else
         }
     }
 
-        private async Task DeleteMapTran(long tranId, decimal tranQty, string tranDoc, string tranItem, string tranTag)
+    private async Task DeleteMapTran(long tranId, decimal tranQty, string tranDoc, string tranItem, string tranTag)
     {
         bool? result = await CheckRoleApprove();
 
@@ -348,7 +359,6 @@ else
 
     }
 
-
     private async Task DeleteMapPallet(string pallet)
     {
         bool? result = await CheckRoleApprove();
@@ -364,6 +374,24 @@ else
 
         this.StateHasChanged();
 
+    }
+
+    private async Task ReprintTag(long apiid)
+    {
+        bool? result = await CheckRoleReport();
+        if (result == true)
+        {
+            TagList = ObjInboundService.GetTagGGCByIndexAddUser(apiid, sUsername);
+
+            ggcTag4x4Pdf pdfReport = new ggcTag4x4Pdf();
+            List<ggcTag4x4> listPdfReport = new List<ggcTag4x4>();
+            listPdfReport = TagList.ToList();
+
+            await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
+            this.InsertAuditrial("Re-print Tag from id : " + apiid.ToString(), pageheader);
+
+        }
+       
     }
 
     private string _searchString;
@@ -397,8 +425,6 @@ else
 
         return false;
     };
-
-
 
     #region "Role"
     private async Task<bool> CheckRoleAdd()
@@ -562,5 +588,7 @@ else
         return bRet;
     }
     #endregion
+
+
 
 }

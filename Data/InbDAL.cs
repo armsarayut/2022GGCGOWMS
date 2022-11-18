@@ -1092,6 +1092,54 @@ namespace GoWMS.Server.Data
             return bRet;
         }
 
+        public IEnumerable<ggcTag4x4> GetTagGGCByIndexAddUser(long apiid, string  userid)
+        {
+            List<ggcTag4x4> lstobj = new List<ggcTag4x4>();
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+
+                StringBuilder sql = new StringBuilder();
+                 sql.AppendLine("select t1.item_bc, t1.lot, t1.item, t2.item_name, t1.qty, t2.pack_uom, t1.prod_date, t1.doc_num, t1.createdby, RIGHT(t1.site, LEN(t1.site)-4) as palletnote ");
+                sql.AppendLine("from dbo.wms_trans t1");
+                sql.AppendLine("left join dbo.set_itemmaster t2");
+                sql.AppendLine("on t1.item = t2.item_code");
+                sql.AppendLine("where t1.trans_num =  @trans_num");
+                sql.AppendLine("and t1.unit_key =  @unit_key");
+                sql.AppendLine("order by t1.trans_num");
+                sql.AppendLine(";");
+
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+                con.Open();
+
+                cmd.Parameters.AddWithValue("@trans_num", apiid);
+                cmd.Parameters.AddWithValue("@unit_key", "01");
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    ggcTag4x4 objrd = new ggcTag4x4
+                    {
+                        PalletNo = rdr["palletnote"].ToString(),
+                        TagNo = rdr["item_bc"].ToString(),
+                        BatchNo = rdr["lot"].ToString(),
+                        ProductNo = rdr["item"].ToString(),
+                        ProductName = rdr["item_name"].ToString(),
+                        QtyPerPallet = rdr["qty"].ToString(),
+                        Packaging = rdr["pack_uom"].ToString(),
+                        PackDate = rdr["prod_date"] == DBNull.Value ? null : (DateTime?)rdr["prod_date"],
+                        ReservationNo = rdr["doc_num"].ToString(),
+                        CreateBy = userid
+                    };
+                    lstobj.Add(objrd);
+                }
+                con.Close();
+            }
+            return lstobj;
+        }
 
         public IEnumerable<ggcTag4x4> GetTagGGCByIndex(long apiid)
         {
@@ -1357,6 +1405,68 @@ namespace GoWMS.Server.Data
                     StringBuilder sqlQurey = new StringBuilder();
                     //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
                     sqlQurey.Append("dbo.ssp_manage_gracc");
+                    SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    con.Open();
+
+                    cmd.Parameters.AddWithValue("@_idx", idx);
+                    cmd.Parameters.AddWithValue("@_itemcode", itemcode);
+                    cmd.Parameters.AddWithValue("@_totalqty", totalqty);
+                    cmd.Parameters.AddWithValue("@_createby", createby);
+                    cmd.Parameters.AddWithValue("@_batchno", batchno);
+                    cmd.Parameters.AddWithValue("@_recivedate", recivedate);
+                    cmd.Parameters.AddWithValue("@_remark", remark);
+                    cmd.Parameters.AddWithValue("@_docref", docref);
+                    cmd.Parameters.AddWithValue("@_docrefitem", docref);
+                    cmd.Parameters.AddWithValue("@_managecase", managecase);
+
+                    SqlParameter RuturnCheck = new SqlParameter("@_retchk", SqlDbType.Int);
+                    RuturnCheck.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnCheck);
+
+                    SqlParameter RuturnMsg = new SqlParameter("@_retmsg", SqlDbType.VarChar, 255);
+                    RuturnMsg.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(RuturnMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    iRet = (Int32)cmd.Parameters["@_retchk"].Value;
+                    sRet = (string)cmd.Parameters["@_retmsg"].Value;
+                }
+                catch (SqlException ex)
+                {
+                    //Log.Error(ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+                retmessage = sRet;
+
+                if (iRet == 1)
+                {
+                    bRet = true;
+                }
+            }
+            return bRet;
+        }
+
+        public Boolean ManageGRManual(long idx, string itemcode, double totalqty, string createby, string batchno, DateTime recivedate, string remark, String docref, Int32 managecase, ref string retmessage)
+        {
+            Boolean bRet = false;
+            string sRet = "";
+            Int32? iRet = 0;
+
+            using (SqlConnection con = new SqlConnection(connectionStringSQL))
+            {
+                try
+                {
+                    StringBuilder sqlQurey = new StringBuilder();
+                    //sqlQurey.AppendLine("select _retchk, _retmsg from wcs.fuc_create_mccommand(:mccode , :cmdcode, :command);");
+                    sqlQurey.Append("dbo.ssp_manage_grmanual");
                     SqlCommand cmd = new SqlCommand(sqlQurey.ToString(), con)
                     {
                         CommandType = CommandType.StoredProcedure
