@@ -135,6 +135,9 @@
   <data name="LOT" xml:space="preserve">
     <value>ชุด</value>
   </data>
+  <data name="PALLETNO" xml:space="preserve">
+    <value>พาเลทที่</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>

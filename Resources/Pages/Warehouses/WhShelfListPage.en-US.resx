@@ -117,11 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BANK" xml:space="preserve">
+    <value>BANK</value>
+  </data>
+  <data name="BAY" xml:space="preserve">
+    <value>BAY</value>
+  </data>
+  <data name="DEEP" xml:space="preserve">
+    <value>DEEP</value>
+  </data>
+  <data name="Excel" xml:space="preserve">
+    <value>EXCEL</value>
+  </data>
   <data name="ItemCode" xml:space="preserve">
     <value>SKU</value>
   </data>
   <data name="ItemName" xml:space="preserve">
     <value>NAME</value>
+  </data>
+  <data name="LANE" xml:space="preserve">
+    <value>LANE</value>
+  </data>
+  <data name="LastUpdate" xml:space="preserve">
+    <value>LASTUPDATE</value>
+  </data>
+  <data name="LEVEL" xml:space="preserve">
+    <value>LEVEL</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>LOCATION</value>
   </data>
   <data name="Lot" xml:space="preserve">
     <value>BATCH</value>
@@ -135,6 +159,9 @@
   <data name="PalletGo" xml:space="preserve">
     <value>PALLET</value>
   </data>
+  <data name="PDF" xml:space="preserve">
+    <value>PDF</value>
+  </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
@@ -143,6 +170,9 @@
   </data>
   <data name="START" xml:space="preserve">
     <value>START</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>STATUS</value>
   </data>
   <data name="Stock" xml:space="preserve">
     <value>STOCK</value>

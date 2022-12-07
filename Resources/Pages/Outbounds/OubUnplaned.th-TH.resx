@@ -132,11 +132,14 @@
   <data name="pageHeader" xml:space="preserve">
     <value>เบิกแมนนวล</value>
   </data>
+  <data name="PALLET" xml:space="preserve">
+    <value>พาเลท</value>
+  </data>
   <data name="PALLETERP" xml:space="preserve">
-    <value>พาเลทอ้างอิง</value>
+    <value>พาเลทที่</value>
   </data>
   <data name="PalletGo" xml:space="preserve">
-    <value>พาเลทหลัก</value>
+    <value>พาเลท</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>ค้นหา</value>
@@ -152,5 +155,8 @@
   </data>
   <data name="Total" xml:space="preserve">
     <value>รวม</value>
+  </data>
+  <data name="Unit" xml:space="preserve">
+    <value>หน่อย</value>
   </data>
 </root>

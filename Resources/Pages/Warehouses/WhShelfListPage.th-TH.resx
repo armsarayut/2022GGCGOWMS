@@ -147,13 +147,25 @@
   <data name="pageHeader" xml:space="preserve">
     <value>ตำแหน่งจัดเก็บ</value>
   </data>
+  <data name="PalletErp" xml:space="preserve">
+    <value>หมายเลขพาเลท</value>
+  </data>
+  <data name="PalletGo" xml:space="preserve">
+    <value>พาเลท</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>พีดีเอฟ</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>ค้นหา</value>
   </data>
+  <data name="START" xml:space="preserve">
+    <value>เริ่ม</value>
+  </data>
   <data name="Status" xml:space="preserve">
     <value>สถานะ</value>
+  </data>
+  <data name="Stock" xml:space="preserve">
+    <value>จำนวน</value>
   </data>
 </root>

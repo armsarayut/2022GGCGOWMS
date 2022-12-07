@@ -17,7 +17,7 @@
 <MudDialog>
     <DialogContent>
 
-        <MudTextField @bind-Value="pItemcode" Counter="20" MaxLength="20" Label="@L["ITEMCODE"]" Variant="Variant.Outlined" />
+        @*<MudTextField @bind-Value="pItemcode" Counter="20" MaxLength="20" Label="@L["ITEMCODE"]" Variant="Variant.Outlined" />*@
         <MudTextField @bind-Value="pItemname" Counter="255" MaxLength="255" Label="@L["ITEMNAME"]" Variant="Variant.Outlined" />
         <MudNumericField @bind-Value="pPackqty" Label="@L["QTYPERPAL"]" Format="F3" Variant="Variant.Outlined" Min="0.000" Max="1300.000" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info" />
         @*<MudTextField @bind-Value="pPackuon" Label="PACKUOM" Variant="Variant.Outlined" />*@

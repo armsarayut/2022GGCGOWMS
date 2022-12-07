@@ -304,11 +304,14 @@ namespace GoWMS.Server.Data
                     sql.AppendLine(",R.uom, R.item_bc, R.pallet_bc, R.loc, R.whse");
                     sql.AppendLine(",R.is_req, R.is_hold, R.is_lock, R.update2sl, R.doc_num");
                     sql.AppendLine(",R.createdby, R.modifie_date, R.trans_date, R.rptStockDate");
+                    sql.AppendLine(",L.palletnote as palletmapkey, L.uom as unit ");
                     sql.AppendLine("FROM dbo.v_wmstran_receipt_rpt R");
                     sql.AppendLine("LEFT JOIN dbo.wms_trans T");
                     sql.AppendLine("ON R.item_bc = T.item_bc");
                     sql.AppendLine("AND T.unit_key = '01'");
                     sql.AppendLine("AND R.trans_date = T.trans_date");
+                    sql.AppendLine("LEFT JOIN dbo.v_wms_lablemaster L");
+                    sql.AppendLine("ON R.item_bc = L.item_bc");
                     sql.AppendLine("WHERE (1=1)");
                     sql.AppendLine("AND (R.rptStockDate >= @startdate AND R.rptStockDate < @stopdate)");
                     sql.AppendLine("ORDER BY R.rptStockDate ASC, R.prodcode ASC, R.item ASC");
@@ -358,7 +361,10 @@ namespace GoWMS.Server.Data
                             Queue_No = null,
                             Ship_To_Code = null,
                             Ship_Name = null,
-                            Delivery_Priority = null
+                            Delivery_Priority = null,
+                            PalletKey = rdr["palletmapkey"].ToString(),
+                            Unit = rdr["uom"].ToString()
+
                         };
                         lstobj.Add(objrd);
                     }
@@ -671,7 +677,10 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("R.qty,R.item_bc,R.whse,R.loc,R.pallet_bc");
                     sql.AppendLine(",R.is_req,R.is_hold,R.is_lock,R.update2sl,R.doc_num");
                     sql.AppendLine(",R.createdby,R.trans_date,R.modifie_date,R.rptStockDate");
+                    sql.AppendLine(",t2.palletnote as palltmapkey");
                     sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot R");
+                    sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t2");
+                    sql.AppendLine("On R.item_bc=t2.item_bc");
                     sql.AppendLine("WHERE (1=1)");
                     sql.AppendLine("AND R.is_req=0");
                     sql.AppendLine("order by R.rptStockDate asc, R.prodcode asc, R.item asc");
@@ -697,7 +706,8 @@ namespace GoWMS.Server.Data
                             Su_No = rdr["item_bc"].ToString(),
                             Palletcode = rdr["pallet_bc"].ToString(),
                             Shelfname = rdr["loc"].ToString(),
-                            Srm_No = null
+                            Srm_No = null,
+                            Palletgo = rdr["palltmapkey"].ToString()
                         };
                         lstobj.Add(objrd);
                     }
@@ -933,9 +943,12 @@ namespace GoWMS.Server.Data
                     sql.AppendLine(", cast(t1.trans_num as bigint) as trans_num, t1.lot, t1.exp_date, t1.mfg_date");
                     sql.AppendLine(", DATEDIFF(day, t1.exp_date, GETDATE()) as aging");
                     sql.AppendLine(",t2.shelfname");
+                    sql.AppendLine(",t3.palletnote as palltmapkey");
                     sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot t1");
                     sql.AppendLine("LEFT JOIN wcs.set_shelf t2");
                     sql.AppendLine("ON t1.pallet_bc=t2.lpncode");
+                    sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t3");
+                    sql.AppendLine("On t1.item_bc=t3.item_bc");
                     sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
                     sql.AppendLine(";");
 
@@ -973,7 +986,9 @@ namespace GoWMS.Server.Data
                             Su_No = rdr["item_bc"].ToString(),
                             Palletcode = rdr["pallet_bc"].ToString(),
                             Shelfname = rdr["shelfname"].ToString(),
-                            Aging = rdr["aging"] == DBNull.Value ? null : (Int32?)rdr["aging"]
+                            Aging = rdr["aging"] == DBNull.Value ? null : (Int32?)rdr["aging"],
+                            Palletgo = rdr["palltmapkey"].ToString()
+
 
                         };
                         lstobj.Add(objrd);
@@ -1408,10 +1423,13 @@ namespace GoWMS.Server.Data
                     sql.AppendLine("R.qty,R.item_bc,R.whse,R.loc,R.pallet_bc");
                     sql.AppendLine(",R.is_req,R.is_hold,R.is_lock,R.update2sl,R.doc_num");
                     sql.AppendLine(",R.createdby,R.trans_date,R.modifie_date,R.rptStockDate, T.lot");
+                    sql.AppendLine(",t2.palletnote as palltmapkey");
                     sql.AppendLine("FROM dbo.v_wmstran_issue_rpt R");
                     sql.AppendLine("LEFT JOIN dbo.wms_trans T");
                     sql.AppendLine("ON R.item_bc=T.item_bc");
                     sql.AppendLine("AND R.trans_date=T.trans_date");
+                    sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t2");
+                    sql.AppendLine("On R.item_bc=t2.item_bc");
                     sql.AppendLine("WHERE (1=1)");
                     sql.AppendLine("AND (R.rptStockDate>= @startdate AND R.rptStockDate<@stopdate)");
                     sql.AppendLine("order by R.rptStockDate asc, R.prodcode asc, R.item asc");
@@ -1432,7 +1450,7 @@ namespace GoWMS.Server.Data
                         Class6_4_A objrd = new Class6_4_A
                         {
                             Idx = null,
-                            Created = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
+                            Created = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
                             Entity_Lock = null,
                             Modified = null,
                             Client_Id = null,
@@ -1463,7 +1481,9 @@ namespace GoWMS.Server.Data
                             Pallet_No = rdr["pallet_bc"].ToString(),
                             Crane_No = null,
                             Location_No = null,
-                            Status = null
+                            Status = null,
+                            Palletgo = rdr["palltmapkey"].ToString(),
+                            Unit = rdr["uom"].ToString()
                         };
                         lstobj.Add(objrd);
                     }

@@ -40,6 +40,8 @@ namespace GoWMS.Server.Models.Public
 		public string Crane_No { get; set; }
 		public string Location_No { get; set; }
 		public Int32? Status { get; set; }
+        public string Palletgo { get; set; }
+        public string Unit { get; set; }
 
-	}
+    }
 }

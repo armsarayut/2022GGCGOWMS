@@ -48,10 +48,10 @@ else
                </MudButton>
 *@
         <MudSpacer />
-        <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
+       @* <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
             <MudIconButton Icon="@Icons.Custom.FileFormats.FilePdf" Color="Color.Error" OnClick="DownloadPdfDocument"></MudIconButton>
-        </MudTooltip>
+        </MudTooltip>*@
     </MudAppBar>
 
  @*   <MudTable Items="@Elements"
@@ -146,7 +146,7 @@ else
             <Column T="Api_ggc" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ACTION"]" Filterable="false" StickyRight="true">
               <CellTemplate>
                       <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Tertiary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Delete" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
               </CellTemplate>
         </Column>
 @*        <Column T="Api_ggc" HeaderStyle="@($"color:{Colors.Blue.Accent4};")" Title="@L["ACTION"]" Filterable="false">

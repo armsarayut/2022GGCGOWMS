@@ -62,22 +62,26 @@ else
                               IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"]</MudTableSortLabel></MudTh>
+                
                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"]</MudTableSortLabel></MudTh>
                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"]</MudTableSortLabel></MudTh>
-                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
+                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
+                  <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Palltmapkey)">@L["PalletErp"]</MudTableSortLabel></MudTh>
                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"]</MudTableSortLabel></MudTh>
                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PalletGo"]</MudTableSortLabel></MudTh>
                 <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Storagebin)">@L["Location"]</MudTableSortLabel></MudTh>
             </HeaderContent>
             <RowTemplate>
-                 <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
                 <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
                 <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
+                <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
                 <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
                 <MudTd DataLabel=@L["Unit"]>@context.Unit</MudTd>
+                <MudTd DataLabel=@L["PalletErp"]>@context.Palltmapkey</MudTd>
                 <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
+                
                 <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
                 <MudTd DataLabel=@L["Location"]>@context.Storagebin</MudTd>
             </RowTemplate>

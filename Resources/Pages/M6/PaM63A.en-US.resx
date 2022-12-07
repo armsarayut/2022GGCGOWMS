@@ -132,6 +132,9 @@
   <data name="ITEMNAME" xml:space="preserve">
     <value>NAME</value>
   </data>
+  <data name="PALLETNO" xml:space="preserve">
+    <value>PALLETNO</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>

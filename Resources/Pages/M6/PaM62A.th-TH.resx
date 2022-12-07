@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BATCH" xml:space="preserve">
+    <value>ชุด</value>
+  </data>
   <data name="DATETIME" xml:space="preserve">
     <value>วัน</value>
   </data>
@@ -135,6 +138,12 @@
   <data name="ORDERNO" xml:space="preserve">
     <value>คำสั่งซื้อ</value>
   </data>
+  <data name="PALLET" xml:space="preserve">
+    <value>พาเลท</value>
+  </data>
+  <data name="PALLETNO" xml:space="preserve">
+    <value>พาเลทที่</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>
@@ -146,5 +155,8 @@
   </data>
   <data name="SEQ" xml:space="preserve">
     <value>ป้าย</value>
+  </data>
+  <data name="UNIT" xml:space="preserve">
+    <value>หน่วยนับ</value>
   </data>
 </root>

@@ -31,11 +31,14 @@ namespace GoWMS.Server.Data
                 //Sql.AppendLine("order by itemcode");
 
 
-                Sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
-                Sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
-                Sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
-                Sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date, cast(is_hold as int) as efstatus");
-                Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
+                Sql.AppendLine("SELECT t1.prodcode, t1.item, t1.itemdesc, t1.supcode, t1.uom, t1.qty, t1.item_bc");
+                Sql.AppendLine(", t1.whse, t1.loc, t1.pallet_bc, t1.is_req, t1.is_hold, t1.is_lock, t1.update2sl");
+                Sql.AppendLine(", t1.doc_num, t1.createdby, t1.trans_date, t1.modifie_date, t1.rptStockDate");
+                Sql.AppendLine(", cast(t1.trans_num as bigint) as trans_num, t1.lot, t1.exp_date, t1.mfg_date, cast(t1.is_hold as int) as efstatus");
+                Sql.AppendLine(",t2.palletnote as palltmapkey");
+                Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot t1");
+                Sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t2");
+                Sql.AppendLine("On t1.item_bc=t2.item_bc");
                 Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
 
 
@@ -59,7 +62,9 @@ namespace GoWMS.Server.Data
                         Shelfname = rdr["loc"].ToString(),
                         StorageArae = rdr["whse"].ToString(),
                         Efstatus = rdr["efstatus"] == DBNull.Value ? null : (Int32?)rdr["efstatus"],
-                        BatchNo = rdr["lot"].ToString()
+                        BatchNo = rdr["lot"].ToString(),
+                        PalletErp = rdr["palltmapkey"].ToString(),
+                        Item_unit = rdr["uom"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -87,13 +92,16 @@ namespace GoWMS.Server.Data
                 //Sql.AppendLine("order by itemcode ASC, docdate ASC, pallettag ASC");
 
 
-                Sql.AppendLine("SELECT prodcode, item, itemdesc, supcode, uom, qty, item_bc");
-                Sql.AppendLine(", whse, loc, pallet_bc, is_req, is_hold, is_lock, update2sl");
-                Sql.AppendLine(", doc_num, createdby, trans_date, modifie_date, rptStockDate");
-                Sql.AppendLine(", cast(trans_num as bigint) as trans_num, lot, exp_date, mfg_date ,cast(is_hold as int) as efstatus");
-                Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot");
+                Sql.AppendLine("SELECT t1.prodcode, t1.item, t1.itemdesc, t1.supcode, t1.uom, t1.qty, t1.item_bc");
+                Sql.AppendLine(", t1.whse, t1.loc, t1.pallet_bc, t1.is_req, t1.is_hold, t1.is_lock, t1.update2sl");
+                Sql.AppendLine(", t1.doc_num, t1.createdby, t1.trans_date, t1.modifie_date, t1.rptStockDate");
+                Sql.AppendLine(", cast(t1.trans_num as bigint) as trans_num, t1.lot, t1.exp_date, t1.mfg_date ,cast(t1.is_hold as int) as efstatus");
+                Sql.AppendLine(",t2.palletnote as palltmapkey");
+                Sql.AppendLine("FROM dbo.v_wmstran_stock_rpt_lot t1");
+                Sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t2");
+                Sql.AppendLine("On t1.item_bc=t2.item_bc");
                 //Sql.AppendLine("WHERE allocatequantity < quantity");
-                Sql.AppendLine("order by item ASC, mfg_date ASC, item_bc ASC");
+                Sql.AppendLine("Order by item ASC, mfg_date ASC, item_bc ASC");
 
                 SqlCommand cmd = new SqlCommand(Sql.ToString(), con)
                 {
@@ -134,7 +142,7 @@ namespace GoWMS.Server.Data
                         Grtime = null,
                         Grtype = null,
                         Pallteno = rdr["pallet_bc"].ToString(),
-                        Palltmapkey = null,
+                        Palltmapkey = rdr["palltmapkey"].ToString(),
                         Storagetime = rdr["rptStockDate"] == DBNull.Value ? null : (DateTime?)rdr["rptStockDate"],
                         Storageno = null,
                         Storagearea = rdr["whse"].ToString(),

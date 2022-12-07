@@ -127,13 +127,16 @@
     <value>ชื่อสินค้า</value>
   </data>
   <data name="Lot" xml:space="preserve">
-    <value>เลขที่ครั้งที่ผลิต</value>
+    <value>ชุด</value>
   </data>
   <data name="PACKID" xml:space="preserve">
     <value>ป้าย</value>
   </data>
   <data name="PALLET" xml:space="preserve">
     <value>พาเลท</value>
+  </data>
+  <data name="PALLETERP" xml:space="preserve">
+    <value>พาเลทที่</value>
   </data>
   <data name="QTY" xml:space="preserve">
     <value>จำนวน</value>
@@ -143,5 +146,8 @@
   </data>
   <data name="STROAGEBIN" xml:space="preserve">
     <value>ตำแหน่ง</value>
+  </data>
+  <data name="UNIT" xml:space="preserve">
+    <value>หน่วย</value>
   </data>
 </root>

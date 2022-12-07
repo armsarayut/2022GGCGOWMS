@@ -19,6 +19,9 @@ namespace GoWMS.Server.Models.Inv
 
         public string StorageArae { get; set; }
         public string BatchNo { get; set; }
+        public string PalletErp { get; set; }
+
+        public string Item_unit{ get; set; }
 
     }
 }

@@ -62,7 +62,7 @@ else
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelfbay)">@L["BAY"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelflevel)">@L["LEVEL"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Shelfdeep)">@L["DEEP"]</MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Lpncode)">@L["MasterPallet"]</MudTableSortLabel></MudTh>
+                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Lpncode)">@L["PalletGo"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.St_desc)">@L["Status"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Vrpt_shelf_listInfo, object>(x=>x.Modified)">@L["LastUpdate"]</MudTableSortLabel></MudTh>
         </HeaderContent>
@@ -73,7 +73,7 @@ else
             <MudTd DataLabel="@L["BAY"]">@context.Shelfbay</MudTd>
             <MudTd DataLabel="@L["LEVEL"]">@context.Shelflevel</MudTd>
             <MudTd DataLabel="@L["DEEP"]">@context.Shelfdeep</MudTd>
-            <MudTd DataLabel="@L["MasterPallet"]">@context.Lpncode</MudTd>
+            <MudTd DataLabel="@L["PalletGo"]">@context.Lpncode</MudTd>
             <MudTd DataLabel="@L["Status"]">
                  <MudAlert Severity="Severity.Info"
                                   Variant="Variant.Filled"

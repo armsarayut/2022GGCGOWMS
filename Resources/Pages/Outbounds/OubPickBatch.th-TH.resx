@@ -127,7 +127,7 @@
     <value>ชื่อสินค้า</value>
   </data>
   <data name="LOT" xml:space="preserve">
-    <value>แบท</value>
+    <value>ชุด</value>
   </data>
   <data name="ORDERNO" xml:space="preserve">
     <value>เลขใบเบิก</value>

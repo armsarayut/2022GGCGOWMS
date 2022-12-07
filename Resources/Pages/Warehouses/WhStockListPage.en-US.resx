@@ -142,7 +142,7 @@
     <value>Stock List</value>
   </data>
   <data name="PalletErp" xml:space="preserve">
-    <value>PalletNo</value>
+    <value>PALLET NO</value>
   </data>
   <data name="PalletGo" xml:space="preserve">
     <value>PALLET</value>

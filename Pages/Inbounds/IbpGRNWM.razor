@@ -43,17 +43,22 @@ else
     <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
 
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-          <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
+        @*  <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
                Color="Color.Primary" OnClick="@AddNewGrAcc">@L["AddAcc"] 
-               </MudButton>
+               </MudButton>*@
+
+            <MudButtonGroup Color="Color.Default" Variant="Variant.Outlined">
+            <MudButton StartIcon="@Icons.Material.Filled.CreateNewFolder" IconColor="Color.Tertiary" OnClick=@AddNewGrAcc>@L["AddAcc"]</MudButton>
+                </MudButtonGroup>
+
          @*<MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
                Color="Color.Primary" OnClick="@AddNewGrAcc">@L["AddAcc"] 
                </MudButton>*@
         <MudSpacer />
-        <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
+       @* <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">
             <MudIconButton Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" OnClick="DownloadExcelDocument"></MudIconButton>
             <MudIconButton Icon="@Icons.Custom.FileFormats.FilePdf" Color="Color.Error" OnClick="DownloadPdfDocument"></MudIconButton>
-        </MudTooltip>
+        </MudTooltip>*@
     </MudAppBar>
 
     @*   <MudTable Items="@Elements"
@@ -147,7 +152,7 @@ else
             <Column T="Api_ggc" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ACTION"]" Filterable="false">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Print" Color="Color.Tertiary" OnClick="@(()=>OpenDialog(context.Item.Idx.Value, context.Item.Total_qty.Value, context.Item.Gr_qty.Value))" />
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Delete" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
 
                 </CellTemplate>
             </Column>

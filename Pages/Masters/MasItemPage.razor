@@ -24,9 +24,13 @@ else
 {
     <MudText Typo="Typo.h6" Color="Color.Primary"> @pageheader </MudText>
     <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-           <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
+          @* <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CreateNewFolder"
                Color="Color.Primary" OnClick=@AddNewMaster>@L["AddAcc"] 
-               </MudButton>
+               </MudButton>*@
+
+               <MudButtonGroup Color="Color.Default" Variant="Variant.Outlined">
+            <MudButton StartIcon="@Icons.Material.Filled.CreateNewFolder" IconColor="Color.Tertiary" OnClick=@AddNewMaster>@L["AddAcc"]</MudButton>
+                </MudButtonGroup>
 
         <MudSpacer />
         <MudTooltip Text=@L["Export"] Color="Color.Inherit" Placement="Placement.Top">

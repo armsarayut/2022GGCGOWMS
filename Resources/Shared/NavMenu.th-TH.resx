@@ -331,10 +331,10 @@
     <value>ขาเข้า</value>
   </data>
   <data name="InboundACC" xml:space="preserve">
-    <value>อุปกรณ์เสริม</value>
+    <value>1.2.อุปกรณ์เสริม</value>
   </data>
   <data name="InboundFG" xml:space="preserve">
-    <value>สินค้าและบรรจุภัณฑ์</value>
+    <value>1.1.สินค้าและบรรจุภัณฑ์</value>
   </data>
   <data name="Inventory" xml:space="preserve">
     <value>คงคลัง</value>
@@ -346,7 +346,7 @@
     <value>เครื่องจักร</value>
   </data>
   <data name="MasterMapping" xml:space="preserve">
-    <value>การทำแพลน</value>
+    <value>1.4.กำกับพาเลท</value>
   </data>
   <data name="MasterQueuing" xml:space="preserve">
     <value>1.6.มาสเตอร์คิว</value>

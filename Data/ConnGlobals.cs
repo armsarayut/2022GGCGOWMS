@@ -20,7 +20,7 @@ namespace GoWMS.Server.Data
         {
             //return "server=DESKTOP-NQ62BHU\\MSSQL; database=GOSQL-UAT10;Trusted_Connection=True;";
 
-            return "server=DESKTOP-NQ62BHU\\SQLEXPRESS; database=GOSQL-UATCHK;Trusted_Connection=True;";
+            return "server=DESKTOP-NQ62BHU\\SQLEXPRESS; database=GOSQL-UATFN;Trusted_Connection=True;";
 
 
             //DESKTOP-NQ62BHU\SQLEXPRESS

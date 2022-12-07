@@ -141,6 +141,9 @@
   <data name="PALLET" xml:space="preserve">
     <value>PALLET</value>
   </data>
+  <data name="PALLETNO" xml:space="preserve">
+    <value>PALLETNO</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>
@@ -158,5 +161,8 @@
   </data>
   <data name="TASKTYPE" xml:space="preserve">
     <value>TASKTYPE</value>
+  </data>
+  <data name="UNIT" xml:space="preserve">
+    <value>UNIT</value>
   </data>
 </root>

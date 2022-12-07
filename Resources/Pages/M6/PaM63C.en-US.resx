@@ -135,6 +135,9 @@
   <data name="LOT" xml:space="preserve">
     <value>BATCH</value>
   </data>
+  <data name="PALLETNO" xml:space="preserve">
+    <value>PALLETNO</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>Pdf</value>
   </data>

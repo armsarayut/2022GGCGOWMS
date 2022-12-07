@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace GoWMS.Server.Models.Public
@@ -16,7 +17,8 @@ namespace GoWMS.Server.Models.Public
         public string Palletcode { get; set; }
         public string Shelfname { get; set; }
         public Int32? Srm_No { get; set; }
+        public string Palletgo { get; set; }
 
-        
+ 
     }
 }

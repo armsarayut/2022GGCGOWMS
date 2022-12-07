@@ -16,5 +16,6 @@ namespace GoWMS.Server.Models.Public
         public string Palletcode { get; set; }
         public string Shelfname { get; set; }
         public Int32? Aging { get; set; }
+        public string Palletgo { get; set; }
     }
 }

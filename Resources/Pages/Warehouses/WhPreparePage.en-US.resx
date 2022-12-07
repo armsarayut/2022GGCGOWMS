@@ -133,7 +133,7 @@
     <value>Audit</value>
   </data>
   <data name="PalletErp" xml:space="preserve">
-    <value>PALLET</value>
+    <value>PALLET NO</value>
   </data>
   <data name="PalletGo" xml:space="preserve">
     <value>PALLET</value>
@@ -149,5 +149,8 @@
   </data>
   <data name="Stock" xml:space="preserve">
     <value>STOCK</value>
+  </data>
+  <data name="Unit" xml:space="preserve">
+    <value>UNIT</value>
   </data>
 </root>

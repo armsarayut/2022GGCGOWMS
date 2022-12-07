@@ -135,6 +135,9 @@
   <data name="PALLET" xml:space="preserve">
     <value>PALLET</value>
   </data>
+  <data name="PALLETERP" xml:space="preserve">
+    <value>PALLET NO</value>
+  </data>
   <data name="QTY" xml:space="preserve">
     <value>Qty</value>
   </data>
@@ -143,5 +146,8 @@
   </data>
   <data name="STROAGEBIN" xml:space="preserve">
     <value>LOCATION</value>
+  </data>
+  <data name="UNIT" xml:space="preserve">
+    <value>UNIT</value>
   </data>
 </root>

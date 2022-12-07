@@ -130,7 +130,7 @@
     <value>3.Outbound</value>
   </data>
   <data name="4.0.ASRS-DASHBOARD" xml:space="preserve">
-    <value>ASRS-MONITOR</value>
+    <value>4.0.ASRS-MONITOR</value>
   </data>
   <data name="4.1.ASRS-STATUS" xml:space="preserve">
     <value>4.1.ASRS-Status</value>

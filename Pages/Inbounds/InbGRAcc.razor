@@ -18,7 +18,7 @@
 <MudDialog>
     <DialogContent>
 
-        <MudTextField @bind-Value="pDocref" Counter="20" MaxLength="20" Label="@L["DNNo"]" Variant="Variant.Outlined" />
+        @*<MudTextField @bind-Value="pDocref" Counter="20" MaxLength="20" Label="@L["DNNo"]" Variant="Variant.Outlined" />*@
          <MudSelect Label="@L["ItemCode"]" HelperText="Pick the Item" @bind-SelectedValues="selectedItems">
             @foreach (var cmd in Elements)
             {
