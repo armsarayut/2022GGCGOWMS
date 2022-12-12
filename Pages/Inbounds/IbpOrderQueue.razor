@@ -330,7 +330,7 @@ else
 
                 if (ObjInboundService.CancelReceivingOrdersBypackId_SP(tranId, tranQty, tranDoc, tranItem, tranTag, ref msg))
                 {
-                    this.InsertAuditrial("Cancel ReceivingOrder SKU : " + tranItem + " Qty : " + tranQty.ToString() + " From Doc : " + tranDoc, pageheader);
+                    this.InsertAuditrial("Cancel ReceivingOrder TAG : " + tranTag + " SKU : " + tranItem + " Qty : " + tranQty.ToString() + " From Doc : " + tranDoc, pageheader);
                     Snackbar.Add(msg, Severity.Success);
                     //Elements = ObjInboundService.GetAllInbGoodreceiveGos();
                     Elements = await Task.Run(() => ObjInboundService.GetAllInbGoodreceiveGos());

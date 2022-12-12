@@ -48,15 +48,15 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = Convert.ToDateTime(rpt.Created).ToString(VarGlobals.FormatDT);
-                    worksheet.Cell(rptRows, 2).Value = rpt.Order_No;
-                    worksheet.Cell(rptRows, 3).Value = Convert.ToDateTime(rpt.Delivery_Date).ToString(VarGlobals.FormatD);
-                    worksheet.Cell(rptRows, 4).Value = rpt.Item_Code;
-                    worksheet.Cell(rptRows, 5).Value =  rpt.Item_Name;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Pallet_No;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Su_No;
-                    worksheet.Cell(rptRows, 8).Value = string.Format(VarGlobals.FormatN0, rpt.Request_Qty);
-                    worksheet.Cell(rptRows, 9).Value = rpt.Unit;
+                    worksheet.Cell(rptRows, 1).Value = "'" + Convert.ToDateTime(rpt.Created).ToString(VarGlobals.FormatDT);
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Order_No;
+                    worksheet.Cell(rptRows, 3).Value = "'" + Convert.ToDateTime(rpt.Delivery_Date).ToString(VarGlobals.FormatD);
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Item_Code;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Item_Name;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Pallet_No;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.Su_No;
+                    worksheet.Cell(rptRows, 8).Value = "'" + string.Format(VarGlobals.FormatN0, rpt.Request_Qty);
+                    worksheet.Cell(rptRows, 9).Value = "'" + rpt.Unit;
 
                 }
                 #endregion

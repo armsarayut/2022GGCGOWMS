@@ -85,8 +85,9 @@ else
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Result_Qty)">@L["QTY"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Unit)">@L["UNIT"]</MudTableSortLabel></MudTh>
+              <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.PalletKey)">@L["PALLETNO"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Su_No)">@L["SEQ"]</MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.PalletKey)">@L["PALLETNO"]</MudTableSortLabel></MudTh>
+          
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_2_A, object>(x=>x.Pallet_No)">@L["PALLET"]</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -97,8 +98,9 @@ else
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["QTY"]>@string.Format(VarGlobals.FormatN3, context.Result_Qty)</MudTd>
             <MudTd DataLabel=@L["UNIT"]>@context.Unit</MudTd>
-             <MudTd DataLabel=@L["SEQ"]>@context.Su_No</MudTd>
               <MudTd DataLabel=@L["PALLETNO"]>@context.PalletKey</MudTd>
+             <MudTd DataLabel=@L["SEQ"]>@context.Su_No</MudTd>
+            
               <MudTd DataLabel=@L["PALLET"]>@context.Pallet_No</MudTd>
         </RowTemplate>
         <PagerContent>

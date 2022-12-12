@@ -45,14 +45,14 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Ugdesc;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Menu_desc;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Role_acc;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Role_add;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Role_edit;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Role_del;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Role_rpt;
-                    worksheet.Cell(rptRows, 8).Value = rpt.Role_apv;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Ugdesc;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Menu_desc;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Role_acc;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Role_add;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Role_edit;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Role_del;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.Role_rpt;
+                    worksheet.Cell(rptRows, 8).Value = "'" + rpt.Role_apv;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

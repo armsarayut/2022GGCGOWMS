@@ -18,6 +18,7 @@
 
         <MudNumericField Immediate="false" Label="To" Format="N0" T="int?" @bind-Value="_valuePalletto" HelperText="@_valuePalletto.ToString()" />
 
+        <MudNumericField Immediate="false" @bind-Value="pPalqty" Label="Qty/Pallet" ReadOnly="false" Format="F3" Variant="Variant.Outlined" Min="1" Adornment="Adornment.End" AdornmentText=@pUnit AdornmentColor="Color.Info" />
 
     </DialogContent>
     <DialogActions>
@@ -33,7 +34,10 @@
     [Parameter] public string pGuid { get; set; }
     [Parameter] public string pUsername { get; set; }
     [Parameter] public string pRef { get; set; }
-
+    [Parameter] public decimal pPalqty { get; set; }
+    [Parameter] public string pItemcat { get; set; }
+    [Parameter] public string pUnit { get; set; }
+    [Parameter] public string pItemcode { get; set; }
 
     public int? _valuePalletfrom = 0;
 

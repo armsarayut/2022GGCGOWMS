@@ -32,7 +32,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
                 sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
                 sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
-                sql.AppendLine(",t2.uom, t2.item_name");
+                sql.AppendLine(",t2.uom, t2.item_name, t2.pack_qty, t2.item_cat");
                 sql.AppendLine("FROM dbo.api_ggc t1");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
                 sql.AppendLine("ON t1.item_code=t2.item_code");
@@ -75,7 +75,9 @@ namespace GoWMS.Server.Data
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
                         Gr_remark = rdr["gr_remark"].ToString(),
                         Unit = rdr["uom"].ToString(),
-                        Item_name = rdr["item_name"].ToString()
+                        Item_name = rdr["item_name"].ToString(),
+                        Palleyqty= rdr["pack_qty"] == DBNull.Value ? null : (Decimal?)rdr["pack_qty"],
+                        Item_cat = rdr["item_cat"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
@@ -172,7 +174,7 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t1.item_code, t1.total_qty, t1.doc_ref, t1.receiving_date, t1.create_by, t1.create_date");
                 sql.AppendLine(",t1.batch_no, t1.doc_item_ref, t1.deletion_flag, t1.remark, t1.delivery_priority");
                 sql.AppendLine(",t1.flow_type, t1.api_name, t1.gr_qty, t1.gr_remark");
-                sql.AppendLine(",t2.uom, t2.item_name");
+                sql.AppendLine(",t2.uom, t2.item_name, t2.pack_qty, t2.item_cat");
                 sql.AppendLine("FROM dbo.api_ggc t1");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t2");
                 sql.AppendLine("ON t1.item_code=t2.item_code");
@@ -215,7 +217,9 @@ namespace GoWMS.Server.Data
                         Gr_qty = rdr["gr_qty"] == DBNull.Value ? null : (Decimal?)rdr["gr_qty"],
                         Gr_remark = rdr["gr_remark"].ToString(),
                         Unit = rdr["uom"].ToString(),
-                        Item_name = rdr["item_name"].ToString()
+                        Item_name = rdr["item_name"].ToString(),
+                        Palleyqty = rdr["pack_qty"] == DBNull.Value ? null : (Decimal?)rdr["pack_qty"],
+                        Item_cat = rdr["item_cat"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

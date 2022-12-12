@@ -37,18 +37,20 @@ namespace GoWMS.Server.Reports
                 worksheet.Cell(rptRows, 2).Value = "SKU";
                 worksheet.Cell(rptRows, 3).Value = "NAME";
                 worksheet.Cell(rptRows, 4).Value = "STOCK";
-                worksheet.Cell(rptRows, 5).Value = "TAG";
-                worksheet.Cell(rptRows, 6).Value = "AGING";
+                worksheet.Cell(rptRows, 5).Value = "PALLET NO";
+                worksheet.Cell(rptRows, 6).Value = "TAG";
+                worksheet.Cell(rptRows, 7).Value = "AGING";
 
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Batch_Number;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Item_Code;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Item_Name;
-                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatN3, rpt.Qty);
-                    worksheet.Cell(rptRows, 5).Value = rpt.Su_No;
-                    worksheet.Cell(rptRows, 6).Value = string.Format(VarGlobals.FormatN0, rpt.Aging);
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Batch_Number;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Item_Code;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Item_Name;
+                    worksheet.Cell(rptRows, 4).Value = "'" + string.Format(VarGlobals.FormatN3, rpt.Qty);
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Palletgo;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Su_No;
+                    worksheet.Cell(rptRows, 7).Value = "'" + string.Format(VarGlobals.FormatN0, rpt.Aging);
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

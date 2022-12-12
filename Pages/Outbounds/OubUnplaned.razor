@@ -246,11 +246,13 @@ else
         {
             if (string.IsNullOrWhiteSpace(searchString))
                 return true;
-            if (element.Itemcode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Itemcode.Equals(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.Pallteno.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Lotno.Equals(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.Pallettag.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Pallteno.Equals(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Pallettag.Equals(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
             if ($"{element.Itemname} {element.Storagebin}".Contains(searchString))
                 return true;
@@ -261,7 +263,7 @@ else
         {
             if (string.IsNullOrWhiteSpace(searchString))
                 return true;
-            if (element.Item_code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Item_code.Equals(searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
             if ($"{element.Item_name} ".Contains(searchString))
                 return true;

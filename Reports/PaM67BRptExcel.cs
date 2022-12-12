@@ -45,12 +45,12 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                           rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Su_No;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Lpncode;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Work_code;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Srm_No;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Loc_No;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Loadtime;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Su_No;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Lpncode;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Work_code;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Srm_No;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Loc_No;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Loadtime;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

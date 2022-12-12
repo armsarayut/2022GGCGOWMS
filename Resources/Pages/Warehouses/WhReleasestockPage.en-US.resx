@@ -141,6 +141,9 @@
   <data name="QTY" xml:space="preserve">
     <value>Qty</value>
   </data>
+  <data name="Releasestock" xml:space="preserve">
+    <value>SET RELEASE</value>
+  </data>
   <data name="STOCK" xml:space="preserve">
     <value>STOCK</value>
   </data>

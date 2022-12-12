@@ -43,11 +43,11 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = Convert.ToDateTime(rpt.Created).ToString(VarGlobals.FormatD);
-                    worksheet.Cell(rptRows, 2).Value = rpt.Mccode;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Cunt;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Desc_Th;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Desc_En;
+                    worksheet.Cell(rptRows, 1).Value = "'" + Convert.ToDateTime(rpt.Created).ToString(VarGlobals.FormatD);
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Mccode;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Cunt;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Desc_Th;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Desc_En;
 
                 }
                 #endregion

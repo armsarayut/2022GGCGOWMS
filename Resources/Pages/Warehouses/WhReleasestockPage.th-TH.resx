@@ -141,6 +141,9 @@
   <data name="QTY" xml:space="preserve">
     <value>จำนวน</value>
   </data>
+  <data name="Releasestock" xml:space="preserve">
+    <value>ปล่อย</value>
+  </data>
   <data name="STOCK" xml:space="preserve">
     <value>คงคลัง</value>
   </data>

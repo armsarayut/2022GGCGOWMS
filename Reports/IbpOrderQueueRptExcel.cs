@@ -45,14 +45,14 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in Inb_Goodreceive_Go_s)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Created;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Pallteno;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Pono;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Pallettag;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Itemcode;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Itemname;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Quantity;
-                    worksheet.Cell(rptRows, 8).Value = rpt.Unit;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Created;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Pallteno;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Pono;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Pallettag;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Itemcode;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Itemname;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.Quantity;
+                    worksheet.Cell(rptRows, 8).Value = "'" + rpt.Unit;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

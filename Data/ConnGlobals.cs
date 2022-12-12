@@ -63,9 +63,9 @@ namespace GoWMS.Server.Data
             //var key = _configuration.GetSection("DBHost")["IP"].ToString();
 
 
-            //return "Server=" + _IPString + " ," + _PortString + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
+            return "Server=" + _IPString + " ," + _PortString + ";Database=" + SqlDB + ";User Id=" + SqlUser + ";Password=" + SqlPass + ";Timeout=" + SqlContime + ";";
 
-            return GetConnLocalDB();
+            //return GetConnLocalDB();
 
         }
         #endregion

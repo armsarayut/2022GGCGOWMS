@@ -48,15 +48,15 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in ListRpt)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Lpncode;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Work_code;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Work_text_th;
-                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatD2, rpt.Srm_no);
-                    worksheet.Cell(rptRows, 5).Value = string.Format(VarGlobals.FormatD9, rpt.Srm_from);
-                    worksheet.Cell(rptRows, 6).Value = string.Format(VarGlobals.FormatD9, rpt.Srm_to);
-                    worksheet.Cell(rptRows, 7).Value = Convert.ToDateTime(rpt.Stime).ToString(VarGlobals.FormatDT);
-                    worksheet.Cell(rptRows, 8).Value = Convert.ToDateTime(rpt.Etime).ToString(VarGlobals.FormatDT);
-                    worksheet.Cell(rptRows, 9).Value = rpt.Loadtime;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Lpncode;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Work_code;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Work_text_th;
+                    worksheet.Cell(rptRows, 4).Value = "'" + string.Format(VarGlobals.FormatD2, rpt.Srm_no);
+                    worksheet.Cell(rptRows, 5).Value = "'" + string.Format(VarGlobals.FormatD9, rpt.Srm_from);
+                    worksheet.Cell(rptRows, 6).Value = "'" + string.Format(VarGlobals.FormatD9, rpt.Srm_to);
+                    worksheet.Cell(rptRows, 7).Value = "'" + Convert.ToDateTime(rpt.Stime).ToString(VarGlobals.FormatDT);
+                    worksheet.Cell(rptRows, 8).Value = "'" + Convert.ToDateTime(rpt.Etime).ToString(VarGlobals.FormatDT);
+                    worksheet.Cell(rptRows, 9).Value = "'" + rpt.Loadtime;
                 }
                 #endregion
 

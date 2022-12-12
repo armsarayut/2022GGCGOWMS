@@ -39,8 +39,8 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Created;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Ugdesc;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Created;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Ugdesc;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

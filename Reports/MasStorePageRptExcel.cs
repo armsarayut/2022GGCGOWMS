@@ -41,9 +41,9 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Stocode;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Stoname;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Stoaddress;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Stocode;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Stoname;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Stoaddress;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

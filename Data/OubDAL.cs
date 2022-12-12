@@ -34,9 +34,14 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(", t0.whse as whse, t0.loc as loc, t0.pallet_bc as pallet_bc, t0.ref_item as ref_item");
                 sql.AppendLine(", t0.flag,t0.require_detail_id,t0.is_req");
                 sql.AppendLine(", t0.is_hold as is_hold, t0.is_lock as is_lock, t0.update2sl as update2sl, t0.modifie_date as modifie_date");
+                sql.AppendLine(",t2.palletnote as palltmapkey");
                 sql.AppendLine("FROM dbo.wms_trans t0");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t1");
                 sql.AppendLine("ON t0.item=t1.item_code");
+                sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t2");
+                sql.AppendLine("On t0.item_bc=t2.item_bc");
+
+
                 sql.AppendLine("WHERE t0.unit_key = @unit_key");
                 sql.AppendLine("AND t0.stat = @stat");
                 sql.AppendLine("AND t0.flag = @flag");
@@ -105,7 +110,8 @@ namespace GoWMS.Server.Data
                         Ref_Line = null,
                         Unit = rdr["uom"].ToString(),
                         Vendor_Code = null,
-                        Batch_No = slot
+                        Batch_No = slot,
+                        Palletmapkey = rdr["palltmapkey"].ToString()
                     };
                     lstobj.Add(objrd);
                 }

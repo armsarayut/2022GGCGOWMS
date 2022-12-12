@@ -120,6 +120,9 @@
   <data name="AREA" xml:space="preserve">
     <value>พื้นที่</value>
   </data>
+  <data name="Holdstock" xml:space="preserve">
+    <value>กัก</value>
+  </data>
   <data name="ITEMCODE" xml:space="preserve">
     <value>รหัสสินค้า</value>
   </data>

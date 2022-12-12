@@ -12,14 +12,25 @@
 @inject InboundService ObjInboundService
 @inject ReportService UserlogService
 @inject IDialogService DialogService
+@inject MasService ObjMasterService
 
 <MudDialog>
     <DialogContent>
 
-        <MudNumericField Immediate="false" Label="From" Format="N0" T="int?" @bind-Value="_valuePalletfrom" HelperText="@_valuePalletfrom.ToString()" />
+        <MudNumericField Immediate="false" Label="From" Format="N0" T="int?" @bind-Value="_valuePalletfrom" />
 
-        <MudNumericField Immediate="false" Label="To" Format="N0" T="int?" @bind-Value="_valuePalletto" HelperText="@_valuePalletto.ToString()" />
+        <MudNumericField Immediate="false" Label="To" Format="N0" T="int?" @bind-Value="_valuePalletto" />
+        @if (pItemcat!="ZFG")
+        {
+            <MudNumericField Immediate="false" @bind-Value="pPalqty" Label="Qty/Pallet" ReadOnly="false" Format="F3" Variant="Variant.Outlined" Min="1" Adornment="Adornment.End" AdornmentText=@pUnit AdornmentColor="Color.Info" />
+        }
+        else
+        {
+            <MudNumericField Immediate="false" @bind-Value="pPalqty" Label="Qty/Pallet" ReadOnly="true" Format="F3" Variant="Variant.Outlined" Min="1" Adornment="Adornment.End" AdornmentText=@pUnit AdornmentColor="Color.Error" />
+        }
 
+        
+      
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -34,6 +45,10 @@
     [Parameter] public string pGuid { get; set; }
     [Parameter] public string pUsername{ get; set; }
     [Parameter] public string pRef { get; set; }
+    [Parameter] public decimal pPalqty { get; set; }
+    [Parameter] public string pItemcat { get; set; }
+    [Parameter] public string pUnit { get; set; }
+    [Parameter] public string pItemcode { get; set; }
 
     public int? _valuePalletfrom = 0;
 
@@ -59,37 +74,55 @@
         if (_valuePalletto != null && _valuePalletfrom != null)
         {
 
-            DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
-            dtTrans.Columns.Add("tyitem", typeof(System.String));
-            dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
-            dtTrans.Columns.Add("tylot", typeof(System.String));
-            dtTrans.Columns.Add("tyexpdate", typeof(System.DateTime));
-            dtTrans.Columns.Add("typallet", typeof(System.String));
-
-            DataRow _ravi = dtTrans.NewRow();
-            _ravi["tyitem"] = "AAA";
-            _ravi["tyqty"] = 10.9;
-            _ravi["tylot"] = "LOT0001";
-            _ravi["tyexpdate"] = DateTime.Now;
-            _ravi["typallet"] = "1";
-            dtTrans.Rows.Add(_ravi);
-
-            bool bRet ;
-            string sRet = "" ;
-
-            bRet = ObjInboundService.CreateTagnodup(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid, ref sRet);
-
-            if (bRet == true)
+            if (pPalqty!=0)
             {
-                this.InsertAuditrial("Create Tag Pallet From : " + _valuePalletfrom.ToString() + " To: " + _valuePalletto.ToString(), pageheader);
+                DataTable dtTrans = new DataTable("ptyGenWmsTransGGC");
+                dtTrans.Columns.Add("tyitem", typeof(System.String));
+                dtTrans.Columns.Add("tyqty", typeof(System.Decimal));
+                dtTrans.Columns.Add("tylot", typeof(System.String));
+                dtTrans.Columns.Add("tyexpdate", typeof(System.DateTime));
+                dtTrans.Columns.Add("typallet", typeof(System.String));
 
-                MudDialog.Close(DialogResult.Ok(true));
+                DataRow _ravi = dtTrans.NewRow();
+                _ravi["tyitem"] = "AAA";
+                _ravi["tyqty"] = 10.9;
+                _ravi["tylot"] = "LOT0001";
+                _ravi["tyexpdate"] = DateTime.Now;
+                _ravi["typallet"] = "1";
+                dtTrans.Rows.Add(_ravi);
+
+                bool bRet;
+                string sRet = "";
+
+
+                bRet = ObjMasterService.UpdateItemMasterPalletqty(pPalqty, pItemcode);
+
+                if (bRet == true)
+                {
+                    bRet = ObjInboundService.CreateTagnodup(pApiid, _valuePalletfrom.Value, _valuePalletto.Value, pRef, pUsername, dtTrans, pGuid, ref sRet);
+
+                    if (bRet == true)
+                    {
+                        this.InsertAuditrial("Create Tag Pallet From : " + _valuePalletfrom.ToString() + " To: " + _valuePalletto.ToString(), pageheader);
+
+                        MudDialog.Close(DialogResult.Ok(true));
+                    }
+                    else
+                    {
+                        bool? result = await DialogService.ShowMessageBox("Warning", sRet, yesText: "OK");
+
+                        MudDialog.Cancel();
+                    }
+                }
+                else
+                {
+                    bool? result = await DialogService.ShowMessageBox("Error", "Update Pallety", yesText: "OK");
+
+                    MudDialog.Cancel();
+                }
             }
-            else
-            {
-                bool? result = await DialogService.ShowMessageBox("Warning", sRet, yesText: "OK");
-                
-                MudDialog.Cancel();
+            else{
+                bool? result = await DialogService.ShowMessageBox("Warning", "Please Insert Qty/Pallet !", yesText: "OK");
             }
         }
     }

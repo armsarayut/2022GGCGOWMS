@@ -38,7 +38,7 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Palletno;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Palletno;
 
                 }
                 #endregion

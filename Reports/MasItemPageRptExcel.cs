@@ -44,13 +44,13 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Itemcode;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Itemname;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Itemunit;
-                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatN3, rpt.Palqty);
-                    worksheet.Cell(rptRows, 5).Value = string.Format(VarGlobals.FormatN3, rpt.Weightnet);
-                    worksheet.Cell(rptRows, 6).Value = string.Format(VarGlobals.FormatN3, rpt.Weightgross);
-                    worksheet.Cell(rptRows, 7).Value = rpt.IsBatchMgn;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Itemcode;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Itemname;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Itemunit;
+                    worksheet.Cell(rptRows, 4).Value = "'" + string.Format(VarGlobals.FormatN3, rpt.Palqty);
+                    worksheet.Cell(rptRows, 5).Value = "'" + string.Format(VarGlobals.FormatN3, rpt.Weightnet);
+                    worksheet.Cell(rptRows, 6).Value = "'" + string.Format(VarGlobals.FormatN3, rpt.Weightgross);
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.IsBatchMgn;
 
 
                 }

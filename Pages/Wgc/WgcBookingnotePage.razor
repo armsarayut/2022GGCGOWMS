@@ -132,7 +132,8 @@ else
             <Column T="Api_ggc" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ACTION"]" Filterable="false">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.ShoppingCart" Color="Color.Error" OnClick="@(()=>RequestPick(context.Item.Item_code , context.Item.Batch_no, context.Item.Total_qty.Value, sUsername, context.Item.Idx.Value))" />
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />
+            @*        <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />*@
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Delete" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value, context.Item.Doc_ref, context.Item.Batch_no, context.Item.Item_code))" />
                 </CellTemplate>
             </Column>
            @* <Column T="Api_ggc" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ACTION"]" Filterable="false">
@@ -585,7 +586,7 @@ else
 
     }
 
-     async Task CancleGR(long apiid)
+    async Task CancleGR(long apiid, string docref, string batchno, string itemcode)
     {
         bool? result = await CheckRoleDelete();
         if (result == true)
@@ -601,7 +602,8 @@ else
                 resultReturn = await Task.Run(() => ObjInboundService.ManageGRAccessory(apiid, "", 0, sUsername, "", DateTime.Now.Date, "", "", 2, ref msgReturn));
                 if (resultReturn == true)
                 {
-                    this.InsertAuditrial(mPagedesc + " : Cancle Ref. " + apiid.ToString(), pageheader);
+                    this.InsertAuditrial(mPagedesc + " : Cancle Doc : " + docref + " Batch : " + batchno + " Item : " + itemcode + " Ref. " + apiid.ToString(), pageheader);
+
 
                     Elements = await Task.Run(() => ObjErpApiService.GetApiOutboundAll());
                     this.StateHasChanged();

@@ -44,13 +44,13 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in ListRpt)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Srmname;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Locavlt1;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Locemp;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Perr;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Plemp;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Total;
-                    worksheet.Cell(rptRows, 7).Value = rpt.OccRate;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Srmname;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Locavlt1;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Locemp;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Perr;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Plemp;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Total;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.OccRate;
 
 
                 }

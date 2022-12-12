@@ -51,8 +51,8 @@ else
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Code)">@L["ITEMCODE"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Item_Name)">@L["ITEMNAME"]</MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Qty)">@L["STOCK"] </MudTableSortLabel></MudTh>
+            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Palletgo)">@L["PALLETNO"] </MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Su_No)">@L["SEQ"] </MudTableSortLabel></MudTh>
-            <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Palletgo)">@L["PALLETNO"] </MudTableSortLabel></MudTh>
             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")" ><MudTableSortLabel SortBy="new Func<Class6_3_C, object>(x=>x.Aging)">@L["AGING"] </MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -60,8 +60,8 @@ else
             <MudTd DataLabel=@L["ITEMCODE"]>@context.Item_Code</MudTd>
             <MudTd DataLabel=@L["ITEMNAME"]>@context.Item_Name</MudTd>
             <MudTd DataLabel=@L["STOCK"] Style="text-align:right">@string.Format(VarGlobals.FormatN3, context.Qty)</MudTd>
-            <MudTd DataLabel=@L["SEQ"]>@context.Su_No</MudTd>
             <MudTd DataLabel=@L["PALLETNO"]>@context.Palletgo</MudTd>
+            <MudTd DataLabel=@L["SEQ"]>@context.Su_No</MudTd>
             <MudTd DataLabel=@L["AGING"] Style="text-align:right">@string.Format(VarGlobals.FormatN0, context.Aging) </MudTd>
         </RowTemplate>
         <PagerContent>
@@ -176,14 +176,16 @@ else
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        //if (element.Su_No.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        if (element.Item_Code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Batch_Number.Equals(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Item_Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Item_Code.Equals(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        //if ($"{element.Create_By}".Contains(searchString))
+        if (element.Su_No.Equals(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        //if (element.Palletgo.Equals(searchString, StringComparison.OrdinalIgnoreCase))
         //    return true;
+        if ($"{element.Item_Name}".Contains(searchString))
+            return true;
         return false;
     }
 

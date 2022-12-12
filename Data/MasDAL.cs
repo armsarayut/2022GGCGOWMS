@@ -141,6 +141,43 @@ namespace GoWMS.Server.Data
             return lstobj;
         }
 
+
+        public bool UpdateItemMasterPalletqty(decimal? Palqty, string Itemcode)
+        {
+            bool bret = false;
+            try
+            {
+                using SqlConnection con = new SqlConnection(connectionStringSQL);
+                StringBuilder sql = new StringBuilder();
+
+                sql.AppendLine("Update dbo.set_itemmaster");
+                sql.AppendLine("Set pack_qty = @pack_qty");
+                sql.AppendLine("Where item_code = @item_code");
+                sql.AppendLine(";");
+
+               
+
+                SqlCommand cmd = new SqlCommand(sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                cmd.Parameters.AddWithValue("@pack_qty", Palqty);
+                cmd.Parameters.AddWithValue("@item_code", Itemcode);
+      
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                bret = true;
+            }
+            catch
+            {
+                bret = false;
+            }
+            return bret;
+        }
+
         public IEnumerable<Mas_Storage_Go> GetAllMasterstorageGo()
         {
             List<Mas_Storage_Go> lstobj = new List<Mas_Storage_Go>();

@@ -52,5 +52,6 @@ namespace GoWMS.Server.Models.Oub
 		public string Unit { get; set; }
 		public string Vendor_Code { get; set; }
 		public string Batch_No { get; set; }
+		public string Palletmapkey { get; set; }
 	}
 }

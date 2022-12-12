@@ -46,15 +46,15 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Docdate;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Pono;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Pallettag;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Itemcode;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Itemname;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Quantity;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Unit;
-                    worksheet.Cell(rptRows, 8).Value = rpt.Docno;
-                    worksheet.Cell(rptRows, 9).Value = rpt.Docnote;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Docdate;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Pono;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Pallettag;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Itemcode;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Itemname;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Quantity;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.Unit;
+                    worksheet.Cell(rptRows, 8).Value = "'" + rpt.Docno;
+                    worksheet.Cell(rptRows, 9).Value = "'" + rpt.Docnote;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

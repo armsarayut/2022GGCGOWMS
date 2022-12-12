@@ -41,8 +41,8 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = Convert.ToDateTime(rpt.W_Hour).ToString(VarGlobals.FormatDTHM);
-                    worksheet.Cell(rptRows, 2).Value = rpt.W_Count;
+                    worksheet.Cell(rptRows, 1).Value = "'" + Convert.ToDateTime(rpt.W_Hour).ToString(VarGlobals.FormatDTHM);
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.W_Count;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

@@ -120,6 +120,9 @@
   <data name="AREA" xml:space="preserve">
     <value>AREA</value>
   </data>
+  <data name="Holdstock" xml:space="preserve">
+    <value>SET HOLD</value>
+  </data>
   <data name="ITEMCODE" xml:space="preserve">
     <value>SKU</value>
   </data>

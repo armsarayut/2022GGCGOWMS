@@ -135,6 +135,9 @@
   <data name="PALLETGO" xml:space="preserve">
     <value>PALLET</value>
   </data>
+  <data name="PALLETNO" xml:space="preserve">
+    <value>PALLET NO</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>PDF</value>
   </data>

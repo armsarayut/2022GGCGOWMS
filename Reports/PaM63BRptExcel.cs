@@ -41,10 +41,10 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in rptElements)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Batch_Number;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Item_Code;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Item_Name;
-                    worksheet.Cell(rptRows, 4).Value = string.Format(VarGlobals.FormatN2, rpt.Totalstock);
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Batch_Number;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Item_Code;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Item_Name;
+                    worksheet.Cell(rptRows, 4).Value = "'" + string.Format(VarGlobals.FormatN2, rpt.Totalstock);
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

@@ -31,6 +31,8 @@ namespace GoWMS.Server.Models.Api
         public string Gr_remark { get; set; }
         public string Unit { get; set; }
         public string Item_name { get; set; }
+        public decimal? Palleyqty { get; set; }
+        public string Item_cat { get; set; }
 
     }
 }

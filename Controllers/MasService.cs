@@ -68,7 +68,12 @@ namespace GoWMS.Server.Controllers
             return bret;
         }
 
-
+        public bool UpdateItemMasterPalletqty(decimal? Palqty, string Itemcode)
+        {
+            Boolean bret = false;
+            bret = objDAL.UpdateItemMasterPalletqty(Palqty, Itemcode);
+            return bret;
+        }
 
     }
 }

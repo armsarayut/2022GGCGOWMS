@@ -46,15 +46,15 @@ namespace GoWMS.Server.Reports
                 foreach (var rpt in ListRpt)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Shelfname;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Srm_no;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Shelfbank;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Shelfbay;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Shelflevel;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Shelfdeep;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Lpncode;
-                    worksheet.Cell(rptRows, 8).Value = rpt.St_desc;
-                    worksheet.Cell(rptRows, 9).Value = rpt.Modified;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Shelfname;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Srm_no;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Shelfbank;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Shelfbay;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Shelflevel;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Shelfdeep;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.Lpncode;
+                    worksheet.Cell(rptRows, 8).Value = "'" + rpt.St_desc;
+                    worksheet.Cell(rptRows, 9).Value = "'" + rpt.Modified;
                 }
                 #endregion
                 workbook.SaveAs(_memoryStream);

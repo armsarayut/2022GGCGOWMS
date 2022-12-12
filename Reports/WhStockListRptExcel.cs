@@ -38,22 +38,24 @@ namespace GoWMS.Server.Reports
                 worksheet.Cell(rptRows, 3).Value = "NAME";
                 worksheet.Cell(rptRows, 4).Value = "STOCK";
                 worksheet.Cell(rptRows, 5).Value = "UNIT";
-                worksheet.Cell(rptRows, 6).Value = "TAG";
-                worksheet.Cell(rptRows, 7).Value = "PALLET";
-                worksheet.Cell(rptRows, 8).Value = "LOCATION";
+                worksheet.Cell(rptRows, 6).Value = "PALLET NO";
+                worksheet.Cell(rptRows, 7).Value = "TAG";
+                worksheet.Cell(rptRows, 8).Value = "PALLET";
+                worksheet.Cell(rptRows, 9).Value = "LOCATION";
             
 
                 foreach (var rpt in ListRpt)
                 {
                     rptRows++;
-                    worksheet.Cell(rptRows, 1).Value = rpt.Lotno;
-                    worksheet.Cell(rptRows, 2).Value = rpt.Itemcode;
-                    worksheet.Cell(rptRows, 3).Value = rpt.Itemname;
-                    worksheet.Cell(rptRows, 4).Value = rpt.Quantity;
-                    worksheet.Cell(rptRows, 5).Value = rpt.Unit;
-                    worksheet.Cell(rptRows, 6).Value = rpt.Pallettag;
-                    worksheet.Cell(rptRows, 7).Value = rpt.Pallteno;
-                    worksheet.Cell(rptRows, 8).Value = rpt.Storagebin;
+                    worksheet.Cell(rptRows, 1).Value = "'" + rpt.Lotno;
+                    worksheet.Cell(rptRows, 2).Value = "'" + rpt.Itemcode;
+                    worksheet.Cell(rptRows, 3).Value = "'" + rpt.Itemname;
+                    worksheet.Cell(rptRows, 4).Value = "'" + rpt.Quantity;
+                    worksheet.Cell(rptRows, 5).Value = "'" + rpt.Unit;
+                    worksheet.Cell(rptRows, 6).Value = "'" + rpt.Palltmapkey;
+                    worksheet.Cell(rptRows, 7).Value = "'" + rpt.Pallettag;
+                    worksheet.Cell(rptRows, 8).Value = "'" + rpt.Pallteno;
+                    worksheet.Cell(rptRows, 9).Value = "'" + rpt.Storagebin;
     
                 }
                 #endregion
