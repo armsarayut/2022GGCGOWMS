@@ -1347,6 +1347,46 @@ namespace GoWMS.Server.Data
             }
         }
 
+        public void SetPickingGGCManualTag(string jsonRES, ref Int32 Refiret, ref string Refsret)
+        {
+            Int32? iRet = 0;
+            string sRet = "Calling";
+            NpgsqlConnection con = new NpgsqlConnection(connectionString);
+            try
+            {
+                con.Open();
+                StringBuilder sql = new StringBuilder();
+
+                sql.AppendLine("CALL wms.poc_oub_deliveryorderselectwgcauduit(");
+                sql.AppendLine(":jsonbook, :retchk, :retmsg)");
+                NpgsqlCommand cmd = new NpgsqlCommand(sql.ToString(), con)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                cmd.Parameters.AddWithValue("jsonbook", NpgsqlDbType.Json, jsonRES);
+                cmd.Parameters.AddWithValue("retchk", NpgsqlDbType.Integer, iRet);
+                cmd.Parameters.AddWithValue("retmsg", NpgsqlDbType.Varchar, sRet);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    iRet = rdr["retchk"] == DBNull.Value ? null : (Int32?)rdr["retchk"];
+                    sRet = rdr["retmsg"].ToString();
+
+                }
+                Refiret = (int)iRet;
+                Refsret = sRet;
+
+            }
+            catch (NpgsqlException exp)
+            {
+                //Response.Write(exp.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
 
     }
 }

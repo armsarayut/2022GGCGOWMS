@@ -131,7 +131,7 @@ else
             <Column T="Api_ggc" Field="Remark" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["REMARK"]"/>
             <Column T="Api_ggc" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["ACTION"]" Filterable="false">
                 <CellTemplate>
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.ShoppingCart" Color="Color.Error" OnClick="@(()=>RequestPick(context.Item.Item_code , context.Item.Batch_no, context.Item.Total_qty.Value, sUsername, context.Item.Idx.Value))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.ShoppingCart" Color="Color.Error" OnClick="@(()=>RequestPick(context.Item.Item_code , context.Item.Batch_no, context.Item.Total_qty.Value, sUsername, context.Item.Idx.Value, context.Item.Doc_ref))" />
             @*        <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value))" />*@
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Delete" Color="Color.Warning" OnClick="@(()=>CancleGR(context.Item.Idx.Value, context.Item.Doc_ref, context.Item.Batch_no, context.Item.Item_code))" />
                 </CellTemplate>
@@ -525,7 +525,7 @@ else
     #endregion
 
 
-    public async Task RequestPick(string sku, string batch, decimal needqty, string user, long apiid)
+    public async Task RequestPick(string sku, string batch, decimal needqty, string user, long apiid, string orderno)
     {
 
             string sRet = "Call";
@@ -540,11 +540,12 @@ else
             {
                  Snackbar.Add("Create : " + sRet, Severity.Success);
 
-              
+                this.InsertAuditrial(mPagedesc +"Created Request Pick  > Doc : " + orderno + " SKU : " + sku + " Batch : " + batch + " Qty : " + needqty.ToString() + " [" + sRet + "]", pageheader);
             }
             else
             {
                  Snackbar.Add("Create : " + sRet, Severity.Error);
+                this.InsertAuditrial(mPagedesc + "Creating Request Pick  > Doc : " + orderno + " SKU : " + sku + " Batch : " + batch + " Qty : " + needqty.ToString() + " [" + sRet + "]", pageheader);
             }
     }
 

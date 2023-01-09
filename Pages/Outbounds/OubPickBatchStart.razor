@@ -236,6 +236,7 @@ else
                     WriteIndented = true
                 };
 
+            var strRESLog = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { Itemno = x.Item_Code, Tagno = x.Su_No , Qty = x.Request_Qty, Palletno = x.Pallet_No }).ToList();
             var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, pallet = x.Pallet_No, gateout = "G08" }).ToList();
 
                             var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
@@ -246,7 +247,7 @@ else
                              bRet = ObjWhService.StartOrderpick(jsonRES, ref sRet);
 
 
-                              this.InsertAuditrial("Start ASRS : " + jsonRES.ToString(), pageheader);
+            this.InsertAuditrial("Start ASRS : " + strRESLog.ToString(), pageheader);
                         //await SelectOrderPick();
 
 
@@ -351,6 +352,8 @@ else
                         WriteIndented = true
                     };
 
+                var strRESLog = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { Itemno = x.Item_Code, Tagno = x.Su_No , Qty = x.Request_Qty, Palletno = x.Pallet_No }).ToList();
+
                 var strRES = selectedItems.OrderBy(x => x.Pallet_No).Select(x => new { trannumber = x.Idx, Pallet_No = x.Pallet_No }).ToList();
 
                 var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
@@ -360,7 +363,7 @@ else
 
                 bRet = ObjWhService.CancelOrderpick(jsonRES, ref sRet);
 
-                this.InsertAuditrial("Cancel Order ASRS : " + jsonRES.ToString(), pageheader);
+                this.InsertAuditrial("Cancel Order ASRS : " + strRESLog.ToString(), pageheader);
             }
            
 

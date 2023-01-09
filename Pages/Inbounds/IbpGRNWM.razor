@@ -623,6 +623,10 @@ else
 
                     await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
 
+                    var strRESLog = TagList.OrderBy(x => x.TagNo).Select(x => new { Docunentno = x.ReservationNo ,Itemno = x.ProductNo, Batchno = x.BatchNo, Tagno = x.TagNo, Qty = x.QtyPerPallet }).ToList();
+
+                    this.InsertAuditrial("Create Tag : " + strRESLog.ToString(), pageheader);
+
                     Snackbar.Add("Created", Severity.Success);
 
                      Elements = await Task.Run(() => ObjErpApiService.GetApiInboundAllACC());

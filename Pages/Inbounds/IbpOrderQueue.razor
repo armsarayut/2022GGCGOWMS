@@ -144,12 +144,12 @@ else
                   <MudIconButton Size="@Size.Small"
                                Icon="@Icons.Outlined.Print"
                                Color="Color.Info"
-                               OnClick="@(()=>ReprintTag(context.Item.Efidx.Value))" />
+                               OnClick="@(()=>ReprintTag(context.Item.Efidx.Value,context.Item.Pallettag))" />
 
                     <MudIconButton Size="@Size.Small" 
                         Icon="@Icons.Outlined.Delete" 
                         Color="Color.Warning"
-                               OnClick="@(()=>DeleteMapTran(context.Item.Efidx.Value, context.Item.Quantity.Value ,context.Item.Docno,context.Item.Itemcode, context.Item.Itembar ))" />
+                               OnClick="@(()=>DeleteMapTran(context.Item.Efidx.Value, context.Item.Quantity.Value ,context.Item.Docno,context.Item.Itemcode, context.Item.Itembar))" />
                     
               </CellTemplate>
         </Column>
@@ -388,7 +388,7 @@ else
 
     }
 
-    private async Task ReprintTag(long apiid)
+    private async Task ReprintTag(long apiid, string pack)
     {
         bool? result = await CheckRoleReport();
         if (result == true)
@@ -400,7 +400,7 @@ else
             listPdfReport = TagList.ToList();
 
             await PrintingService.Print(new PrintOptions(Convert.ToBase64String(pdfReport.ExportPDF(listPdfReport))) { Base64 = true });
-            this.InsertAuditrial("Re-print Tag from id : " + apiid.ToString(), pageheader);
+            this.InsertAuditrial("Re-print Tag No : " + pack.ToString(), pageheader);
 
         }
        

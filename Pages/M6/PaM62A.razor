@@ -230,13 +230,15 @@ else
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Su_No.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Su_No.Equals(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Item_Code.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Item_Code.Equals(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Item_Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.Batch_Number.Equals(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{element.Create_By}".Contains(searchString))
+        if (element.Pallet_No.Equals(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Item_Name}".Contains(searchString))
             return true;
         return false;
     }

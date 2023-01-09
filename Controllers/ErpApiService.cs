@@ -164,6 +164,12 @@ namespace GoWMS.Server.Controllers
             return sret;
         }
 
+        public string SetPickingGGCManualTag(string jsonRes, ref Int32 iret, ref string sret)
+        {
+            objDAL.SetPickingGGCManualTag(jsonRes, ref iret, ref sret);
+            return sret;
+        }
+
         public List<Functionreturn> SetPalletDepositIn(string pallet)
         {
             List<Functionreturn> retlist = objDAL.SetPalletDepositIn(pallet).ToList();

@@ -1,4 +1,4 @@
-﻿@page "/2/2_4"
+﻿@page "/3/3_4"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -17,84 +17,101 @@
 @inject ErpApiService ObjApiService
 @inject UserServices OpjUserService
 @inject WhService ObjWhService
-@inject IStringLocalizer<WhCyclecount> L
+@inject IStringLocalizer<OubUnplaned> L
 @attribute [Authorize]
 
 
 @if (Elements == null)
 {
+    // <p><em>Loading...</em></p>
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 }
 else
 {
-    <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
-    <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
-                <MudButtonGroup Color="Color.Default" Variant="Variant.Outlined">
+
+    @if (StkGroup)
+    {
+        <MudText Typo="Typo.h6" Color="Color.Primary">@pageheader</MudText>
+
+            <MudAppBar Color="Color.Transparent" Fixed="false" Dense="true">
+                <MudButtonGroup Color="Color.Error" Variant="Variant.Outlined">
                     <MudButton StartIcon="@Icons.Material.Filled.AddTask" IconColor="Color.Tertiary" OnClick=@OnButtonOrderSelected>@L["START"]</MudButton>
                 </MudButtonGroup>
-
-      @*  <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done"
-                   Color="Color.Success"
-                   OnClick=@OnButtonOrderSelected>@L["START"]</MudButton>*@
                 <MudSpacer />
             </MudAppBar>
 
-            @if (StkGroup)
-            {
-
-
-                <MudTable Items="@Elements"
-                          FixedHeader="@fixed_header"
-                          FixedFooter="@fixed_footer"
+ 
+            <MudTable Hover="@hover"
+                      Breakpoint="Breakpoint.Sm"
           Height="@(fixed_header || fixed_footer ?VarGlobals.TableHeight:"")"
-                          MultiSelection="true"
-                          Dense="@dense"
-                          Hover="@hover"
-                          Bordered="@bordered"
-                          Striped="@striped"
-                          Filter="new Func<Inv_Stock_GoInfo,bool>(FilterFunc)"
-                          @bind-SelectedItems="selectedItems">
-                    <ToolBarContent>
+                      MultiSelection=@_multiSelect
+                      FixedHeader="@fixed_header"
+                      Items="@Elements.OrderBy(o => o.Itembar)"
+                      GroupBy="@_groupDefinition"
+                      GroupHeaderStyle="background-color:var(--mud-palette-background-white)"
+                      GroupFooterClass="mb-4"
+                      Dense="@dense"
+                      FixedFooter="@fixed_footer"
+                      Bordered="@bordered"
+                      Striped="@striped"
+                      Filter="new Func<Inv_Stock_GoInfo,bool>(FilterFunc)" @bind-SelectedItems="selectedItems">
 
-                        <MudSpacer />
-                        <MudTextField @bind-Value="searchString"
-                                      Placeholder=@L["Search"]
-                                      Adornment="Adornment.Start"
-                                      AdornmentIcon="@Icons.Material.Filled.Search"
-                                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </ToolBarContent>
-
-                    <HeaderContent>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"] </MudTableSortLabel></MudTh>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"] </MudTableSortLabel></MudTh>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"] </MudTableSortLabel></MudTh>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"] </MudTableSortLabel></MudTh>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Palltmapkey)">@L["PalletErp"]</MudTableSortLabel></MudTh>
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"] </MudTableSortLabel></MudTh>
-                       
-                        <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PalletGo"] </MudTableSortLabel></MudTh>
-                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Storagebin)">@L["Loc"] </MudTableSortLabel></MudTh>
-                       @* <MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PalletErp"] </MudTableSortLabel></MudTh>*@
-                    </HeaderContent>
-
-
-                    <RowTemplate>
-                        <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
-                        <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
-                        <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
-                        <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, @context.Quantity)</MudTd>
-                        <MudTd DataLabel=@L["Unit"]>@context.Unit</MudTd>
-                        <MudTd DataLabel=@L["PalletErp"]>@context.Palltmapkey</MudTd>
-                        <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
-                        <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
+                <ToolBarContent>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString"
+                                  Placeholder=@L["Search"]
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <ColGroup>
+                    @if (_multiSelect)
+                            {
+                        <col style="width: 60px;" />
+                            }
+                    @if (_groupDefinition.Expandable)
+                            {
+                        <col style="width: 60px;" />
+                            }
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                    <col />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemcode)">@L["ItemCode"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Palltmapkey)">@L["PALLETERP"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PALLET"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Storagebin)">@L["Loc"]</MudTableSortLabel></MudTh>
+                    @*<MudTh><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itembar)">@L["PALLETERP"]</MudTableSortLabel></MudTh>*@
+                </HeaderContent>
+                <GroupHeaderTemplate>
+                <MudTh Class="mud-table-cell-custom-group" colspan="6">@($"{context.GroupName} : {context.Key}") @L["Total"]: @string.Format(VarGlobals.FormatN3, @context.Items.Sum((e) => e.Quantity))</MudTh>
+                </GroupHeaderTemplate>
+                <RowTemplate>
+                    <MudTd DataLabel=@L["ItemCode"]>@context.Itemcode</MudTd>
+                    <MudTd DataLabel=@L["ItemName"]>@context.Itemname</MudTd>
+                    <MudTd DataLabel=@L["Lot"]>@context.Lotno</MudTd>
+                    <MudTd DataLabel=@L["Stock"]>@string.Format(VarGlobals.FormatN3, context.Quantity)</MudTd>
+                     <MudTd DataLabel=@L["Unit"]>@context.Unit</MudTd>
+                     <MudTd DataLabel=@L["PALLETERP"]>@context.Palltmapkey</MudTd>
+                    <MudTd DataLabel=@L["SEQ"]>@context.Pallettag</MudTd>
+                    <MudTd DataLabel=@L["PalletGo"]>@context.Pallteno</MudTd>
                     <MudTd DataLabel=@L["Loc"]>@context.Storagebin</MudTd>
-                       @* <MudTd DataLabel=@L["PalletErp"]>@context.Itembar</MudTd>*@
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="new int[]{10,20,50,100}" />
-                    </PagerContent>
-                </MudTable>
+                    @*<MudTd DataLabel=@L["PALLETERP"]>@context.Itembar</MudTd>*@
+                </RowTemplate>
+                <GroupFooterTemplate>
+                    <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="6">@L["Total"]: @string.Format(VarGlobals.FormatN3, @context.Items.Sum((e) => e.Quantity))</MudTh>
+                </GroupFooterTemplate>
+
+            </MudTable>
             }
             else
             {
@@ -104,16 +121,16 @@ else
             <MudMessageBox @ref="mbox" Title="@mboxheader" CancelText="Cancel">
                 <MessageContent>
                     @foreach (var item in References)
-                    {
+                            {
                         <br />
                         @item
-                    }
+                            }
                 </MessageContent>
                 <YesButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.DataSaverOn">Confirm!</MudButton>
                 </YesButton>
             </MudMessageBox>
-        }
+            }
 
 @code {
 
@@ -122,10 +139,10 @@ else
     private bool _dense = false;
     private bool _multiSelect = true;
 
-    public string mPagedesc { get; set; } = "2.4.Audit";
-    private string mPagename { get; set; } = "/2/2_4";
+    public string mPagedesc { get; set; } = "3.4.Unplanned";
+    private string mPagename { get; set; } = "/3/3_4";
 
-    private string pageheader = "2.4.Audit";
+    private string pageheader = "3.4.Unplanned";
     private string msgAction = "Enter Palletcode";
     private string mPalletcode { get; set; } = "";
     private string mPackid { get; set; } = "";
@@ -143,17 +160,18 @@ else
 
     string state = "Message box hasn't been opened yet";
 
-    string mboxheader { get; set; } = "รายการที่ขอตรวจสอบ";
+    string mboxheader { get; set; } = "รายการที่ขอเบิก";
     string mboxcontent { get; set; } = "";
     string mboxmessage { get; set; } = "";
 
-    private Int32 iState { get; set; } = 0;
     public int elevation = 0;
     private ResultReturn resultReturn = null;
 
     public bool StkGroup { get; set; }
 
     protected List<string> References { get; set; } = new List<string>();
+
+     private Int32 iState { get; set; } = 0;
 
     string sUsername { get; set; } = "";
     string sRole { get; set; } = "";
@@ -176,6 +194,7 @@ else
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
 
         //Elements = await Task.Run(() => objCS.GetStockListInfo());
+
         Elements = await Task.Run(() => objCS.GetStockListInfo().Result.Where(x => x.Efstatus == iState));
 
         this.OnSelectChange();
@@ -203,6 +222,15 @@ else
         StkGroup = !StkGroup;
 
     }
+
+      private TableGroupDefinition<Inv_Stock_GoInfo> _groupDefinition = new TableGroupDefinition<Inv_Stock_GoInfo>()
+        {
+            GroupName = "SKU",
+            Indentation = false,
+            Expandable = true,
+            IsInitiallyExpanded = false,
+            Selector = (e) => e.Itemcode
+        };
 
     private bool FilterFunc(Inv_Stock_GoInfo element)
     {
@@ -236,10 +264,10 @@ else
 
     async Task SelectOrder()
     {
-        var result = selectedItems.GroupBy(t => new { t.Itemcode , t.Lotno} )
+        var result = selectedItems.GroupBy(t => new { t.Itemcode, t.Lotno })
                    .Select(t => new
                    {
-                       Itemcode = t.Key.Itemcode ,
+                       Itemcode = t.Key.Itemcode,
                        Lot = t.Key.Lotno,
                        Qty = t.Sum(ta => ta.Quantity),
                    }).ToList();
@@ -259,7 +287,7 @@ else
         }
 
         System.Text.StringBuilder popup = new System.Text.StringBuilder();
-        popup.AppendLine("รายการที่ขอตรวจสอบ");
+        popup.AppendLine("รายการที่ขอเบิก");
         popup.Append(strPopup.ToString());
 
         string sContentText = popup.ToString();
@@ -322,16 +350,16 @@ else
                             WriteIndented = true
                         };
 
-                    this.InsertAuditrial("Set Cycle count List : " + strPopup.ToString(), pageheader);
+                    this.InsertAuditrial("Set Unplaned List : " + strPopup.ToString(), pageheader);
 
-                    var strRES = selectedItems.OrderBy(x => x.Itemcode).Select(x => new { sku = x.Itemcode, quantity = x.Quantity, lot = x.Lotno, tag = x.Pallettag, pallet = x.Pallteno, idx =x.Efidx }).ToList();
+                    var strRES = selectedItems.OrderBy(x => x.Itemcode).Select(x => new { sku = x.Itemcode, quantity = x.Quantity, lot = x.Lotno, tag = x.Pallettag, pallet = x.Pallteno, idx = x.Efidx }).ToList();
 
                     var jsonRES = JsonSerializer.Serialize(strRES, serializeOptions);
 
                     string sRet = "Call";
                     bool bRet;
 
-                    bRet = ObjWhService.SetOrderaudit(jsonRES, ref sRet);
+                    bRet = ObjWhService.SetOrderManualPick(jsonRES, ref sRet);
 
 
                     //SelectOrderPick();
@@ -356,14 +384,15 @@ else
     private void SelectOrderPick()
     {
         var serializeOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
 
         string cus = "MANUAL";
         //string so = "CY-" + DateTime.Now.ToString("yyMMddHHmmssffff");
-        string so = "CY-" + ObjFunService.GetRunning("sq002", 4);
+        //string so = "CY-" + ObjFunService.GetRunning("sq002", 4);
+        string so = "MO-" + ObjFunService.GetRunning("sq002", 4);
 
         string lot = "-";
         string batch = "-";
@@ -393,7 +422,7 @@ else
             }
             else
             {
-                this.InsertAuditrial("Start Cycel count : " + so.ToString(), pageheader);
+                this.InsertAuditrial("Start Unplaned : " + so.ToString(), pageheader);
 
                 Snackbar.Add("Order picking created", Severity.Success);
             }

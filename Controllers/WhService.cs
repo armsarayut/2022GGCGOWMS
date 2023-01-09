@@ -74,6 +74,13 @@ namespace GoWMS.Server.Controllers
             return bRet;
         }
 
+        public bool SetOrderManualPick(string jsonOrder, ref string msgReturn)
+        {
+            Boolean bRet = false;
+            bRet = objDAL.SetOrderManualPick(jsonOrder, ref msgReturn);
+            return bRet;
+        }
+
         public bool SetOrderprepare(string jsonOrder, ref string msgReturn)
         {
             Boolean bRet = false;

@@ -1,4 +1,4 @@
-﻿@page "/3/3_4"
+﻿@page "/3/3_4%!@#$%"
 @using GoWMS.Server.Data
 @using GoWMS.Server.Controllers
 @using GoWMS.Server.Models
@@ -96,8 +96,8 @@ else
                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Itemname)">@L["ItemName"]</MudTableSortLabel></MudTh>
                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Lotno)">@L["Lot"]</MudTableSortLabel></MudTh>
                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Quantity)">@L["Stock"]</MudTableSortLabel></MudTh>
-                             <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
-                <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Palltmapkey)">@L["PALLETERP"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Unit)">@L["Unit"]</MudTableSortLabel></MudTh>
+                    <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Palltmapkey)">@L["PALLETERP"]</MudTableSortLabel></MudTh>
                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallettag)">@L["SEQ"]</MudTableSortLabel></MudTh>
                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Pallteno)">@L["PALLET"]</MudTableSortLabel></MudTh>
                     <MudTh Style="@($"color:{VarGlobals.TableHeaderColor};")"><MudTableSortLabel SortBy="new Func<Inv_Stock_GoInfo, object>(x=>x.Storagebin)">@L["Loc"]</MudTableSortLabel></MudTh>
@@ -371,7 +371,7 @@ else
 
                              bRet = ObjWhService.SetOrderpick(jsonRES, ref sRet);
 
-
+                              
                             //await Task.Run(() => SelectOrderPick());
 
                     }
