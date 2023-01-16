@@ -137,18 +137,19 @@ else
         </Column>
         <Column T="Inb_Goodreceive_Go" Field="Unit" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Unit"]"/>
         <Column T="Inb_Goodreceive_Go" Field="Lotno" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["LotNo"]"/>
-            <Column T="Inb_Goodreceive_Go" Field="Pallettag" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["SUNo"]" />
+         <Column T="Inb_Goodreceive_Go" Field="PalltmapkeyNo" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Palletkeyno"]" />
+        <Column T="Inb_Goodreceive_Go" Field="Pallettag" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["SUNo"]" />
         <Column T="Inb_Goodreceive_Go" HeaderStyle="@($"color:{VarGlobals.TableHeaderColor};")" Title="@L["Adjust"]" Filterable="false">
               <CellTemplate>
 
                   <MudIconButton Size="@Size.Small"
-                               Icon="@Icons.Outlined.Print"
+                               Icon="@Icons.Material.Outlined.Print"
                                Color="Color.Info"
                                OnClick="@(()=>ReprintTag(context.Item.Efidx.Value,context.Item.Pallettag))" />
 
-                    <MudIconButton Size="@Size.Small" 
-                        Icon="@Icons.Outlined.Delete" 
-                        Color="Color.Warning"
+                    <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Delete"
+                               Color="Color.Warning"
                                OnClick="@(()=>DeleteMapTran(context.Item.Efidx.Value, context.Item.Quantity.Value ,context.Item.Docno,context.Item.Itemcode, context.Item.Itembar))" />
                     
               </CellTemplate>

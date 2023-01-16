@@ -44,5 +44,7 @@ namespace GoWMS.Server.Models.Inb
 		public string Storagearea { get; set; }
 		public string Storagebin { get; set; }
 
-	}
+        public string PalltmapkeyNo { get; set; }
+
+    }
 }

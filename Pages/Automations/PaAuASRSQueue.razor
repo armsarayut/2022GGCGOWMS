@@ -73,8 +73,8 @@ else
             <MudTd Class="clm-row-small" DataLabel="URGENT">
                 @if (context.Work_Code == "05")
                     {
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.ArrowUpward" Color="Color.Secondary" OnClick="(()=> UpdateUrgent( context.Lpncode))" />
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Cancel" Color="Color.Warning" OnClick="(()=> CancelQueueOutbound( context.Lpncode))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.ArrowUpward" Color="Color.Secondary" OnClick="(()=> UpdateUrgent( context.Lpncode))" />
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Cancel" Color="Color.Warning" OnClick="(()=> CancelQueueOutbound( context.Lpncode))" />
                     }
             </MudTd>
         </RowTemplate>
@@ -116,6 +116,8 @@ else
     List<Userroleinfo> Roles = new List<Userroleinfo>();
     [Inject] private IDialogService DialogService { get; set; }
 
+    int QureyFilter = 6;
+
     protected override async Task OnInitializedAsync()
     {
         WcsService objCS = new WcsService();
@@ -128,7 +130,7 @@ else
         await GetUserAthu();
         this.InsertAuditrial("View", pageheader);
         Roles = await Task.Run(() => OpjUserService.GetUserRole(mPagename, long.Parse(sGroupID)));
-        Elements = await Task.Run(() => objCS.GetASRSWorks());
+        Elements = await Task.Run(() => objCS.GetASRSWorks().Where(x => x.Work_Status != QureyFilter));
 
     }
 

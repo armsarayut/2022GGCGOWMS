@@ -147,6 +147,9 @@
   <data name="pageHeader" xml:space="preserve">
     <value>การรับ</value>
   </data>
+  <data name="Palletkeyno" xml:space="preserve">
+    <value>พาเลทที่</value>
+  </data>
   <data name="PDF" xml:space="preserve">
     <value>พีดีเอฟ</value>
   </data>

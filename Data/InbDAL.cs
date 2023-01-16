@@ -87,9 +87,15 @@ namespace GoWMS.Server.Data
                 sql.AppendLine(",t0.whse,t0.loc,t0.pallet_bc,t0.ref_item");
                 sql.AppendLine(",t0.flag,t0.require_detail_id,t0.is_req");
                 sql.AppendLine(",t0.is_hold,t0.is_lock,t0.update2sl,t0.modifie_date");
+                sql.AppendLine(",t2.palletnote as palltmapkeyno");
+
                 sql.AppendLine("FROM dbo.wms_trans t0");
                 sql.AppendLine("LEFT JOIN dbo.set_itemmaster t1");
                 sql.AppendLine("ON t0.item=t1.item_code");
+
+                sql.AppendLine("LEFT JOIN dbo.wms_lablemaster t2");
+                sql.AppendLine("On t0.item_bc=t2.item_bc");
+
                 sql.AppendLine("WHERE t0.unit_key = @unit_key");
                 sql.AppendLine("AND t0.stat = @stat");
                 sql.AppendLine("ORDER BY t0.trans_num");
@@ -139,7 +145,8 @@ namespace GoWMS.Server.Data
                         Storagetime = rdr["modifie_date"] == DBNull.Value ? null : (DateTime?)rdr["modifie_date"],
                         Storageno = rdr["site"].ToString(),
                         Storagearea = rdr["whse"].ToString(),
-                        Storagebin = rdr["loc"].ToString()
+                        Storagebin = rdr["loc"].ToString(),
+                        PalltmapkeyNo = rdr["palltmapkeyno"].ToString()
                     };
                     lstobj.Add(objrd);
                 }
